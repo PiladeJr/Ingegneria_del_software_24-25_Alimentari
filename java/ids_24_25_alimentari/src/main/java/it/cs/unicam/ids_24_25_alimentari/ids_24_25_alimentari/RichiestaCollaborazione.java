@@ -1,14 +1,11 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari;
 
 import java.io.File;
-import java.util.List;
 
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
 
 @Entity
-@Table (name = "richiestacollaborazione")
-@NoArgsConstructor(force = true)
+@Table(name = "richiestacollaborazione")
 
 public class RichiestaCollaborazione {
     @Id
@@ -24,10 +21,10 @@ public class RichiestaCollaborazione {
     private String sedeOperativa;
     private String coordinate;
 
-    @Column (name = "iva", nullable = false)
+    @Column(name = "iva", nullable = false)
     private String iva;
 
-    @Column (name = "iban", nullable = false)
+    @Column(name = "iban", nullable = false)
     private String iban;
 
     @Column(name = "curriculum")
@@ -41,7 +38,6 @@ public class RichiestaCollaborazione {
 
     private String aziendaReferente;
     private boolean stato;
-
 
     public long getId() {
         return id;
@@ -174,10 +170,5 @@ public class RichiestaCollaborazione {
     public void setStato(boolean stato) {
         this.stato = stato;
     }
-
-
-
-
-
 
 }

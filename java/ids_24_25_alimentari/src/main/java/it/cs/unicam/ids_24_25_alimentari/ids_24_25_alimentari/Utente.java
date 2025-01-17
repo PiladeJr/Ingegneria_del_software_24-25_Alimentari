@@ -1,15 +1,13 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari;
 
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 @Entity
-@Table (name = "utente")
-@NoArgsConstructor(force = true)
+@Table(name = "utente")
 
 public class Utente {
     @Id
@@ -117,7 +115,7 @@ public class Utente {
         this.idAzienda = idAzienda;
     }
 
-    public List<Ruolo> getRuoliDisponibili(){
+    public List<Ruolo> getRuoliDisponibili() {
         return Arrays.asList(Ruolo.values());
     }
 
