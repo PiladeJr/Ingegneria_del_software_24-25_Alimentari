@@ -1,7 +1,9 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Entity.RichiestaCollaborazione;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Enum.Ruolo;
+
 import java.io.File;
-import java.util.List;
 
 public class BuilderRichiestaCollaborazione {
     private RichiestaCollaborazione collaborazione;

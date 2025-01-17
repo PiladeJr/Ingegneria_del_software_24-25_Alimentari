@@ -1,5 +1,6 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Entity;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Enum.Tipologia;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,7 +11,7 @@ import jakarta.persistence.Column;
 public class Richiesta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @Column(nullable = false)
     private Tipologia tipologia;
@@ -19,7 +20,9 @@ public class Richiesta {
     private boolean approvato;
 
     @Column(nullable = false)
-    private int idMittente;
+    private long idMittente;
+
+    public long getId() { return id; }
 
     public void setApprovazione(boolean approvato) {
         this.approvato = approvato;
@@ -38,7 +41,7 @@ public class Richiesta {
         return approvato;
     }
 
-    public int getIdMittente() {
+    public long getIdMittente() {
         return idMittente;
     }
 
