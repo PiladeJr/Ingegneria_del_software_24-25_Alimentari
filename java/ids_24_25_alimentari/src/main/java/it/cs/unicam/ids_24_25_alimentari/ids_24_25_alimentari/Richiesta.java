@@ -21,12 +21,6 @@ public class Richiesta {
     @Column(nullable = false)
     private int idMittente;
 
-    public Richiesta(Tipologia tipologia, boolean approvato, int idMittente) {
-        this.tipologia = tipologia;
-        this.approvato = approvato;
-        this.idMittente = idMittente;
-    }
-
     public void setApprovazione(boolean approvato) {
         this.approvato = approvato;
     }

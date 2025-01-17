@@ -1,12 +1,8 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari;
 
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
-
 
     @Entity
-    @Table(name = "Indirizzo")
-    @NoArgsConstructor(force = true)
     public class Indirizzo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,18 +10,13 @@ import lombok.NoArgsConstructor;
     private String citta;
     private String cap;
     private String via;
-    private int numeroCivico;
+    private String numeroCivico;
     private String provincia;
     private String coordinate;
 
-        public Indirizzo(String citta, String cap, String via, int numeroCivico, String provincia, String coordinate) {
-            this.citta = citta;
-            this.cap = cap;
-            this.via = via;
-            this.numeroCivico = numeroCivico;
-            this.provincia = provincia;
-            this.coordinate = coordinate;
+        public Indirizzo() {
         }
+
         public long getId() {
             return id;
         }
@@ -53,11 +44,11 @@ import lombok.NoArgsConstructor;
             this.via = via;
         }
 
-        public int getNumeroCivico() {
+        public String getNumeroCivico() {
             return numeroCivico;
         }
 
-        public void setNumeroCivico(int numeroCivico) {
+        public void setNumeroCivico(String numeroCivico) {
             this.numeroCivico = numeroCivico;
         }
 

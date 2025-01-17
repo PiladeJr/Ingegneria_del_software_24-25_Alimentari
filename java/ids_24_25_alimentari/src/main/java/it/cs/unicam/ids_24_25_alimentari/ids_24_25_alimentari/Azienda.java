@@ -1,15 +1,9 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari;
 
+import jakarta.persistence.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.CascadeType;
+
 import java.io.File;
 import java.util.List;
 
@@ -18,6 +12,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class Azienda {
 
+    @jakarta.persistence.Id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,10 +20,10 @@ public class Azienda {
     @Column(name = "denominazione_sociale", nullable = false)
     private String denominazioneSociale;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Indirizzo sedeLegale;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Indirizzo sedeOperativa;
 
     @Column(name = "iva", nullable = false)
@@ -36,19 +31,15 @@ public class Azienda {
 
     @Column(name = "iban", nullable = false)
     private String iban;
+    @ElementCollection
+    @CollectionTable(name = "immagini", joinColumns = @JoinColumn(name = "richiesta_id"))
+    @Column(name = "immagine")
+    private List<File> immagini;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<File> files;
-
-    public Azienda(String denominazioneSociale, Indirizzo sedeLegale, Indirizzo sedeOperativa, String iva, String iban,
-            List<File> files) {
-        this.denominazioneSociale = denominazioneSociale;
-        this.sedeLegale = sedeLegale;
-        this.sedeOperativa = sedeOperativa;
-        this.iva = iva;
-        this.iban = iban;
-        this.files = files;
-    }
+    @ElementCollection
+    @CollectionTable(name = "certificati", joinColumns = @JoinColumn(name = "richiesta_id"))
+    @Column(name = "certificato")
+    private List<File> certificati;
 
     // Getters and Setters
     public Long getId() {
@@ -98,13 +89,20 @@ public class Azienda {
     public void setIban(String iban) {
         this.iban = iban;
     }
-
-    public List<File> getFiles() {
-        return files;
+    public List<File> getImmagini() {
+        return immagini;
     }
 
-    public void setFiles(List<File> files) {
-        this.files = files;
+    public void setImmagini(List<File> immagini) {
+        this.immagini = immagini;
+    }
+
+    public List<File> getCertificati() {
+        return certificati;
+    }
+
+    public void setCertificati(List<File> certificati) {
+        this.certificati = certificati;
     }
 
 }
