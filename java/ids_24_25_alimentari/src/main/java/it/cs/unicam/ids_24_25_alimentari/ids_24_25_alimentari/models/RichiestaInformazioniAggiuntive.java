@@ -1,4 +1,4 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Entity;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,10 +8,13 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
+import lombok.NoArgsConstructor;
+
 import java.io.File;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
 public class RichiestaInformazioniAggiuntive {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

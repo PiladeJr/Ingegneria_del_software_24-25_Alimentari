@@ -1,7 +1,7 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Entity;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Enum.Ruolo;
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 import java.io.File;
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "utente")
-
+@NoArgsConstructor
 public class Utente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class Utente {
     private String telefono;
     private Ruolo ruolo;
 
-    @Column(name = "iban", nullable = false)
+    @Column(name = "iban")
     private String iban;
 
     @Column(name = "curriculum")
@@ -30,6 +30,7 @@ public class Utente {
     @Column(name = "cartaIdentita")
     private File cartaIdentita;
 
+    @Column(nullable = true)
     private long idAzienda;
 
     public long getId() {
@@ -120,4 +121,17 @@ public class Utente {
         return Arrays.asList(Ruolo.values());
     }
 
+    public Utente(String nome, String cognome, String email, String password, String telefono) {
+
+        this.nome = nome;
+
+        this.cognome = cognome;
+
+        this.email = email;
+
+        this.password = password;
+
+        this.telefono = telefono;
+
+    }
 }

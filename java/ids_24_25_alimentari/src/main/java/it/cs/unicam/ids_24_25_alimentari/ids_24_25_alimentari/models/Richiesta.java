@@ -1,13 +1,14 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Entity;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Enum.Tipologia;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.NoArgsConstructor;
 import jakarta.persistence.Column;
 
 @Entity
+@NoArgsConstructor
 public class Richiesta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,9 @@ public class Richiesta {
     @Column(nullable = false)
     private long idMittente;
 
-    public long getId() { return id; }
+    public long getId() {
+        return id;
+    }
 
     public void setApprovazione(boolean approvato) {
         this.approvato = approvato;

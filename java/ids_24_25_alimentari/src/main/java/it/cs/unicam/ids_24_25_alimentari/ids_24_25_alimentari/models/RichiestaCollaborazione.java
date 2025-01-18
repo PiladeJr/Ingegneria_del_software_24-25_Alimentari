@@ -1,13 +1,13 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Entity;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models;
 
 import java.io.File;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Enum.Ruolo;
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "richiestacollaborazione")
-
+@NoArgsConstructor
 public class RichiestaCollaborazione {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,6 +1,8 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Entity;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -10,6 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "aziende")
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
 public class Azienda {
 
     @jakarta.persistence.Id
@@ -89,6 +92,7 @@ public class Azienda {
     public void setIban(String iban) {
         this.iban = iban;
     }
+
     public List<File> getImmagini() {
         return immagini;
     }
