@@ -1,4 +1,4 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.RichiestaCollaborazione;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Ruolo;
@@ -7,6 +7,10 @@ import java.io.File;
 
 public class BuilderRichiestaCollaborazione {
     private RichiestaCollaborazione collaborazione;
+
+    public BuilderRichiestaCollaborazione() {
+        this.collaborazione = new RichiestaCollaborazione();
+    }
 
     public void costruisciNome(String nome) {
         collaborazione.setNome(nome);

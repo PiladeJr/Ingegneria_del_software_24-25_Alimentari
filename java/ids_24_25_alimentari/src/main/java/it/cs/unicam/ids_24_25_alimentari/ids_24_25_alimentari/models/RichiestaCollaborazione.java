@@ -22,7 +22,7 @@ public class RichiestaCollaborazione {
     private String sedeOperativa;
     private String coordinate;
 
-    @Column(name = "iva", nullable = false)
+    @Column(name = "iva", nullable = true)
     private String iva;
 
     @Column(name = "iban", nullable = false)

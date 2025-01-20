@@ -1,0 +1,81 @@
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
+
+import java.util.List;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.*;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.RichiestaCollaborazioneRepository;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.BuilderRichiestaCollaborazione;
+import java.io.File;
+
+@Service
+public class RichiesteCollaborazioneService {
+    @Autowired
+    private RichiestaCollaborazioneRepository richiestaCollaborazioneRepository;
+
+    public List<RichiestaCollaborazione> getAllRichieste() {
+        return richiestaCollaborazioneRepository.findAll();
+    }
+
+    public Optional<RichiestaCollaborazione> getRichiestaById(Long id) {
+        return richiestaCollaborazioneRepository.findById(id);
+    }
+
+    public RichiestaCollaborazione saveRichiesta(RichiestaCollaborazione richiesta) {
+        return richiestaCollaborazioneRepository.save(richiesta);
+    }
+
+    public void deleteRichiesta(Long id) {
+        richiestaCollaborazioneRepository.deleteById(id);
+    }
+
+    public RichiestaCollaborazione creaRichiestaAzienda(
+            String nome,
+            String cognome,
+            String telefono,
+            String email,
+            Ruolo ruolo,
+            String denSociale,
+            String sedeLegale,
+            String sedeOperativa,
+            String iban,
+            String iva,
+            File certificato) {
+        BuilderRichiestaCollaborazione builder = new BuilderRichiestaCollaborazione();
+        RichiestaCollaborazioneDirector director = new RichiestaCollaborazioneDirector(builder);
+        director.creaAzienda(nome, cognome, telefono, email, ruolo, denSociale, sedeLegale, sedeOperativa, iban, iva,
+                certificato);
+        return saveRichiesta(builder.getRichiesta());
+    }
+
+    public RichiestaCollaborazione creaRichiestaAnimatore(
+            String nome,
+            String cognome,
+            String telefono,
+            String email,
+            Ruolo ruolo,
+            String aziendaReferente,
+            String iban,
+            File cartaIdentita) {
+        BuilderRichiestaCollaborazione builder = new BuilderRichiestaCollaborazione();
+        RichiestaCollaborazioneDirector director = new RichiestaCollaborazioneDirector(builder);
+        director.creaAnimatore(nome, cognome, telefono, email, ruolo, aziendaReferente, iban, cartaIdentita);
+        return saveRichiesta(builder.getRichiesta());
+    }
+
+    public RichiestaCollaborazione creaRichiestaCuratore(
+            String nome,
+            String cognome,
+            String telefono,
+            String email,
+            Ruolo ruolo,
+            String iban,
+            File cartaIdentita,
+            File cv) {
+        BuilderRichiestaCollaborazione builder = new BuilderRichiestaCollaborazione();
+        RichiestaCollaborazioneDirector director = new RichiestaCollaborazioneDirector(builder);
+        director.creaCuratore(nome, cognome, telefono, email, ruolo, iban, cartaIdentita, cv);
+        return saveRichiesta(builder.getRichiesta());
+    }
+}
