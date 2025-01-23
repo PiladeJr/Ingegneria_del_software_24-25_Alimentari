@@ -18,8 +18,8 @@ public class RichiestaCollaborazioneDirector {
             String email,
             Ruolo ruolo,
             String denSociale,
-            String sedeLegale,
-            String sedeOperativa,
+            Indirizzo sedeLegale,
+            Indirizzo sedeOperativa,
             String iban,
             String iva,
             File certificato) {

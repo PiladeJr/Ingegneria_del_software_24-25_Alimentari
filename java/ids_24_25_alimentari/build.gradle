@@ -37,6 +37,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+	implementation 'jakarta.validation:jakarta.validation-api'
 }
 
 tasks.named('test') {

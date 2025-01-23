@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneAziendaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.RichiestaCollaborazione;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.RichiesteCollaborazioneService;
 import java.io.File;
@@ -48,22 +49,35 @@ public class RichiestaCollaborazioneController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/azienda")
+    @PostMapping(value = "/azienda", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RichiestaCollaborazione> creaRichiestaAzienda(
-            @RequestParam String nome,
-            @RequestParam String cognome,
-            @RequestParam String telefono,
-            @RequestParam String email,
-            @RequestParam Ruolo ruolo,
-            @RequestParam String denSociale,
-            @RequestParam String sedeLegale,
-            @RequestParam String sedeOperativa,
-            @RequestParam String iban,
-            @RequestParam String iva,
-            @RequestParam File certificato) {
-        RichiestaCollaborazione richiesta = richiesteCollaborazioneService.creaRichiestaAzienda(
-                nome, cognome, telefono, email, ruolo, denSociale, sedeLegale, sedeOperativa, iban, iva, certificato);
-        return ResponseEntity.ok(richiesta);
+            @ModelAttribute RichiestaCollaborazioneAziendaDTO richiestaAziendaDTO) {
+
+        try {
+            // Converti il MultipartFile in File
+            File fileCertificato = convertiMultipartFileToFile(richiestaAziendaDTO.getCertificato());
+
+            // Chiama il servizio con i parametri e il file convertito
+            RichiestaCollaborazione richiesta = richiesteCollaborazioneService.creaRichiestaAzienda(
+                    richiestaAziendaDTO.getNome(),
+                    richiestaAziendaDTO.getCognome(),
+                    richiestaAziendaDTO.getTelefono(),
+                    richiestaAziendaDTO.getEmail(),
+                    richiestaAziendaDTO.getRuolo(),
+                    richiestaAziendaDTO.getDenSociale(),
+                    richiestaAziendaDTO.getSedeLegale(),
+                    richiestaAziendaDTO.getSedeOperativa(),
+                    richiestaAziendaDTO.getIban(),
+                    richiestaAziendaDTO.getIva(),
+                    fileCertificato);
+
+            return ResponseEntity.ok(richiesta);
+        } catch (Exception e) {
+            // Gestione errori
+            System.err.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
 
     @PostMapping(value = "/animatore", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -91,10 +105,11 @@ public class RichiestaCollaborazioneController {
             System.err.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
+
         }
     }
 
-    @PostMapping("/curatore")
+    @PostMapping(value = "/curatore", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<RichiestaCollaborazione> creaRichiestaCuratore(
             @RequestParam String nome,
             @RequestParam String cognome,
@@ -102,16 +117,30 @@ public class RichiestaCollaborazioneController {
             @RequestParam String email,
             @RequestParam Ruolo ruolo,
             @RequestParam String iban,
-            @RequestParam File cartaIdentita,
-            @RequestParam File cv) {
-        RichiestaCollaborazione richiesta = richiesteCollaborazioneService.creaRichiestaCuratore(
-                nome, cognome, telefono, email, ruolo, iban, cartaIdentita, cv);
-        return ResponseEntity.ok(richiesta);
+            @RequestPart("cartaIdentita") MultipartFile cartaIdentita,
+            @RequestPart("cv") MultipartFile cv) {
+
+        try {
+            // Converti i MultipartFile in File
+            File fileCartaIdentita = convertiMultipartFileToFile(cartaIdentita);
+            File fileCv = convertiMultipartFileToFile(cv);
+
+            // Chiama il servizio con i parametri e i file convertiti
+            RichiestaCollaborazione richiesta = richiesteCollaborazioneService.creaRichiestaCuratore(
+                    nome, cognome, telefono, email, ruolo, iban, fileCartaIdentita, fileCv);
+
+            return ResponseEntity.ok(richiesta);
+        } catch (Exception e) {
+            // Gestione errori
+            System.err.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
 
     private File convertiMultipartFileToFile(MultipartFile multipartFile) throws IOException {
         // Creazione di un file temporaneo
-        File file = File.createTempFile("cartaIdentita-", multipartFile.getOriginalFilename());
+        File file = File.createTempFile("file-", multipartFile.getOriginalFilename());
 
         // Copia il contenuto del MultipartFile nel file
         try (FileOutputStream fos = new FileOutputStream(file)) {
