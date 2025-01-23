@@ -26,6 +26,9 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'javax.validation:validation-api:2.0.1.Final'
+	implementation 'org.hibernate.validator:hibernate-validator:6.2.5.Final'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
     testImplementation 'com.h2database:h2'

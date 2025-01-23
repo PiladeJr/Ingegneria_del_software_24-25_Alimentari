@@ -1,8 +1,7 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Repositories;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Ruolo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Utente;
-
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Models.Utente.Utente;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Models.Utente.Ruolo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
