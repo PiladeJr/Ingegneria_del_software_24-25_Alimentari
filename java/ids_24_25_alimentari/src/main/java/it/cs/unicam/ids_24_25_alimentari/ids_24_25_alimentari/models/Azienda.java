@@ -105,8 +105,6 @@ public class Azienda {
         return certificati;
     }
 
-    public void setCertificati(List<File> certificati) {
-        this.certificati = certificati;
-    }
+    public void setCertificati(File certificato) { this.certificati.add(certificato); }
 
 }
