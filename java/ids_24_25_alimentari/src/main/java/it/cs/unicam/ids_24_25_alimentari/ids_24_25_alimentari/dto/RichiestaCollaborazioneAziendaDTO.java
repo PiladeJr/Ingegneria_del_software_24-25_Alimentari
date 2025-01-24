@@ -14,7 +14,6 @@ public class RichiestaCollaborazioneAziendaDTO {
     private String denSociale;
     @Valid
     private Indirizzo sedeLegale;
-
     @Valid
     private Indirizzo sedeOperativa;
     private String iban;

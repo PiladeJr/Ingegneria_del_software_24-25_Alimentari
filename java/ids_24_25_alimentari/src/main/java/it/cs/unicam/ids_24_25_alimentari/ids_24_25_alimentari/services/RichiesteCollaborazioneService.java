@@ -78,4 +78,27 @@ public class RichiesteCollaborazioneService {
         director.creaCuratore(nome, cognome, telefono, email, ruolo, iban, cartaIdentita, cv);
         return saveRichiesta(builder.getRichiesta());
     }
+
+    public RichiestaCollaborazione setStato(Long id, Boolean stato) {
+        Optional<RichiestaCollaborazione> richiesta = getRichiestaById(id);
+        if (richiesta.isPresent()) {
+            richiesta.get().setStato(stato);
+            return saveRichiesta(richiesta.get());
+        }
+        return null;
+    }
+
+    public RichiestaCollaborazione generaAccount(Long id) { // TODO: da implementare
+        Optional<RichiestaCollaborazione> richiesta = getRichiestaById(id);
+        if (richiesta.isPresent()) {
+            RichiestaCollaborazione richiestaCollaborazione = richiesta.get();
+            Utente nuovo = new Utente();
+            nuovo.setNome(richiestaCollaborazione.getNome());
+            nuovo.setCognome(richiestaCollaborazione.getCognome());
+            nuovo.setEmail(richiestaCollaborazione.getEmail());
+            nuovo.setRuolo(richiestaCollaborazione.getRuolo());
+            return saveRichiesta(richiesta.get());
+        }
+        return null;
+    }
 }

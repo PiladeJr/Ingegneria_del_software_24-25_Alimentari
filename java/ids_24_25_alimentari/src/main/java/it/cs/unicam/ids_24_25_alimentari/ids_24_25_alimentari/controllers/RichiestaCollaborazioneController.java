@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Ruolo;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/richieste-collaborazione")
@@ -136,6 +137,22 @@ public class RichiestaCollaborazioneController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
         }
+    }
+
+    @PatchMapping("/{id}/stato")
+    public ResponseEntity<RichiestaCollaborazione> updateStato(@PathVariable Long id, @RequestParam Boolean stato) {
+        Optional<RichiestaCollaborazione> richiesta = richiesteCollaborazioneService.getRichiestaById(id);
+        if (richiesta.isPresent()) {
+            RichiestaCollaborazione updatedRichiesta = richiesteCollaborazioneService.setStato(id, stato);
+            return ResponseEntity.ok(updatedRichiesta);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/genera_account")
+    public String generaAccount() {
+        // TODO implementare
+        return null;
     }
 
     private File convertiMultipartFileToFile(MultipartFile multipartFile) throws IOException {
