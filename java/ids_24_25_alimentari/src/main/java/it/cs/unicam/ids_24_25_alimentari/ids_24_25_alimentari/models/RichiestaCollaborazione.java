@@ -14,15 +14,19 @@ public class RichiestaCollaborazione {
     private long id;
     private String nome;
     private String cognome;
-    private int telefono;
+    private String telefono;
     private String email;
     private Ruolo ruolo;
     private String denominazioneSociale;
-    private String sedeLegale;
-    private String sedeOperativa;
-    private String coordinate;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "sede_legale_id")
+    private Indirizzo sedeLegale;
 
-    @Column(name = "iva", nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "sede_operativa_id")
+    private Indirizzo sedeOperativa;
+
+    @Column(name = "iva", nullable = true)
     private String iva;
 
     @Column(name = "iban", nullable = false)
@@ -60,11 +64,11 @@ public class RichiestaCollaborazione {
         this.cognome = cognome;
     }
 
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
@@ -92,28 +96,20 @@ public class RichiestaCollaborazione {
         this.denominazioneSociale = denominazioneSociale;
     }
 
-    public String getSedeLegale() {
+    public Indirizzo getSedeLegale() {
         return sedeLegale;
     }
 
-    public void setSedeLegale(String sedeLegale) {
+    public void setSedeLegale(Indirizzo sedeLegale) {
         this.sedeLegale = sedeLegale;
     }
 
-    public String getSedeOperativa() {
+    public Indirizzo getSedeOperativa() {
         return sedeOperativa;
     }
 
-    public void setSedeOperativa(String sedeOperativa) {
+    public void setSedeOperativa(Indirizzo sedeOperativa) {
         this.sedeOperativa = sedeOperativa;
-    }
-
-    public String getCoordinate() {
-        return coordinate;
-    }
-
-    public void setCoordinate(String coordinate) {
-        this.coordinate = coordinate;
     }
 
     public String getIva() {
