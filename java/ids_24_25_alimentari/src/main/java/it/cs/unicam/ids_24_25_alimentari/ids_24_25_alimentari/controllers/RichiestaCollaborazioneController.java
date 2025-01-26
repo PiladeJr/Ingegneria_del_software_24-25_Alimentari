@@ -12,7 +12,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.RichiestaCo
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.RichiesteCollaborazioneService;
 import java.io.File;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Ruolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import java.util.List;
 import java.util.Optional;
 
