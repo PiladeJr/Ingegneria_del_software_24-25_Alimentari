@@ -91,10 +91,14 @@ public class UtenteService {
      * @param ruolo il ruolo selezionato dall'utente (PRODUTTORE, TRASFORMATORE, DISTRIBUTORE)
      * @param carta il file contenente la carta d'identità dell'utente
      */
-    public void nuovoAzienda(String nome, String cognome, String email, String password, String telefono, Ruolo ruolo, File carta){
-        credenzialiBase(nome, cognome, email, password, telefono);
+    public void nuovoAzienda(String nome, String cognome, String email, String telefono, Ruolo ruolo, long idAzienda, File cartaIdentita){
+        builder.costruisciNome(nome);
+        builder.costruisciCognome(cognome);
+        builder.costruisciEmail(email);
+        builder.costruisciTelefono(telefono);
         builder.costruisciRuolo(ruolo);
-        builder.costruisciCartaIdentita(carta);
+        builder.costruisciIdAzienda(idAzienda);
+        builder.costruisciCartaIdentita(cartaIdentita);
         utenteRepository.save(builder.getUtente());
     }
     /**

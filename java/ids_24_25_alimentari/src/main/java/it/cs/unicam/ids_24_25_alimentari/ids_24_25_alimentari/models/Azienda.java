@@ -18,7 +18,7 @@ public class Azienda {
     @jakarta.persistence.Id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(name = "denominazione_sociale", nullable = false)
     private String denominazioneSociale;
@@ -45,11 +45,11 @@ public class Azienda {
     private File certificato;
 
     // Getters and Setters
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

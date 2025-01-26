@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.RichiestaCollaborazioneRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.BuilderRichiestaCollaborazione;
 import java.io.File;
@@ -17,6 +16,12 @@ public class RichiesteCollaborazioneService {
     private RichiestaCollaborazioneRepository richiestaCollaborazioneRepository;
     @Autowired
     private AziendaService aziendaService;
+    @Autowired
+    private final UtenteService utenteService;
+
+    public RichiesteCollaborazioneService(UtenteService utenteService) {
+        this.utenteService = utenteService;
+    }
 
     public List<RichiestaCollaborazione> getAllRichieste() {
         return richiestaCollaborazioneRepository.findAll();
@@ -45,11 +50,12 @@ public class RichiesteCollaborazioneService {
             Indirizzo sedeOperativa,
             String iban,
             String iva,
-            File certificato) {
+            File certificato,
+            File cartaIdentita) {
         BuilderRichiestaCollaborazione builder = new BuilderRichiestaCollaborazione();
         RichiestaCollaborazioneDirector director = new RichiestaCollaborazioneDirector(builder);
         director.creaAzienda(nome, cognome, telefono, email, ruolo, denSociale, sedeLegale, sedeOperativa, iban, iva,
-                certificato);
+                certificato, cartaIdentita);
         return saveRichiesta(builder.getRichiesta());
     }
 
@@ -98,7 +104,6 @@ public class RichiesteCollaborazioneService {
     public void generaAccount(Long id) {
         Optional<RichiestaCollaborazione> richiesta = getRichiestaById(id);
         if (richiesta.isPresent()) {
-            Utente nuovo = new Utente();
             RichiestaCollaborazione richiestaCollaborazione = richiesta.get();
             switch(richiestaCollaborazione.getRuolo()){
             case PRODUTTORE, TRASFORMATORE, DISTRIBUTORE -> {
@@ -111,17 +116,18 @@ public class RichiesteCollaborazioneService {
                     richiestaCollaborazione.getCertificato()
                     );
 
-                nuovo.setIdAzienda(azienda.getId());
+                utenteService.nuovoAzienda(
+                        richiestaCollaborazione.getNome(),
+                        richiestaCollaborazione.getCognome(),
+                        richiestaCollaborazione.getEmail(),
+                        richiestaCollaborazione.getTelefono(),
+                        richiestaCollaborazione.getRuolo(),
+                        azienda.getId(),
+                        richiestaCollaborazione.getCartaIdentita()
+                        );
                 }
-
             }
-            nuovo.setNome(richiestaCollaborazione.getNome());
-            nuovo.setCognome(richiestaCollaborazione.getCognome());
-            nuovo.setEmail(richiestaCollaborazione.getEmail());
-            nuovo.setRuolo(richiestaCollaborazione.getRuolo());
+
         }
-
-
-
     }
 }

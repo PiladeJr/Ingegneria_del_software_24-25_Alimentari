@@ -57,6 +57,7 @@ public class RichiestaCollaborazioneController {
         try {
             // Converti il MultipartFile in File
             File fileCertificato = convertiMultipartFileToFile(richiestaAziendaDTO.getCertificato());
+            File fileCartaIdentita = convertiMultipartFileToFile(richiestaAziendaDTO.getCartaIdentita());
 
             // Chiama il servizio con i parametri e il file convertito
             RichiestaCollaborazione richiesta = richiesteCollaborazioneService.creaRichiestaAzienda(
@@ -70,7 +71,8 @@ public class RichiestaCollaborazioneController {
                     richiestaAziendaDTO.getSedeOperativa(),
                     richiestaAziendaDTO.getIban(),
                     richiestaAziendaDTO.getIva(),
-                    fileCertificato);
+                    fileCertificato,
+                    fileCartaIdentita);
 
             return ResponseEntity.ok(richiesta);
         } catch (Exception e) {
