@@ -1,6 +1,5 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Models.Utente;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Models.RichiestaCollaborazione;
 import lombok.Getter;
 
 import java.io.File;

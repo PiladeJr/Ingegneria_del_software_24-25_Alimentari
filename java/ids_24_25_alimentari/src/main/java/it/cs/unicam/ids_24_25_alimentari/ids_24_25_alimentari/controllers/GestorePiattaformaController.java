@@ -1,4 +1,4 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Controllers;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

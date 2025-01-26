@@ -4,20 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.*;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Models.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Models.Indirizzo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Models.RichiestaInformazioniAggiuntive;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Models.Utente.Ruolo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Models.Utente.Utente;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Repositories.AziendaRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Repositories.IndirizzoRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Repositories.RichiestaCollaborazioneRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Repositories.RichiestaInformazioniAggiuntiveRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Repositories.RichiestaRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Repositories.UtenteRepository;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.*;
 import jakarta.annotation.PostConstruct;
 
 @Component

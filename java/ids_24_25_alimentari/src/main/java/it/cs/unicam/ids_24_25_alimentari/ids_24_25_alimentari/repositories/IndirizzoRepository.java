@@ -1,9 +1,9 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Repositories;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Models.Indirizzo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Indirizzo;
 
 @Repository
 public interface IndirizzoRepository extends JpaRepository<Indirizzo, Long> {

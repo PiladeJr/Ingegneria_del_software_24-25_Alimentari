@@ -1,4 +1,4 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.Services;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils;
 
 /**
  * tutti i possibili errori della piattaforma verranno gestiti
