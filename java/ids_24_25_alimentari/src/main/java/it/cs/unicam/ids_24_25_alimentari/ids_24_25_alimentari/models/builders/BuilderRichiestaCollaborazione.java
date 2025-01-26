@@ -1,5 +1,6 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.RichiestaCollaborazione;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 
@@ -7,6 +8,10 @@ import java.io.File;
 
 public class BuilderRichiestaCollaborazione {
     private RichiestaCollaborazione collaborazione;
+
+    public BuilderRichiestaCollaborazione() {
+        this.collaborazione = new RichiestaCollaborazione();
+    }
 
     public void costruisciNome(String nome) {
         collaborazione.setNome(nome);
@@ -17,7 +22,7 @@ public class BuilderRichiestaCollaborazione {
     }
 
     public void costruisciTelefono(String telefono) {
-        collaborazione.setCognome(telefono);
+        collaborazione.setTelefono(telefono);
     }
 
     public void costruisciEmail(String email) {
@@ -32,11 +37,11 @@ public class BuilderRichiestaCollaborazione {
         collaborazione.setDenominazioneSociale(denSociale);
     }
 
-    public void costruisciSedeLegale(String sedeLegale) {
+    public void costruisciSedeLegale(Indirizzo sedeLegale) {
         collaborazione.setSedeLegale(sedeLegale);
     }
 
-    public void costruisciSedeOperativa(String sedeOperativa) {
+    public void costruisciSedeOperativa(Indirizzo sedeOperativa) {
         collaborazione.setSedeOperativa(sedeOperativa);
     }
 

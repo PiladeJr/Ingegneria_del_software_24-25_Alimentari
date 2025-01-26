@@ -37,10 +37,10 @@ public class RepositoryCostructor {
     public void init() {
         impostaUtenti(utenteRepository);
         impostaAziende(aziendaRepository);
-        impostaIndirizzi(indirizzoRepository);
         impostaRichiesteInformazioniAggiuntive(richiestaInformazioniAggiuntiveRepository);
         impostaRichiesteCollaborazione(richiestaCollaborazioneRepository);
         impostaRichieste(richiestaRepository);
+        impostaIndirizzi(indirizzoRepository);
     }
 
     public boolean isRichiestaInformazioniAggiuntiveRepositorySet = false;
