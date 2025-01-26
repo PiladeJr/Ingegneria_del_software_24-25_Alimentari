@@ -6,8 +6,8 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.Bu
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.AziendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +39,7 @@ public class AziendaService {
             Indirizzo sedeOperativa,
             String iva,
             String iban,
-            MultipartFile certificato
+            File certificato
             ) {
         BuilderAzienda builder = new BuilderAzienda(new Azienda());
         builder.costruisciDenSociale(denSociale);

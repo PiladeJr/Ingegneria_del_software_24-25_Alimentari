@@ -11,12 +11,12 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaColla
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.RichiestaCollaborazione;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.RichiesteCollaborazioneService;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Ruolo;
 import java.util.List;
 import java.util.Optional;
+
+import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileToFile.convertiMultipartFileToFile;
 
 @RestController
 @RequestMapping("/api/richieste-collaborazione")
@@ -155,17 +155,5 @@ public class RichiestaCollaborazioneController {
         return null;
     }
 
-    private File convertiMultipartFileToFile(MultipartFile multipartFile) throws IOException {
-        // Creazione di un file temporaneo
-        File file = File.createTempFile("file-", multipartFile.getOriginalFilename());
-
-        // Copia il contenuto del MultipartFile nel file
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(multipartFile.getBytes());
-        }
-
-        // Ritorna il file
-        return file;
-    }
 
 }
