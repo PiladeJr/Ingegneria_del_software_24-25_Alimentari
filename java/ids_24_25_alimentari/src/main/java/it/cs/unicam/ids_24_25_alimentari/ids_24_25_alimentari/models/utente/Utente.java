@@ -1,8 +1,12 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente;
 
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -14,14 +18,21 @@ public class Utente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotEmpty (message = "il nome è obbligatorio")
     private String nome;
+    @NotEmpty (message = "il cognome è obbligatorio")
     private String cognome;
+    @Email(message = "Email non valida")
+    @NotEmpty(message = "L'email è obbligatoria")
     private String email;
+    @NotEmpty(message = "La password è obbligatoria")
     private String password;
+    @Pattern(regexp = "^\\d{10}$", message = "Il numero di telefono deve contenere esattamente 10 cifre")
     private String telefono;
     private Ruolo ruolo;
-
     @Column(name = "iban")
+    @Size(min = 15, max = 34, message = "L'IBAN deve avere una lunghezza compresa tra 15 e 34 caratteri")
+    @NotEmpty(message = "L'IBAN è obbligatorio")
     private String iban;
 
     @Column(name = "curriculum")
@@ -120,7 +131,6 @@ public class Utente {
     public List<Ruolo> getRuoliDisponibili() {
         return Arrays.asList(Ruolo.values());
     }
-
     public Utente(String nome, String cognome, String email, String password, String telefono) {
 
         this.nome = nome;
