@@ -39,10 +39,10 @@ public class Azienda {
     @Column(name = "immagine")
     private List<File> immagini;
 
-    @ElementCollection
-    @CollectionTable(name = "certificati", joinColumns = @JoinColumn(name = "richiesta_id"))
+    //@ElementCollection
+    //@CollectionTable(name = "certificati", joinColumns = @JoinColumn(name = "richiesta_id"))
     @Column(name = "certificato")
-    private List<File> certificati;
+    private File certificato;
 
     // Getters and Setters
     public Long getId() {
@@ -101,10 +101,10 @@ public class Azienda {
         this.immagini = immagini;
     }
 
-    public List<File> getCertificati() {
-        return certificati;
+    public File getCertificato() {
+        return certificato;
     }
 
-    public void setCertificati(File certificato) { this.certificati.add(certificato); }
+    public void setCertificato(File certificato) { this.certificato = certificato; }
 
 }

@@ -13,6 +13,8 @@ import java.io.File;
 public class RichiesteCollaborazioneService {
     @Autowired
     private RichiestaCollaborazioneRepository richiestaCollaborazioneRepository;
+    @Autowired
+    private AziendaService aziendaService;
 
     public List<RichiestaCollaborazione> getAllRichieste() {
         return richiestaCollaborazioneRepository.findAll();
@@ -83,22 +85,41 @@ public class RichiesteCollaborazioneService {
         Optional<RichiestaCollaborazione> richiesta = getRichiestaById(id);
         if (richiesta.isPresent()) {
             richiesta.get().setStato(stato);
+            if(stato) {
+                generaAccount(id);
+            }
             return saveRichiesta(richiesta.get());
         }
         return null;
     }
 
-    public RichiestaCollaborazione generaAccount(Long id) { // TODO: da implementare
+    public void generaAccount(Long id) {
         Optional<RichiestaCollaborazione> richiesta = getRichiestaById(id);
         if (richiesta.isPresent()) {
-            RichiestaCollaborazione richiestaCollaborazione = richiesta.get();
             Utente nuovo = new Utente();
+            RichiestaCollaborazione richiestaCollaborazione = richiesta.get();
+            switch(richiestaCollaborazione.getRuolo()){
+            case PRODUTTORE, TRASFORMATORE, DISTRIBUTORE -> {
+                Azienda azienda = aziendaService.createAzienda(
+                    richiestaCollaborazione.getDenominazioneSociale(),
+                    richiestaCollaborazione.getSedeLegale(),
+                    richiestaCollaborazione.getSedeOperativa(),
+                    richiestaCollaborazione.getIva(),
+                    richiestaCollaborazione.getIban(),
+                    richiestaCollaborazione.getCertificato()
+                    );
+
+                nuovo.setIdAzienda(azienda.getId());
+                }
+
+            }
             nuovo.setNome(richiestaCollaborazione.getNome());
             nuovo.setCognome(richiestaCollaborazione.getCognome());
             nuovo.setEmail(richiestaCollaborazione.getEmail());
             nuovo.setRuolo(richiestaCollaborazione.getRuolo());
-            return saveRichiesta(richiesta.get());
         }
-        return null;
+
+
+
     }
 }
