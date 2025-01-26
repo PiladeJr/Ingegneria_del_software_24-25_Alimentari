@@ -40,7 +40,7 @@ public class AziendaController {
         return ResponseEntity.ok(saveAzienda);
     }
 
-    @GetMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAzienda(@PathVariable Long id) {
         aziendaService.deleteAzienda(id);
         return ResponseEntity.noContent().build();

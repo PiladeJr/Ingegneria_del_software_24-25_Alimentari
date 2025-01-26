@@ -53,6 +53,11 @@ public class UtenteBuilder {
         utente.setCartaIdentita(cartaIdentita);
         return this;
     }
+    public UtenteBuilder costruisciIdAzienda(long idAzienda) {
+        utente.setIdAzienda(idAzienda);
+        return this;
+    }
+
     public UtenteBuilder rimuoviCv(){
         utente.setCv(null);
         return this;

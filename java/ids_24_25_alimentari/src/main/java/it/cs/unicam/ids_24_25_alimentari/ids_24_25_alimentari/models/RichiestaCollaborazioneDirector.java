@@ -23,7 +23,8 @@ public class RichiestaCollaborazioneDirector {
             Indirizzo sedeOperativa,
             String iban,
             String iva,
-            File certificato) {
+            File certificato,
+            File cartaIdentita) {
         builder.costruisciNome(nome);
         builder.costruisciCognome(cognome);
         builder.costruisciTelefono(telefono);
@@ -35,6 +36,7 @@ public class RichiestaCollaborazioneDirector {
         builder.costruisciIban(iban);
         builder.costruisciIva(iva);
         builder.aggiungiCertificato(certificato);
+        builder.aggiungiCartaIdentita(cartaIdentita);
     }
 
     public void creaAnimatore(

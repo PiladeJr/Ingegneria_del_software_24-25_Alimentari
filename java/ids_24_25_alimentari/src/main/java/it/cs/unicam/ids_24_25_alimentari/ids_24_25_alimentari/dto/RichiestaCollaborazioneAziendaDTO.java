@@ -20,6 +20,10 @@ public class RichiestaCollaborazioneAziendaDTO {
     private String iva;
     private MultipartFile certificato;
 
+
+
+    private MultipartFile cartaIdentita;
+
     // Getters e Setters
     public String getNome() {
         return nome;
@@ -105,7 +109,9 @@ public class RichiestaCollaborazioneAziendaDTO {
         return certificato;
     }
 
-    public void setCertificato(MultipartFile certificato) {
-        this.certificato = certificato;
-    }
+    public void setCertificato(MultipartFile certificato) { this.certificato = certificato; }
+    
+    public MultipartFile getCartaIdentita() { return cartaIdentita; }
+
+    public void setCartaIdentita(MultipartFile cartaIdentita) { this.cartaIdentita = cartaIdentita; }
 }

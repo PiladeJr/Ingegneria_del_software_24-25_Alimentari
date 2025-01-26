@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.RichiestaCollaborazioneRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.BuilderRichiestaCollaborazione;
 import java.io.File;
@@ -15,6 +14,14 @@ import java.io.File;
 public class RichiesteCollaborazioneService {
     @Autowired
     private RichiestaCollaborazioneRepository richiestaCollaborazioneRepository;
+    @Autowired
+    private AziendaService aziendaService;
+    @Autowired
+    private final UtenteService utenteService;
+
+    public RichiesteCollaborazioneService(UtenteService utenteService) {
+        this.utenteService = utenteService;
+    }
 
     public List<RichiestaCollaborazione> getAllRichieste() {
         return richiestaCollaborazioneRepository.findAll();
@@ -43,11 +50,12 @@ public class RichiesteCollaborazioneService {
             Indirizzo sedeOperativa,
             String iban,
             String iva,
-            File certificato) {
+            File certificato,
+            File cartaIdentita) {
         BuilderRichiestaCollaborazione builder = new BuilderRichiestaCollaborazione();
         RichiestaCollaborazioneDirector director = new RichiestaCollaborazioneDirector(builder);
         director.creaAzienda(nome, cognome, telefono, email, ruolo, denSociale, sedeLegale, sedeOperativa, iban, iva,
-                certificato);
+                certificato, cartaIdentita);
         return saveRichiesta(builder.getRichiesta());
     }
 
@@ -85,22 +93,41 @@ public class RichiesteCollaborazioneService {
         Optional<RichiestaCollaborazione> richiesta = getRichiestaById(id);
         if (richiesta.isPresent()) {
             richiesta.get().setStato(stato);
+            if(stato) {
+                generaAccount(id);
+            }
             return saveRichiesta(richiesta.get());
         }
         return null;
     }
 
-    public RichiestaCollaborazione generaAccount(Long id) { // TODO: da implementare
+    public void generaAccount(Long id) {
         Optional<RichiestaCollaborazione> richiesta = getRichiestaById(id);
         if (richiesta.isPresent()) {
             RichiestaCollaborazione richiestaCollaborazione = richiesta.get();
-            Utente nuovo = new Utente();
-            nuovo.setNome(richiestaCollaborazione.getNome());
-            nuovo.setCognome(richiestaCollaborazione.getCognome());
-            nuovo.setEmail(richiestaCollaborazione.getEmail());
-            nuovo.setRuolo(richiestaCollaborazione.getRuolo());
-            return saveRichiesta(richiesta.get());
+            switch(richiestaCollaborazione.getRuolo()){
+            case PRODUTTORE, TRASFORMATORE, DISTRIBUTORE -> {
+                Azienda azienda = aziendaService.createAzienda(
+                    richiestaCollaborazione.getDenominazioneSociale(),
+                    richiestaCollaborazione.getSedeLegale(),
+                    richiestaCollaborazione.getSedeOperativa(),
+                    richiestaCollaborazione.getIva(),
+                    richiestaCollaborazione.getIban(),
+                    richiestaCollaborazione.getCertificato()
+                    );
+
+                utenteService.nuovoAzienda(
+                        richiestaCollaborazione.getNome(),
+                        richiestaCollaborazione.getCognome(),
+                        richiestaCollaborazione.getEmail(),
+                        richiestaCollaborazione.getTelefono(),
+                        richiestaCollaborazione.getRuolo(),
+                        azienda.getId(),
+                        richiestaCollaborazione.getCartaIdentita()
+                        );
+                }
+            }
+
         }
-        return null;
     }
 }

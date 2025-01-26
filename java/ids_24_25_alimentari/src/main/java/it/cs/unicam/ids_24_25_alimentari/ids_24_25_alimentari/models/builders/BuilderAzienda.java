@@ -23,7 +23,7 @@ public class BuilderAzienda {
 
     public void costruisciIban(String iban){ this.azienda.setIban(iban); }
 
-    public void aggiungiCertificato(File certificato){ this.azienda.setCertificati(certificato); }
+    public void aggiungiCertificato(File certificato){ this.azienda.setCertificato(certificato); }
 
     public void aggiungiImmagini(List<File> immagini){ this.azienda.setImmagini(immagini); }
 
