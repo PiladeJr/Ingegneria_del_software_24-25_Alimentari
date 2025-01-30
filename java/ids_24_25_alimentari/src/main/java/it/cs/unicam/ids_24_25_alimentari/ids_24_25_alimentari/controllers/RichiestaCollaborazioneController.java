@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Ruolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import java.util.List;
 import java.util.Optional;
 

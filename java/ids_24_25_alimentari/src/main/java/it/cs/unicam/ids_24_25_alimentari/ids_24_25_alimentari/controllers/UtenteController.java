@@ -1,7 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.UtenteDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("api/users")
 public class UtenteController {
     private final UtenteService utenteService;
     @Autowired
@@ -19,7 +18,7 @@ public class UtenteController {
         this.utenteService = utenteService;
     }
     @GetMapping("/visualizzaUtenti")
-    public ResponseEntity<List<Utente>> visualizzaUtenti(){
+    public ResponseEntity<List<UtenteDTO>> visualizzaUtenti(){
         return ResponseEntity.ok(utenteService.visualizzaUtenti());
     }
     @PostMapping("/registrazione")
@@ -36,7 +35,7 @@ public class UtenteController {
             return new ResponseEntity<>("Utente registrato correttamente", HttpStatus.OK);
         }catch (Exception e) {
             e.printStackTrace(); // Log dettagliato per identificare il problema
-            return new ResponseEntity<>("Errore interno del server: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Errore interno del server: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }
