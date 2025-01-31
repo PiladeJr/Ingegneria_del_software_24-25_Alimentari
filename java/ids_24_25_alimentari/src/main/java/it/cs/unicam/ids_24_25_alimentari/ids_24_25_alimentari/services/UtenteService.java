@@ -33,16 +33,14 @@ public class UtenteService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<Utente> utente = utenteRepository.findByEmail(email);
 
-        if (utente == null) {
-            throw new UsernameNotFoundException("Utente non trovato con email: " + email);
-        }
+        Utente user = utente.orElseThrow(() -> new UsernameNotFoundException("Utente non trovato con email: " + email));
 
         // Converti i ruoli definiti in Utente nel formato compatibile con Spring Security
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + utente.getRuolo().name()));
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRuolo().name()));
 
         return new org.springframework.security.core.userdetails.User(
-                utente.getEmail(),
-                utente.getPassword(), // Assumi che la password sia già crittografata
+                user.getEmail(),
+                user.getPassword(), // Assumi che la password sia già crittografata
                 authorities
         );
     }
@@ -68,8 +66,9 @@ public class UtenteService implements UserDetailsService {
     public boolean isRegistrato(String email){
         if (email == null)
             throw new IllegalArgumentException("email nulla");
-        Utente registrato = utenteRepository.findByEmail(email);
-        return (registrato != null && email.equals(registrato.getEmail()));
+        Optional<Utente> registrato = utenteRepository.findByEmail(email);
+
+        return (registrato.isPresent());
     }
     /**
      * costruzione delle credenziali base dell'utente

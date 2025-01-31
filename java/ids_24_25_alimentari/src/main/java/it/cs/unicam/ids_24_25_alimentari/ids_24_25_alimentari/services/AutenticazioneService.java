@@ -1,14 +1,17 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.LoginUserDto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.UtenteRegistrazioneDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.UtenteBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.configurations.ApplicationConfig;
+
+import java.util.List;
 
 @Service
 public class AutenticazioneService {
@@ -49,8 +52,8 @@ public class AutenticazioneService {
         return utenteRepository.save(utente);
     }
 
-    public User authenticate(LoginUserDto input) {
-        User user = userRepository
+    public Utente authenticate(LoginUserDto input) {
+        Utente user = utenteRepository
                 .findByEmail(input.getEmail())
                 .orElseThrow(() ->
                         new IllegalArgumentException("Email not found: " + input.getEmail())
@@ -74,7 +77,7 @@ public class AutenticazioneService {
         return user; // Return authenticated user
     }
 
-    public List<User> allUsers() {
-        return userRepository.findAll();
+    public List<Utente> allUsers() {
+        return utenteRepository.findAll();
     }
 }
