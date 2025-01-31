@@ -21,23 +21,23 @@ public class Utente implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name= "nome", nullable = false)
-    @NotEmpty (message = "il nome è obbligatorio")
+    @Column(name = "nome", nullable = false)
+    @NotEmpty(message = "il nome è obbligatorio")
     private String nome;
-    @Column(name= "cognome", nullable = false)
-    @NotEmpty (message = "il cognome è obbligatorio")
+    @Column(name = "cognome", nullable = false)
+    @NotEmpty(message = "il cognome è obbligatorio")
     private String cognome;
     @Email(message = "Email non valida")
     @NotEmpty(message = "L'email è obbligatoria")
     private String email;
-    @Column(name= "password", nullable = false)
+    @Column(name = "password", nullable = false)
     @NotEmpty(message = "La password è obbligatoria")
     private String password;
-    @Column(name= "telefono")
+    @Column(name = "telefono")
     @Pattern(regexp = "^\\d{10}$", message = "Il numero di telefono deve contenere esattamente 10 cifre")
     private String telefono;
     @Enumerated(EnumType.STRING)
-    @Column(name= "ruolo", nullable = false)
+    @Column(name = "ruolo", nullable = false)
     private Ruolo ruolo;
     @Column(name = "iban")
     @Size(min = 15, max = 34, message = "L'IBAN deve avere una lunghezza compresa tra 15 e 34 caratteri")
@@ -92,7 +92,7 @@ public class Utente implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return email; // Use email as username
     }
 
     @Override
@@ -152,9 +152,11 @@ public class Utente implements UserDetails {
         this.idAzienda = idAzienda;
     }
 
-   /* public List<Ruolo> getRuoliDisponibili() {
-        return Arrays.asList(Ruolo.values());
-    }*/
+    /*
+     * public List<Ruolo> getRuoliDisponibili() {
+     * return Arrays.asList(Ruolo.values());
+     * }
+     */
     public Utente(String nome, String cognome, String email, String password, String telefono) {
 
         this.nome = nome;

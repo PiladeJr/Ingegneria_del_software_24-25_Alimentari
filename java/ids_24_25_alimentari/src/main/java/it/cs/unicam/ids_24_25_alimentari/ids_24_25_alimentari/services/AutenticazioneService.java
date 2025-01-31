@@ -23,13 +23,13 @@ public class AutenticazioneService {
     public AutenticazioneService(
             UtenteRepository userRepository,
             AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder
-    ) {
+            PasswordEncoder passwordEncoder) {
         this.utenteRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
     }
-    private void credenzialiBase(String nome, String cognome, String email, String password, String telefono){
+
+    private void credenzialiBase(String nome, String cognome, String email, String password, String telefono) {
         builder.costruisciNome(nome);
         builder.costruisciCognome(cognome);
         builder.costruisciEmail(email);
@@ -41,38 +41,36 @@ public class AutenticazioneService {
         // Check if user already exists
         if (utenteRepository.findByEmail(input.getEmail()).isPresent()) {
             throw new IllegalArgumentException(
-                    "User already exists with email: " + input.getEmail()
-            );
+                    "User already exists with email: " + input.getEmail());
         }
         // Create and save the new user
         String hashedPassword = passwordEncoder.encode(input.getPassword());
         Utente utente = new Utente();
+        utente.setNome(input.getNome());
+        utente.setCognome(input.getCognome());
+        utente.setTelefono(input.getTelefono());
         utente.setEmail(input.getEmail());
         utente.setPassword(hashedPassword);
+        utente.setRuolo(input.getRuolo());
         return utenteRepository.save(utente);
     }
 
     public Utente authenticate(LoginUserDto input) {
         Utente user = utenteRepository
                 .findByEmail(input.getEmail())
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Email not found: " + input.getEmail())
-                );
+                .orElseThrow(() -> new IllegalArgumentException("Email not found: " + input.getEmail()));
 
         // Check if password is correct
         if (!passwordEncoder.matches(input.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException(
-                    "Incorrect password for email: " + input.getEmail()
-            );
+                    "Incorrect password for email: " + input.getEmail());
         }
 
         // Perform authentication
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),
-                        input.getPassword()
-                )
-        );
+                        input.getPassword()));
 
         return user; // Return authenticated user
     }

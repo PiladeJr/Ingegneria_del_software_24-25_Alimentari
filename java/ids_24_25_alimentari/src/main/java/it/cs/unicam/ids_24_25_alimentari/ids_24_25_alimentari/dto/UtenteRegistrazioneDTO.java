@@ -1,5 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -12,6 +13,7 @@ public class UtenteRegistrazioneDTO {
     private String nome;
     private String cognome;
     private String telefono;
+    private Ruolo ruolo;
 
     public String getEmail() {
         return email;
@@ -28,6 +30,42 @@ public class UtenteRegistrazioneDTO {
 
     public UtenteRegistrazioneDTO setPassword(String password) {
         this.password = password;
+        return this;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public UtenteRegistrazioneDTO setNome(String nome) {
+        this.nome = nome;
+        return this;
+    }
+
+    public String getCognome() {
+        return cognome;
+    }
+
+    public UtenteRegistrazioneDTO setCognome(String cognome) {
+        this.cognome = cognome;
+        return this;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public UtenteRegistrazioneDTO setTelefono(String telefono) {
+        this.telefono = telefono;
+        return this;
+    }
+
+    public Ruolo getRuolo() {
+        return ruolo;
+    }
+
+    public UtenteRegistrazioneDTO setRuolo(Ruolo ruolo) {
+        this.ruolo = ruolo;
         return this;
     }
 
