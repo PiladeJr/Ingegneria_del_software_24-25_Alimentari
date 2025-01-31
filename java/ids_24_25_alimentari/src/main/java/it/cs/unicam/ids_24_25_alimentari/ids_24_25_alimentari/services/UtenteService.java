@@ -6,15 +6,22 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Uten
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.UtenteBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.AccountManager;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class UtenteService {
+public class UtenteService implements UserDetailsService {
     @Autowired
     private final UtenteRepository utenteRepository;
     private final UtenteBuilder builder;
@@ -22,23 +29,46 @@ public class UtenteService {
         this.utenteRepository = utenteRepository;
         this.builder = new UtenteBuilder();
     }
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<Utente> utente = utenteRepository.findByEmail(email);
+
+        Utente user = utente.orElseThrow(() -> new UsernameNotFoundException("Utente non trovato con email: " + email));
+
+        // Converti i ruoli definiti in Utente nel formato compatibile con Spring Security
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRuolo().name()));
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(), // Assumi che la password sia già crittografata
+                authorities
+        );
+    }
     /**
      * ottiene tutti gli utenti del sistema
      *
      * @return gli utenti salvati nel sistema
      */
-    public List<Utente> visualizzaUtenti(){
-        List<Utente> utenti = new ArrayList<>();
-        if (utenti == null)
-            throw new IllegalArgumentException("nessun utente trovato");
-        utenteRepository.findAll().forEach(utenti::add);
-        return utenti;
+    public List<UtenteDTO> visualizzaUtenti(){
+        List<UtenteDTO> utentiDTO = new ArrayList<>();
+        utenteRepository.findAll().forEach(utente -> {
+            UtenteDTO utenteDTO = new UtenteDTO(
+                    utente.getNome(),
+                    utente.getCognome(),
+                    utente.getEmail(),
+                    null, // Exclude password
+                    utente.getTelefono()
+            );
+            utentiDTO.add(utenteDTO);
+        });
+        return utentiDTO;
     }
     public boolean isRegistrato(String email){
         if (email == null)
             throw new IllegalArgumentException("email nulla");
-        Utente registrato = utenteRepository.findByEmail(email);
-        return (registrato != null && email.equals(registrato.getEmail()));
+        Optional<Utente> registrato = utenteRepository.findByEmail(email);
+
+        return (registrato.isPresent());
     }
     /**
      * costruzione delle credenziali base dell'utente
@@ -64,10 +94,10 @@ public class UtenteService {
      * @param telefono il telefono dell'utente
      */
 
-    public Utente nuovoUtente(String nome, String cognome, String email, String password, String telefono){
+    public void nuovoUtente(String nome, String cognome, String email, String password, String telefono){
         credenzialiBase(nome, cognome, email, password, telefono);
         builder.costruisciRuolo(Ruolo.ACQUIRENTE);
-        return builder.getUtente();
+        utenteRepository.save(builder.getUtente());
     }
     /**
      * crea un nuovo account di tipo animatore
@@ -137,12 +167,6 @@ public class UtenteService {
      */
     public boolean isAutorizzato(Ruolo attuale, Ruolo richiesto){
         return (attuale.equals(richiesto));
-    }
-    public void login(){
-        //TODO: implementa login
-    }
-    public void logout(){
-        //TODO: implementa logout
     }
     public void registraUtente(UtenteDTO utente){
         if(!AccountManager.isPasswordValid(utente.password()))

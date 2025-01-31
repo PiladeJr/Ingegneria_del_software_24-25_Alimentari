@@ -2,6 +2,9 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
 
 import java.util.List;
 import java.util.Optional;
+
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.*;

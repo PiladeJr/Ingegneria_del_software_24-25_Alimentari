@@ -1,5 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.AccountManager;
 import lombok.Getter;
 
 import java.io.File;
@@ -22,6 +23,7 @@ public class UtenteBuilder {
         return this;
     }
     public UtenteBuilder costruisciPassword(String password){
+       // AccountManager.getEncryptedPassword(password);
         utente.setPassword(password);
         return this;
     }
