@@ -1,7 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto;
 
 import org.springframework.web.multipart.MultipartFile;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Indirizzo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import jakarta.validation.Valid;
 

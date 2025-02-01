@@ -2,7 +2,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneAziendaDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Azienda;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.AziendaService;
 
 import org.springframework.beans.factory.annotation.Autowired;

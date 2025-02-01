@@ -3,12 +3,12 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
 import java.util.List;
 import java.util.Optional;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.*;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.RichiestaCollaborazioneRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.BuilderRichiestaCollaborazione;
 import java.io.File;
@@ -30,7 +30,7 @@ public class RichiesteCollaborazioneService {
         return richiestaCollaborazioneRepository.findAll();
     }
 
-    public Optional<RichiestaCollaborazione> getRichiestaById(Long id) {
+    public Optional<RichiestaCollaborazione> getRichiestaById(long id) {
         return richiestaCollaborazioneRepository.findById(id);
     }
 
@@ -38,7 +38,7 @@ public class RichiesteCollaborazioneService {
         return richiestaCollaborazioneRepository.save(richiesta);
     }
 
-    public void deleteRichiesta(Long id) {
+    public void deleteRichiesta(long id) {
         richiestaCollaborazioneRepository.deleteById(id);
     }
 
@@ -92,7 +92,7 @@ public class RichiesteCollaborazioneService {
         return saveRichiesta(builder.getRichiesta());
     }
 
-    public RichiestaCollaborazione setStato(Long id, Boolean stato) {
+    public RichiestaCollaborazione setStato(long id, boolean stato) {
         Optional<RichiestaCollaborazione> richiesta = getRichiestaById(id);
         if (richiesta.isPresent()) {
             richiesta.get().setStato(stato);
@@ -104,7 +104,7 @@ public class RichiesteCollaborazioneService {
         return null;
     }
 
-    public void generaAccount(Long id) {
+    public void generaAccount(long id) {
         Optional<RichiestaCollaborazione> richiesta = getRichiestaById(id);
         if (richiesta.isPresent()) {
             RichiestaCollaborazione richiestaCollaborazione = richiesta.get();

@@ -1,5 +1,8 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Indirizzo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.RichiestaInformazioniAggiuntive;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import org.springframework.stereotype.Component;
@@ -11,7 +14,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.*;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.*;
 import lombok.Getter;
 
 @Component

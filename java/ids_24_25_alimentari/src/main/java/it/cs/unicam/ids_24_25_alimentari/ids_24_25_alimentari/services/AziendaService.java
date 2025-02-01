@@ -1,8 +1,8 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Indirizzo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.BuilderAzienda;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Indirizzo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.AziendaBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.AziendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +16,13 @@ public class AziendaService {
 
     @Autowired
     private AziendaRepository aziendaRepository;
+    private AziendaBuilder builder = new AziendaBuilder(new Azienda());
 
     public List<Azienda> getAllAziende(){
         return aziendaRepository.findAll();
     }
 
-    public Optional<Azienda> getAziendaById(Long id){
+    public Optional<Azienda> getAziendaById(long id){
         return aziendaRepository.findById(id);
     }
 
@@ -29,7 +30,7 @@ public class AziendaService {
         return aziendaRepository.save(azienda);
     }
 
-    public void deleteAzienda(Long id) {
+    public void deleteAzienda(long id) {
         aziendaRepository.deleteById(id);
     }
 
@@ -41,7 +42,7 @@ public class AziendaService {
             String iban,
             File certificato
             ) {
-        BuilderAzienda builder = new BuilderAzienda(new Azienda());
+
         builder.costruisciDenSociale(denSociale);
         builder.costruisciSedeLegale(sedeLegale);
         builder.costruisciSedeOperativa(sedeOperativa);

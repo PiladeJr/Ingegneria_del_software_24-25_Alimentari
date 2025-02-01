@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 
 public interface ServizioEmail {
 
-    String inviaMail(DettagliEmail details);
+    String inviaMail(DettagliEmail dettagli);
 
 }
