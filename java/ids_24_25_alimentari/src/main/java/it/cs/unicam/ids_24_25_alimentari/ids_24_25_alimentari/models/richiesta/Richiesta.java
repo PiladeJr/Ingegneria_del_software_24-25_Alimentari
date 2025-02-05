@@ -18,7 +18,7 @@ public class Richiesta {
     private Tipologia tipologia;
 
     @Column(nullable = false)
-    private boolean approvato;
+    private Boolean approvato;
 
     @Column(nullable = false)
     private long idMittente;
@@ -40,7 +40,7 @@ public class Richiesta {
         this.tipologia = tipologia;
     }
 
-    public boolean isApprovato() {
+    public Boolean isApprovato() {
         return approvato;
     }
 

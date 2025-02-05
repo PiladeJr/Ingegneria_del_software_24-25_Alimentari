@@ -119,6 +119,7 @@ public class RichiesteCollaborazioneService {
                     richiestaCollaborazione.getCertificato()
                     );
 
+                //crea un utente che ha un'azienda
                 utenteService.nuovoAzienda(
                         richiestaCollaborazione.getNome(),
                         richiestaCollaborazione.getCognome(),

@@ -44,7 +44,7 @@ public class RichiestaCollaborazione {
     private File certificato;
 
     private String aziendaReferente;
-    private boolean stato;
+    private Boolean stato;
 
     public long getId() {
         return id;
@@ -162,11 +162,11 @@ public class RichiestaCollaborazione {
         this.aziendaReferente = aziendaReferente;
     }
 
-    public boolean isStato() {
+    public Boolean isStato() {
         return stato;
     }
 
-    public void setStato(boolean stato) {
+    public void setStato(Boolean stato) {
         this.stato = stato;
     }
 

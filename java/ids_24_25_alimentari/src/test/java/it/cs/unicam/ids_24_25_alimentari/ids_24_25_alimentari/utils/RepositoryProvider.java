@@ -17,13 +17,13 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.*;
 import lombok.Getter;
 
 @Component
-@ComponentScan(basePackageClasses = { RichiestaInformazioniAggiuntiveRepository.class, IndirizzoRepository.class,
+@ComponentScan(basePackageClasses = { InformazioniAggiuntiveRepository.class, IndirizzoRepository.class,
         RichiestaRepository.class, RichiestaCollaborazioneRepository.class, UtenteRepository.class,
         AziendaRepository.class })
 
 public class RepositoryProvider {
     @Getter
-    private final RichiestaInformazioniAggiuntiveRepository richiestaInformazioniAggiuntiveRepository;
+    private final InformazioniAggiuntiveRepository informazioniAggiuntiveRepository;
 
     @Getter
     private final IndirizzoRepository indirizzoRepository;
@@ -41,11 +41,11 @@ public class RepositoryProvider {
     private final AziendaRepository aziendaRepository;
 
     @Autowired
-    public RepositoryProvider(RichiestaInformazioniAggiuntiveRepository richiestaInformazioniAggiuntiveRepository,
-            IndirizzoRepository indirizzoRepository, RichiestaRepository richiestaRepository,
-            RichiestaCollaborazioneRepository richiestaCollaborazioneRepository, UtenteRepository utenteRepository,
-            AziendaRepository aziendaRepository) {
-        this.richiestaInformazioniAggiuntiveRepository = richiestaInformazioniAggiuntiveRepository;
+    public RepositoryProvider(InformazioniAggiuntiveRepository informazioniAggiuntiveRepository,
+                              IndirizzoRepository indirizzoRepository, RichiestaRepository richiestaRepository,
+                              RichiestaCollaborazioneRepository richiestaCollaborazioneRepository, UtenteRepository utenteRepository,
+                              AziendaRepository aziendaRepository) {
+        this.informazioniAggiuntiveRepository = informazioniAggiuntiveRepository;
         this.indirizzoRepository = indirizzoRepository;
         this.richiestaRepository = richiestaRepository;
         this.richiestaCollaborazioneRepository = richiestaCollaborazioneRepository;
@@ -80,8 +80,8 @@ public class RepositoryProvider {
             RICHIESTA_INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE;
 
     public void pulisciRichiesteInformazioniAggiuntive() {
-        richiestaInformazioniAggiuntiveRepository.deleteAll();
-        richiestaInformazioniAggiuntiveRepository.flush();
+        informazioniAggiuntiveRepository.deleteAll();
+        informazioniAggiuntiveRepository.flush();
         isRichiestaInformazioniAggiuntiveRepositorySet = false;
     }
 

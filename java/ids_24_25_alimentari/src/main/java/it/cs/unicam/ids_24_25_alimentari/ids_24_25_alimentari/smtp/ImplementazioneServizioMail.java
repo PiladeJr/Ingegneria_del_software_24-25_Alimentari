@@ -13,14 +13,14 @@ public class ImplementazioneServizioMail implements ServizioEmail{
     @Value("${spring.mail.username}") private String sender;
 
     @Override
-    public String inviaMail(DettagliEmail dettagliEmail) {
+    public String inviaMail(String emailDestinatario, String messaggio, String oggetto) {
 
         try {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setFrom(sender);
-            mailMessage.setTo(dettagliEmail.getDestinatario());
-            mailMessage.setText(dettagliEmail.getMessaggio());
-            mailMessage.setSubject(dettagliEmail.getOggetto());
+            mailMessage.setTo(emailDestinatario);
+            mailMessage.setText(messaggio);
+            mailMessage.setSubject(oggetto);
 
             javaMailSender.send(mailMessage);
             return "Mail Inviata Correttamente...";

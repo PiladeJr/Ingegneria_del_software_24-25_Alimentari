@@ -44,6 +44,10 @@ public class Azienda {
     @Column(name = "certificato")
     private File certificato;
 
+    //private List<Long> catalogo;
+
+    //private long idInfoAggiuntive;
+
     // Getters and Setters
     public long getId() {
         return id;

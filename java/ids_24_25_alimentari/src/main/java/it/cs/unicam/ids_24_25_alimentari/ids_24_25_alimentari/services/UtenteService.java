@@ -43,6 +43,19 @@ public class UtenteService implements UserDetailsService {
                 authorities
         );
     }
+
+    /**
+     *
+     * seleziona l'utente dalla lista tramite il suo id
+     *
+     * @param idUtente
+     * @return
+     */
+    public Utente selezionaUtenteById(Long idUtente){
+        if (idUtente == null) throw new NullPointerException();
+        return utenteRepository.findById(idUtente).orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+    }
+
     /**
      * ottiene tutti gli utenti del sistema
      *
@@ -62,6 +75,15 @@ public class UtenteService implements UserDetailsService {
         });
         return utentiDTO;
     }
+
+
+    /**
+     *
+     * verifica che l'utente sia registrato tramite la sua mail
+     *
+     * @param email cercata nel database
+     * @return se l'utente è registrato
+     */
     public boolean isRegistrato(String email){
         if (email == null)
             throw new IllegalArgumentException("email nulla");
@@ -118,7 +140,7 @@ public class UtenteService implements UserDetailsService {
      * usa gli stessi parametri per il metodo credenziali base
      * usa inoltre i seguenti parametri:
      * @param ruolo il ruolo selezionato dall'utente (PRODUTTORE, TRASFORMATORE, DISTRIBUTORE)
-     * @param carta il file contenente la carta d'identità dell'utente
+     * @param cartaIdentita il file contenente la carta d'identità dell'utente
      */
     public void nuovoAzienda(String nome, String cognome, String email, String telefono, Ruolo ruolo, long idAzienda, File cartaIdentita){
         builder.costruisciNome(nome);

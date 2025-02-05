@@ -30,7 +30,7 @@ public class RepositoryCostructor {
     private RichiestaCollaborazioneRepository richiestaCollaborazioneRepository;
 
     @Autowired
-    private RichiestaInformazioniAggiuntiveRepository richiestaInformazioniAggiuntiveRepository;
+    private InformazioniAggiuntiveRepository informazioniAggiuntiveRepository;
 
     @Autowired
     private UtenteRepository utenteRepository;
@@ -39,7 +39,7 @@ public class RepositoryCostructor {
     public void init() {
         impostaUtenti(utenteRepository);
         impostaAziende(aziendaRepository);
-        impostaRichiesteInformazioniAggiuntive(richiestaInformazioniAggiuntiveRepository);
+        impostaRichiesteInformazioniAggiuntive(informazioniAggiuntiveRepository);
         impostaRichiesteCollaborazione(richiestaCollaborazioneRepository);
         impostaRichieste(richiestaRepository);
         impostaIndirizzi(indirizzoRepository);
@@ -98,15 +98,15 @@ public class RepositoryCostructor {
     }
 
     public void pulisciRichiesteInformazioniAggiuntive(
-            RichiestaInformazioniAggiuntiveRepository richiestaInformazioniAggiuntiveRepository) {
-        richiestaInformazioniAggiuntiveRepository.deleteAll();
-        richiestaInformazioniAggiuntiveRepository.flush();
+            InformazioniAggiuntiveRepository informazioniAggiuntiveRepository) {
+        informazioniAggiuntiveRepository.deleteAll();
+        informazioniAggiuntiveRepository.flush();
         isRichiestaInformazioniAggiuntiveRepositorySet = false;
     }
 
     public void impostaRichiesteInformazioniAggiuntive(
-            RichiestaInformazioniAggiuntiveRepository richiestaInformazioniAggiuntiveRepository) {
-        pulisciRichiesteInformazioniAggiuntive(richiestaInformazioniAggiuntiveRepository);
+            InformazioniAggiuntiveRepository informazioniAggiuntiveRepository) {
+        pulisciRichiesteInformazioniAggiuntive(informazioniAggiuntiveRepository);
     }
 
     public void pulisciIndirizzi(IndirizzoRepository indirizzoRepository) {
