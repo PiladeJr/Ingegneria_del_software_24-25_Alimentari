@@ -3,20 +3,23 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import lombok.Getter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.File;
 
+
+/**
+ * -- GETTER --
+ *  metodo che restituisce l'oggetto utente creato
+ *
+ * @return l'oggetto utente creato
+ */
 @Getter
 public class UtenteBuilder {
-    /**
-     * -- GETTER --
-     *  metodo che restituisce l'oggetto utente creato
-     *
-     * @return l'oggetto utente creato
-     */
-    private final Utente utente;
 
+    private final Utente utente;
     public UtenteBuilder() {
+
         this.utente = new Utente();
     }
     public UtenteBuilder costruisciEmail(String email){
@@ -24,7 +27,6 @@ public class UtenteBuilder {
         return this;
     }
     public UtenteBuilder costruisciPassword(String password){
-       // AccountManager.getEncryptedPassword(password);
         utente.setPassword(password);
         return this;
     }

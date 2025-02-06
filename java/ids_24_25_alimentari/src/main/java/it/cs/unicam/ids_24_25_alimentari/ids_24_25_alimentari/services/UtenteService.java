@@ -6,6 +6,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Uten
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.UtenteBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.AccountManager;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class UtenteService implements UserDetailsService {
@@ -45,15 +47,16 @@ public class UtenteService implements UserDetailsService {
     }
 
     /**
-     *
      * seleziona l'utente dalla lista tramite il suo id
      *
      * @param idUtente
      * @return
      */
-    public Utente selezionaUtenteById(Long idUtente){
+    public Optional<Utente> selezionaUtenteById(Long idUtente){
         if (idUtente == null) throw new NullPointerException();
-        return utenteRepository.findById(idUtente).orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+        Optional<Utente> user = utenteRepository.findById(idUtente);
+        if (user == null) throw new NullPointerException();
+        return user;
     }
 
     /**
@@ -106,20 +109,22 @@ public class UtenteService implements UserDetailsService {
         builder.costruisciPassword(password);
         builder.costruisciTelefono(telefono);
     }
-    /**
-     * Creazione di un nuovo oggetto utente
-     * @param nome il nome dell'utente
-     * @param cognome il cognome dell'utente
-     * @param email l'email dell'utente
-     * @param password la password dell'utente
-     * @param telefono il telefono dell'utente
-     */
+    //---------------------------------da vedere se utilizzato o meno
+            /**
+             * Creazione di un nuovo oggetto utente
+             * @param nome il nome dell'utente
+             * @param cognome il cognome dell'utente
+             * @param email l'email dell'utente
+             * @param password la password dell'utente
+             * @param telefono il telefono dell'utente
+             */
 
-    public void nuovoUtente(String nome, String cognome, String email, String password, String telefono){
-        credenzialiBase(nome, cognome, email, password, telefono);
-        builder.costruisciRuolo(Ruolo.ACQUIRENTE);
-        utenteRepository.save(builder.getUtente());
-    }
+            public void nuovoUtente(String nome, String cognome, String email, String password, String telefono){
+                credenzialiBase(nome, cognome, email, password, telefono);
+                builder.costruisciRuolo(Ruolo.ACQUIRENTE);
+                utenteRepository.save(builder.getUtente());
+            }
+    //---------------------------------
     /**
      * crea un nuovo account di tipo animatore
      * usa gli stessi parametri per il metodo credenziali base
@@ -150,6 +155,7 @@ public class UtenteService implements UserDetailsService {
         builder.costruisciRuolo(ruolo);
         builder.costruisciIdAzienda(idAzienda);
         builder.costruisciCartaIdentita(cartaIdentita);
+        builder.costruisciPassword(RandomStringUtils.randomAlphanumeric(8));
         utenteRepository.save(builder.getUtente());
     }
     /**

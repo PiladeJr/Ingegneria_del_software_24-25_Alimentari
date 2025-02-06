@@ -1,9 +1,13 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente;
 
+import ch.qos.logback.classic.encoder.JsonEncoder;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.SecurityConfig;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -89,7 +93,11 @@ public class Utente implements UserDetails {
     public String getPassword() {
         return password;
     }
-
+    public void setPassword(String hashedPassword) {
+        PasswordEncoder passwordEncoder= new BCryptPasswordEncoder();
+        passwordEncoder.encode(hashedPassword);
+        this.password = hashedPassword;
+    }
     @Override
     public String getUsername() {
         return email; // Use email as username
@@ -100,9 +108,7 @@ public class Utente implements UserDetails {
         return true;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+
 
     public String getTelefono() {
         return telefono;
