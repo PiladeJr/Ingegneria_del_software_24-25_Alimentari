@@ -5,6 +5,8 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Ind
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.RichiestaInformazioniAggiuntive;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -42,9 +44,9 @@ public class RepositoryProvider {
 
     @Autowired
     public RepositoryProvider(InformazioniAggiuntiveRepository informazioniAggiuntiveRepository,
-                              IndirizzoRepository indirizzoRepository, RichiestaRepository richiestaRepository,
-                              RichiestaCollaborazioneRepository richiestaCollaborazioneRepository, UtenteRepository utenteRepository,
-                              AziendaRepository aziendaRepository) {
+            IndirizzoRepository indirizzoRepository, RichiestaRepository richiestaRepository,
+            RichiestaCollaborazioneRepository richiestaCollaborazioneRepository, UtenteRepository utenteRepository,
+            AziendaRepository aziendaRepository) {
         this.informazioniAggiuntiveRepository = informazioniAggiuntiveRepository;
         this.indirizzoRepository = indirizzoRepository;
         this.richiestaRepository = richiestaRepository;
@@ -117,14 +119,17 @@ public class RepositoryProvider {
 
     public void impostaUtenti() {
         pulisciUtenti();
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String password = passwordEncoder.encode("password");
         List<Utente> utenti = new ArrayList<>(Arrays.asList(
-                new Utente("Mario", "Rossi", "test@test.com", "password", "1234567890"),
-                new Utente("Luca", "Bianchi", "test1@test.com", "password", "1234567890"),
-                new Utente("Giovanni", "Verdi", "test2@test.com", "password", "1234567890"),
-                new Utente("Paolo", "Neri", "test3@test.com", "password", "1234567890"),
-                new Utente("Giuseppe", "Gialli", "test4@test.com", "password", "1234567890"),
-                new Utente("Antonio", "Arancioni", "test5@test.com", "password", "1234567890"),
-                new Utente("Francesco", "Blu", "test6@test.com", "password", "1234567890")));
+                new Utente("Mario", "Rossi", "test@test.com",
+                        password, "1234567890"),
+                new Utente("Luca", "Bianchi", "test1@test.com", password, "1234567890"),
+                new Utente("Giovanni", "Verdi", "test2@test.com", password, "1234567890"),
+                new Utente("Paolo", "Neri", "test3@test.com", password, "1234567890"),
+                new Utente("Giuseppe", "Gialli", "test4@test.com", password, "1234567890"),
+                new Utente("Antonio", "Arancioni", "test5@test.com", password, "1234567890"),
+                new Utente("Francesco", "Blu", "test6@test.com", password, "1234567890")));
 
         utenti.get(0).setRuolo(Ruolo.PRODUTTORE);
         utenti.get(1).setRuolo(Ruolo.TRASFORMATORE);

@@ -5,6 +5,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.SecurityConf
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -87,17 +88,19 @@ public class Utente implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return List.of(new SimpleGrantedAuthority("ROLE_" + ruolo.name()));
     }
 
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String hashedPassword) {
-        PasswordEncoder passwordEncoder= new BCryptPasswordEncoder();
-        passwordEncoder.encode(hashedPassword);
-        this.password = hashedPassword;
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String pass = passwordEncoder.encode(hashedPassword);
+        this.password = pass;
     }
+
     @Override
     public String getUsername() {
         return email; // Use email as username
@@ -107,8 +110,6 @@ public class Utente implements UserDetails {
     public boolean isAccountNonLocked() {
         return true;
     }
-
-
 
     public String getTelefono() {
         return telefono;

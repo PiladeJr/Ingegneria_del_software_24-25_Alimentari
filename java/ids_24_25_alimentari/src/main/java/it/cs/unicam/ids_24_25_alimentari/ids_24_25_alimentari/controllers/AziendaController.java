@@ -1,6 +1,5 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
-
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneAziendaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.AziendaService;
@@ -14,6 +13,11 @@ import java.util.List;
 
 import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileToFile.convertiMultipartFileToFile;
 
+/**
+ * Controller for handling operations related to Azienda.
+ * It provides endpoints for fetching, saving, deleting, and creating Azienda
+ * entities.
+ */
 @RestController
 @RequestMapping("/api/azienda")
 public class AziendaController {
@@ -21,12 +25,24 @@ public class AziendaController {
     @Autowired
     AziendaService aziendaService = new AziendaService();
 
+    /**
+     * Retrieves a list of all Azienda entities.
+     *
+     * @return ResponseEntity containing the list of Azienda objects.
+     */
     @GetMapping
     public ResponseEntity<List<Azienda>> getAllAziende() {
         List<Azienda> aziende = aziendaService.getAllAziende();
         return ResponseEntity.ok(aziende);
     }
 
+    /**
+     * Retrieves an Azienda entity by its ID.
+     *
+     * @param id The ID of the Azienda.
+     * @return ResponseEntity containing the Azienda if found, or a 404 status if
+     *         not found.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Azienda> getAziendaById(@PathVariable Long id) {
         return aziendaService.getAziendaById(id)
@@ -34,18 +50,38 @@ public class AziendaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Saves a new Azienda entity.
+     *
+     * @param azienda The Azienda object to be saved.
+     * @return ResponseEntity containing the saved Azienda.
+     */
     @PostMapping
     public ResponseEntity<Azienda> saveAzienda(@RequestBody Azienda azienda) {
         Azienda saveAzienda = aziendaService.saveAzienda(azienda);
         return ResponseEntity.ok(saveAzienda);
     }
 
+    /**
+     * Deletes an Azienda entity by its ID.
+     *
+     * @param id The ID of the Azienda to be deleted.
+     * @return ResponseEntity with no content if deletion is successful.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAzienda(@PathVariable Long id) {
         aziendaService.deleteAzienda(id);
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Creates a new Azienda entity with a multipart file upload.
+     * This endpoint expects a RichiestaCollaborazioneAziendaDTO containing detailed
+     * information and a file.
+     *
+     * @param collaborazione The DTO containing Azienda details and file data.
+     * @return ResponseEntity containing the created Azienda.
+     */
     @PostMapping(value = "/azienda", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Azienda> createAzienda(@RequestBody RichiestaCollaborazioneAziendaDTO collaborazione) {
         try {
@@ -55,14 +91,11 @@ public class AziendaController {
                     collaborazione.getSedeOperativa(),
                     collaborazione.getIva(),
                     collaborazione.getIban(),
-                    convertiMultipartFileToFile(collaborazione.getCertificato())
-            );
+                    convertiMultipartFileToFile(collaborazione.getCertificato()));
             return ResponseEntity.ok(azienda);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
-
 
 }

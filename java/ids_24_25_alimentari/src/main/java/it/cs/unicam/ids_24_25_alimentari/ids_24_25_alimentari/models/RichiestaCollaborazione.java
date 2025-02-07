@@ -162,7 +162,7 @@ public class RichiestaCollaborazione {
         this.aziendaReferente = aziendaReferente;
     }
 
-    public Boolean isStato() {
+    public Boolean getStato() {
         return stato;
     }
 

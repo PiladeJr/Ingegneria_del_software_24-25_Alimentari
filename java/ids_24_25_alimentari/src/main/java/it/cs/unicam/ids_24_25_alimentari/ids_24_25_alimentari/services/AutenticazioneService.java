@@ -3,7 +3,6 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.LoginUserDto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.UtenteRegistrazioneDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.UtenteBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,7 +14,6 @@ import java.util.List;
 
 @Service
 public class AutenticazioneService {
-    private final UtenteBuilder builder = new UtenteBuilder();
     private final UtenteRepository utenteRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -29,14 +27,6 @@ public class AutenticazioneService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    private void credenzialiBase(String nome, String cognome, String email, String password, String telefono) {
-        builder.costruisciNome(nome);
-        builder.costruisciCognome(cognome);
-        builder.costruisciEmail(email);
-        builder.costruisciPassword(password);
-        builder.costruisciTelefono(telefono);
-    }
-
     public Utente registrazione(@Valid UtenteRegistrazioneDTO input) {
         // Check if user already exists
         if (utenteRepository.findByEmail(input.getEmail()).isPresent()) {
@@ -44,13 +34,12 @@ public class AutenticazioneService {
                     "User already exists with email: " + input.getEmail());
         }
         // Create and save the new user
-        String hashedPassword = passwordEncoder.encode(input.getPassword());
         Utente utente = new Utente();
         utente.setNome(input.getNome());
         utente.setCognome(input.getCognome());
         utente.setTelefono(input.getTelefono());
         utente.setEmail(input.getEmail());
-        utente.setPassword(hashedPassword);
+        utente.setPassword(input.getPassword());
         utente.setRuolo(input.getRuolo());
         return utenteRepository.save(utente);
     }

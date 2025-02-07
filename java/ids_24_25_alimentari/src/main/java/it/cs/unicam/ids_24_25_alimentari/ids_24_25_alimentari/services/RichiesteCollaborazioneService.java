@@ -2,10 +2,11 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
 
 import java.util.List;
 import java.util.Optional;
-
+import org.apache.commons.lang3.RandomStringUtils;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.smtp.ServizioEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.*;
@@ -21,9 +22,11 @@ public class RichiesteCollaborazioneService {
     private AziendaService aziendaService;
     @Autowired
     private final UtenteService utenteService;
+    private final ServizioEmail servizioEmail;
 
-    public RichiesteCollaborazioneService(UtenteService utenteService) {
+    public RichiesteCollaborazioneService(UtenteService utenteService, ServizioEmail servizioEmail) {
         this.utenteService = utenteService;
+        this.servizioEmail = servizioEmail;
     }
 
     public List<RichiestaCollaborazione> getAllRichieste() {
@@ -96,7 +99,7 @@ public class RichiesteCollaborazioneService {
         Optional<RichiestaCollaborazione> richiesta = getRichiestaById(id);
         if (richiesta.isPresent()) {
             richiesta.get().setStato(stato);
-            if(stato) {
+            if (stato) {
                 generaAccount(id);
             }
             return saveRichiesta(richiesta.get());
@@ -108,27 +111,32 @@ public class RichiesteCollaborazioneService {
         Optional<RichiestaCollaborazione> richiesta = getRichiestaById(id);
         if (richiesta.isPresent()) {
             RichiestaCollaborazione richiestaCollaborazione = richiesta.get();
-            switch(richiestaCollaborazione.getRuolo()){
-            case PRODUTTORE, TRASFORMATORE, DISTRIBUTORE -> {
-                Azienda azienda = aziendaService.createAzienda(
-                    richiestaCollaborazione.getDenominazioneSociale(),
-                    richiestaCollaborazione.getSedeLegale(),
-                    richiestaCollaborazione.getSedeOperativa(),
-                    richiestaCollaborazione.getIva(),
-                    richiestaCollaborazione.getIban(),
-                    richiestaCollaborazione.getCertificato()
-                    );
+            switch (richiestaCollaborazione.getRuolo()) {
+                case PRODUTTORE, TRASFORMATORE, DISTRIBUTORE -> {
+                    Azienda azienda = aziendaService.createAzienda(
+                            richiestaCollaborazione.getDenominazioneSociale(),
+                            richiestaCollaborazione.getSedeLegale(),
+                            richiestaCollaborazione.getSedeOperativa(),
+                            richiestaCollaborazione.getIva(),
+                            richiestaCollaborazione.getIban(),
+                            richiestaCollaborazione.getCertificato());
 
-                //crea un utente che ha un'azienda
-                utenteService.nuovoAzienda(
-                        richiestaCollaborazione.getNome(),
-                        richiestaCollaborazione.getCognome(),
-                        richiestaCollaborazione.getEmail(),
-                        richiestaCollaborazione.getTelefono(),
-                        richiestaCollaborazione.getRuolo(),
-                        azienda.getId(),
-                        richiestaCollaborazione.getCartaIdentita()
-                        );
+                    String password = RandomStringUtils.randomAlphanumeric(8);
+                    // crea un utente che ha un'azienda
+                    utenteService.nuovoAzienda(
+                            richiestaCollaborazione.getNome(),
+                            richiestaCollaborazione.getCognome(),
+                            richiestaCollaborazione.getEmail(),
+                            richiestaCollaborazione.getTelefono(),
+                            richiestaCollaborazione.getRuolo(),
+                            azienda.getId(),
+                            richiestaCollaborazione.getCartaIdentita(),
+                            password);
+
+                    String messaggio = "La sua richiesta di collaborazione è stata accettata con successo! Ecco le sue credenziali:\n"
+                            + "Email: " + richiestaCollaborazione.getEmail() + "\n" + "Password: " + password;
+                    this.servizioEmail.inviaMail(richiestaCollaborazione.getEmail(), messaggio,
+                            "Accettazione Richiesta di Collaborazione");
                 }
             }
 
