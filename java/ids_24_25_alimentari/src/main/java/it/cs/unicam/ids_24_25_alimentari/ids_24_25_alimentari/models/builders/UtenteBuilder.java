@@ -17,10 +17,9 @@ import java.io.File;
 @Getter
 public class UtenteBuilder {
 
-    private final Utente utente;
+    private Utente utente;
     public UtenteBuilder() {
-
-        this.utente = new Utente();
+        reset();
     }
     public UtenteBuilder costruisciEmail(String email){
         utente.setEmail(email);
@@ -70,6 +69,14 @@ public class UtenteBuilder {
     public UtenteBuilder rimuoviCartaIdentita(){
         utente.setCartaIdentita(null);
         return this;
+    }
+    public Utente getUtente(){
+        Utente u = this.utente;
+        reset();
+        return u;
+    }
+    public void reset() {
+        this.utente = new Utente();
     }
 
 }

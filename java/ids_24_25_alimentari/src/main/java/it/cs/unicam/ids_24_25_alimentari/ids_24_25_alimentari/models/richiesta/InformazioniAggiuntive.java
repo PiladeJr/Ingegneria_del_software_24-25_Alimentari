@@ -15,11 +15,10 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
-public class RichiestaInformazioniAggiuntive {
+public class InformazioniAggiuntive {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String descrizioneAzienda;
     private String descrizioneProduzione;
     private String descrizioneMetodi;
@@ -28,7 +27,6 @@ public class RichiestaInformazioniAggiuntive {
     @CollectionTable(name = "immagini", joinColumns = @JoinColumn(name = "richiesta_id"))
     @Column(name = "immagine")
     private List<File> immagini;
-
     @ElementCollection
     @CollectionTable(name = "certificati", joinColumns = @JoinColumn(name = "richiesta_id"))
     @Column(name = "certificato")

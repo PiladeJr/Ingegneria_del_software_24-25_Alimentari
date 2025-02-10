@@ -1,9 +1,15 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneAziendaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.Richieste.RichiestaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.Richieste.RichiestaInformazioniDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.InformazioniAggiuntive;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Richiesta;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.AziendaService;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.ContenutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +30,12 @@ public class AziendaController {
 
     @Autowired
     AziendaService aziendaService = new AziendaService();
+    @Autowired
+    ContenutoService contentutoService;
+
+    public AziendaController(ContenutoService contentutoService) {
+        this.contentutoService = contentutoService;
+    }
 
     /**
      * Retrieves a list of all Azienda entities.
@@ -41,7 +53,7 @@ public class AziendaController {
      *
      * @param id The ID of the Azienda.
      * @return ResponseEntity containing the Azienda if found, or a 404 status if
-     *         not found.
+     * not found.
      */
     @GetMapping("/{id}")
     public ResponseEntity<Azienda> getAziendaById(@PathVariable Long id) {
@@ -98,4 +110,21 @@ public class AziendaController {
         }
     }
 
+    @PostMapping(value = "/informazioni/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Richiesta> createAziendaInformazioni(@RequestBody RichiestaInformazioniDTO richiestaInformazioniDTO) {
+        try {
+            Richiesta richiesta = contentutoService.nuovaRichiestaInformazioni(Tipologia.valueOf("infoAzienda"),
+                    richiestaInformazioniDTO.getIdMittente(),
+                    richiestaInformazioniDTO.getDescrizione(),
+                    richiestaInformazioniDTO.getProduzione(),
+                    richiestaInformazioniDTO.getMetodologie(),
+                    //TODO cambiare il formato da file a multipartfile e controllare nella classe richiestaInformazioniDTO per il passaggio
+                    convertiMultipartFileToFile(richiestaInformazioniDTO.getImmagini()),
+                    richiestaInformazioniDTO.getCertificati()
+            );
+            return ResponseEntity.ok(richiesta);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

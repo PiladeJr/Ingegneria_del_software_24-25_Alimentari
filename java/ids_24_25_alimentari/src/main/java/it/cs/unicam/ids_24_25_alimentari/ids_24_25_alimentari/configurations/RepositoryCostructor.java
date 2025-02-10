@@ -6,7 +6,7 @@ import java.util.List;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Indirizzo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.RichiestaInformazioniAggiuntive;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.InformazioniAggiuntive;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +70,7 @@ public class RepositoryCostructor {
             INDIRIZZO_TRASFORMATORE,
             INDIRIZZO_DISTRIBUTORE;
 
-    public RichiestaInformazioniAggiuntive RICHIESTA_INFORMAZIONI_AGGIUNTIVE_PRODUTTORE,
+    public InformazioniAggiuntive RICHIESTA_INFORMAZIONI_AGGIUNTIVE_PRODUTTORE,
             RICHIESTA_INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE;
 
     public RichiestaCollaborazioneRepository RICHIESTA_PRODUTTORE, RICHIESTA_TRASFORMATORE, RICHIESTA_DISTRIBUTORE,

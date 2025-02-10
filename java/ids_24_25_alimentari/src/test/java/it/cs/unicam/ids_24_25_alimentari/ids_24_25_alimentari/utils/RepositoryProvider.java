@@ -2,7 +2,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Indirizzo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.RichiestaInformazioniAggiuntive;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.InformazioniAggiuntive;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -78,7 +78,7 @@ public class RepositoryProvider {
             INDIRIZZO_TRASFORMATORE,
             INDIRIZZO_DISTRIBUTORE;
 
-    public RichiestaInformazioniAggiuntive RICHIESTA_INFORMAZIONI_AGGIUNTIVE_PRODUTTORE,
+    public InformazioniAggiuntive RICHIESTA_INFORMAZIONI_AGGIUNTIVE_PRODUTTORE,
             RICHIESTA_INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE;
 
     public void pulisciRichiesteInformazioniAggiuntive() {

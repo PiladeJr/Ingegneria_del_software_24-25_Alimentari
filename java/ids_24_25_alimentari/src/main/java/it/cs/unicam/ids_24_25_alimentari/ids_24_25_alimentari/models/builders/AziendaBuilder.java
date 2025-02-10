@@ -9,8 +9,8 @@ import java.util.List;
 public class AziendaBuilder {
     Azienda azienda;
 
-    public AziendaBuilder(Azienda azienda) {
-        this.azienda = azienda;
+    public AziendaBuilder() {
+        reset();
     }
 
     public void costruisciDenSociale(String denSociale){ this.azienda.setDenominazioneSociale(denSociale); }
@@ -27,6 +27,14 @@ public class AziendaBuilder {
 
     public void aggiungiImmagini(List<File> immagini){ this.azienda.setImmagini(immagini); }
 
-    public Azienda getAzienda() { return this.azienda; }
+    public Azienda getAzienda() {
+        Azienda a = this.azienda;
+        this.reset();
+        return a;
+    }
+
+    public void reset(){
+        this.azienda = new Azienda();
+    }
 
 }

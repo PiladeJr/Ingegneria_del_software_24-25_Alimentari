@@ -30,7 +30,7 @@ public class UtenteController {
         return ResponseEntity.ok(utenteService.visualizzaUtenti());
     }
 
-    @PostMapping("/registrazione")
+ /*   @PostMapping("/registrazione")
     public ResponseEntity<String> registraUtente(
             @RequestParam String nome,
             @RequestParam String cognome,
@@ -38,7 +38,7 @@ public class UtenteController {
             @RequestParam String password,
             @RequestParam String telefono) {
         try {
-            UtenteDTO utente = new UtenteDTO(nome, cognome, email, password, telefono);
+            UtenteDTO utente = new UtenteDTO(nome, cognome, email, password, telefono, );
             utenteService.registraUtente(utente);
             return new ResponseEntity<>("Utente registrato correttamente", HttpStatus.OK);
         } catch (Exception e) {
@@ -46,7 +46,7 @@ public class UtenteController {
             return new ResponseEntity<>("Errore interno del server: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
+*/
     @GetMapping("/me")
     public ResponseEntity<Map<String, Object>> authenticatedUser() {
         // Get the authentication object from the security context

@@ -16,7 +16,7 @@ public class AziendaService {
 
     @Autowired
     private AziendaRepository aziendaRepository;
-    private AziendaBuilder builder = new AziendaBuilder(new Azienda());
+    private AziendaBuilder builder = new AziendaBuilder();
 
     public List<Azienda> getAllAziende(){
         return aziendaRepository.findAll();
@@ -42,7 +42,6 @@ public class AziendaService {
             String iban,
             File certificato
             ) {
-
         builder.costruisciDenSociale(denSociale);
         builder.costruisciSedeLegale(sedeLegale);
         builder.costruisciSedeOperativa(sedeOperativa);
@@ -51,4 +50,5 @@ public class AziendaService {
         builder.aggiungiCertificato(certificato);
         return saveAzienda(builder.getAzienda());
     }
+
 }

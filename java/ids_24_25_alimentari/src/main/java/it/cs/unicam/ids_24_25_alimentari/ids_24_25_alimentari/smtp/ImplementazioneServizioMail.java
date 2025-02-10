@@ -23,6 +23,7 @@ public class ImplementazioneServizioMail implements ServizioEmail{
             mailMessage.setSubject(oggetto);
 
             javaMailSender.send(mailMessage);
+            System.out.println();
             return "Mail Inviata Correttamente...";
         }
 

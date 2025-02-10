@@ -24,7 +24,7 @@ import java.util.Optional;
 public class UtenteService implements UserDetailsService {
     @Autowired
     private final UtenteRepository utenteRepository;
-    private final UtenteBuilder builder;
+    UtenteBuilder builder;
 
     public UtenteService(UtenteRepository utenteRepository) {
         this.utenteRepository = utenteRepository;
@@ -75,7 +75,8 @@ public class UtenteService implements UserDetailsService {
                     utente.getCognome(),
                     utente.getEmail(),
                     null, // Exclude password
-                    utente.getTelefono());
+                    utente.getTelefono(),
+                    utente.getRuolo());
             utentiDTO.add(utenteDTO);
         });
         return utentiDTO;
@@ -200,25 +201,5 @@ public class UtenteService implements UserDetailsService {
         builder.costruisciCartaIdentita(carta);
         builder.costruisciCv(cv);
         utenteRepository.save(builder.getUtente());
-    }
-
-    /**
-     * overriding del metodo isAutorizzato che effettua il confronto dei ruoli
-     * 
-     * @param attuale   il ruolo effettivo dell'utente
-     * @param richiesto il ruolo richiesto per l'autorizzazione
-     * @return ture se l'autorizzazione richiesta corrisponde a quella attuale,
-     *         false altrimenti
-     */
-    public boolean isAutorizzato(Ruolo attuale, Ruolo richiesto) {
-        return (attuale.equals(richiesto));
-    }
-
-    public void registraUtente(UtenteDTO utente) {
-        if (!AccountManager.isPasswordValid(utente.password()))
-            throw new IllegalArgumentException("Password non valida");
-        if (isRegistrato(utente.email()))
-            throw new IllegalArgumentException("utente già registrato");
-        nuovoUtente(utente.nome(), utente.cognome(), utente.email(), utente.password(), utente.telefono());
     }
 }

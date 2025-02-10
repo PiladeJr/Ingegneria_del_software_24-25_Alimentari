@@ -10,7 +10,7 @@ public class BuilderRichiestaCollaborazione {
     private RichiestaCollaborazione collaborazione;
 
     public BuilderRichiestaCollaborazione() {
-        this.collaborazione = new RichiestaCollaborazione();
+        reset();
     }
 
     public void costruisciNome(String nome) {
@@ -70,7 +70,13 @@ public class BuilderRichiestaCollaborazione {
     }
 
     public RichiestaCollaborazione getRichiesta() {
-        return collaborazione;
+        RichiestaCollaborazione r = this.collaborazione;
+        reset();
+        return r;
+    }
+
+    public void reset(){
+        this.collaborazione = new RichiestaCollaborazione();
     }
 
 }

@@ -22,6 +22,8 @@ public class Richiesta {
 
     @Column(nullable = false)
     private long idMittente;
+    private long idInformazioni;
+    private long idCuratore;
 
     public long getId() {
         return id;
@@ -48,8 +50,24 @@ public class Richiesta {
         return idMittente;
     }
 
-    public void setIdMittente(int idMittente) {
+    public void setIdMittente(long idMittente) {
         this.idMittente = idMittente;
     }
+    public long getIdInformazioni() {
+        return idInformazioni;
+    }
+
+    public void setIdInformazioni(long idInformazioni) {
+        this.idInformazioni = idInformazioni;
+    }
+
+    public long getIdCuratore() {
+        return idCuratore;
+    }
+
+    public void setIdCuratore(long idCuratore) {
+        this.idCuratore = idCuratore;
+    }
+
 
 }
