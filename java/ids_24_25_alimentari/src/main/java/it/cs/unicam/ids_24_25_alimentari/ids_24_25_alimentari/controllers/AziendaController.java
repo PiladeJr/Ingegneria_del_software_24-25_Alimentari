@@ -7,6 +7,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azi
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.InformazioniAggiuntive;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Richiesta;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Tipologia;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.AziendaService;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.ContenutoService;
@@ -43,9 +44,9 @@ public class AziendaController {
     }
 
     /**
-     * Retrieves a list of all Azienda entities.
+     * restituisce una lista di tutte le aziende salvate dalla piattaforma
      *
-     * @return ResponseEntity containing the list of Azienda objects.
+     * @return ResponseEntity contenente la lista di tutte le aziende.
      */
     @GetMapping
     public ResponseEntity<List<Azienda>> getAllAziende() {
@@ -54,11 +55,11 @@ public class AziendaController {
     }
 
     /**
-     * Retrieves an Azienda entity by its ID.
+     * ottiene un'azienda dal suo id.
      *
-     * @param id The ID of the Azienda.
-     * @return ResponseEntity containing the Azienda if found, or a 404 status if
-     *         not found.
+     * @param id l'ID della Azienda.
+     * @return ResponseEntity contenente l'azienda se trovata, oppure un 404 status se
+     * non trovata.
      */
     @GetMapping("/{id}")
     public ResponseEntity<Azienda> getAziendaById(@PathVariable Long id) {
@@ -68,10 +69,22 @@ public class AziendaController {
     }
 
     /**
-     * Saves a new Azienda entity.
+     * ottiene la lista di aziende selezionate in base al filtro
+     * ruolo dell'utente
      *
-     * @param azienda The Azienda object to be saved.
-     * @return ResponseEntity containing the saved Azienda.
+     * @param ruolo il ruolo dell'utente in base a cui filtrare le aziende
+     * @return la lista di aziende appartenenti ad utenti con il ruolo specificato
+     */
+    @GetMapping("/roles")
+    public ResponseEntity<List<Azienda>> getAziendeByRuolo(@PathVariable Ruolo ruolo) {
+        List<Azienda> aziende = aziendaService.getAziendeByRuolo(ruolo);
+        return ResponseEntity.ok(aziende);
+    }
+    /**
+     * salva una nuova entità Azienda.
+     *
+     * @param azienda l'oggetto Azienda da salvare.
+     * @return ResponseEntity contenente l'azienda salvata.
      */
     @PostMapping
     public ResponseEntity<Azienda> saveAzienda(@RequestBody Azienda azienda) {
@@ -159,5 +172,4 @@ public class AziendaController {
             throw new RuntimeException("Errore durante la creazione della richiesta", e);
         }
     }
-
 }
