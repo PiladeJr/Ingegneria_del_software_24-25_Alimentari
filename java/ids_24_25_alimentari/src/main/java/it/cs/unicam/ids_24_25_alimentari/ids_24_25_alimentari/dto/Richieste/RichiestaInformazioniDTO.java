@@ -1,17 +1,13 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.Richieste;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.Richieste.RichiestaDTO;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.util.List;
 
 public class RichiestaInformazioniDTO extends RichiestaDTO {
     private String descrizione;
     private String produzione;
     private String metodologie;
-    private List<MultipartFile> immagini;
-    private List<MultipartFile> certificati;
+    private MultipartFile[] immagini;
+    private MultipartFile[] certificati;
 
     public String getDescrizione() {
         return descrizione;
@@ -37,19 +33,19 @@ public class RichiestaInformazioniDTO extends RichiestaDTO {
         this.metodologie = metodologie;
     }
 
-    public List<MultipartFile> getImmagini() {
+    public MultipartFile[] getImmagini() {
         return immagini;
     }
 
-    public void setImmagini(List<MultipartFile> immagini) {
+    public void setImmagini(MultipartFile[] immagini) {
         this.immagini = immagini;
     }
 
-    public List<MultipartFile> getCertificati() {
+    public MultipartFile[] getCertificati() {
         return certificati;
     }
 
-    public void setCertificati(List<MultipartFile> certificati) {
+    public void setCertificati(MultipartFile[] certificati) {
         this.certificati = certificati;
     }
 }
