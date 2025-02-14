@@ -39,3 +39,4 @@ out/
 
 db.lock.db
 /gradle.properties
+.env

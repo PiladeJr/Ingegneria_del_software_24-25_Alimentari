@@ -17,7 +17,7 @@ public class Richiesta {
     @Column(nullable = false)
     private Tipologia tipologia;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Boolean approvato;
 
     @Column(nullable = false)
@@ -53,6 +53,7 @@ public class Richiesta {
     public void setIdMittente(long idMittente) {
         this.idMittente = idMittente;
     }
+
     public long getIdInformazioni() {
         return idInformazioni;
     }
@@ -68,6 +69,5 @@ public class Richiesta {
     public void setIdCuratore(long idCuratore) {
         this.idCuratore = idCuratore;
     }
-
 
 }
