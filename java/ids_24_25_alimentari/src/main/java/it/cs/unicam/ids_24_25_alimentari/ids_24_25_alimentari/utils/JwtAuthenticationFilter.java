@@ -97,13 +97,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
             // Handle any exceptions by resolving them with the exception resolver
-            handlerExceptionResolver.resolveException(
-                    request,
-                    response,
-                    null,
-                    exception);
-            // Set the response status to 403
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            handlerExceptionResolver.resolveException(request, response, null, exception);
         }
     }
 }

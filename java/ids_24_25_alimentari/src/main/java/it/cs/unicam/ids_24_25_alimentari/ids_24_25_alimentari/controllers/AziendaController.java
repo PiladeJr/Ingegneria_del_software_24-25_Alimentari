@@ -15,10 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
+import java.io.IOException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileToFile.convertiMultipartFileToFile;
+import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileArrayToFileArray.convertMultipartFileArrayToFileArray;
 
 /**
  * Controller for handling operations related to Azienda.
@@ -123,21 +128,48 @@ public class AziendaController {
         }
     }
 
-//    @PostMapping(value = "/informazioni/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<Richiesta> createAziendaInformazioni(@RequestBody RichiestaInformazioniDTO richiestaInformazioniDTO) {
-//        try {
-//            Richiesta richiesta = contentutoService.nuovaRichiestaInformazioni(Tipologia.valueOf("infoAzienda"),
-//                    richiestaInformazioniDTO.getIdMittente(),
-//                    richiestaInformazioniDTO.getDescrizione(),
-//                    richiestaInformazioniDTO.getProduzione(),
-//                    richiestaInformazioniDTO.getMetodologie(),
-//                    //TODO cambiare il formato da file a multipartfile e controllare nella classe richiestaInformazioniDTO per il passaggio
-//                    convertiMultipartFileToFile(richiestaInformazioniDTO.getImmagini()),
-//                    richiestaInformazioniDTO.getCertificati()
-//            );
-//            return ResponseEntity.ok(richiesta);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    @PostMapping(value = "/informazioni/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Richiesta> createAziendaInformazioni(
+            @RequestParam("idMittente") Long idMittente,
+            @RequestParam("descrizione") String descrizione,
+            @RequestParam("produzione") String produzione,
+            @RequestParam("metodologie") String metodologie,
+            @RequestParam("immagini") MultipartFile[] immagini,
+            @RequestParam("certificati") MultipartFile[] certificati) {
+
+        File[] immaginiFiles;
+        try {
+            immaginiFiles = convertMultipartFileArrayToFileArray(immagini);
+        } catch (IOException e) {
+            System.err.println("Errore durante la conversione delle immagini: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error converting multipart file array", e);
+        }
+
+        File[] certificatiFiles;
+        try {
+            certificatiFiles = convertMultipartFileArrayToFileArray(certificati);
+        } catch (IOException e) {
+            System.err.println("Errore durante la conversione dei certificati: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error converting multipart file array", e);
+        }
+
+        try {
+            Richiesta richiesta = contentutoService.nuovaRichiestaInformazioni(
+                    Tipologia.valueOf("InfoAzienda"),
+                    idMittente,
+                    descrizione,
+                    produzione,
+                    metodologie,
+                    immaginiFiles,
+                    certificatiFiles);
+
+            return ResponseEntity.ok(richiesta);
+        } catch (Exception e) {
+            System.err.println("Errore durante la creazione della richiesta: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Errore durante la creazione della richiesta", e);
+        }
+    }
 }

@@ -29,6 +29,7 @@ public class ContenutoService {
     InformazioniAggiuntiveBuilder builder;
     RichiestaBuilder richiestaBuilder;
 
+
     public ContenutoService(RichiestaRepository richiestaRepository, InformazioniAggiuntiveRepository informazioniAggiuntiveRepository, UtenteAziendaEsternaRepository utenteAziendaRepository, UtenteRepository utenteRepository, AziendaRepository aziendaRepository) {
         this.richiestaRepository = richiestaRepository;
         this.informazioniAggiuntiveRepository = informazioniAggiuntiveRepository;
@@ -37,35 +38,40 @@ public class ContenutoService {
         this.aziendaRepository = aziendaRepository;
     }
 
+
     /**
      * metodo per salvare la richiesta
      * @param richesta
      * @return
      */
-    public Richiesta salvaRichiesta(Richiesta richesta){
+        public Richiesta salvaRichiesta(Richiesta richesta) {
         return richiestaRepository.save(richesta);
     }
-//    public Richiesta nuovaRichiestaInformazioni(Tipologia tipo, Long idMittente, String descrizione, String produzione, String metodologie, List<File>immagini, List<File>certificati){
-//        RichiestaBuilder richiesta=new RichiestaBuilder();
-//        richiesta.costruisciTipologia(tipo);
-//        richiesta.costruisciIdMittente(idMittente);
-//        if(tipo.equals("InfoAzienda")){
-//            //TODO cambiare a modo di switch per i casi Prodotto e Evento
-//            long id =nuovaInformazioneAggiuntiva(descrizione, produzione, metodologie, immagini, certificati).getId();
-//            richiesta.costruisciIdInformazioni(id);
-//        }
-//        return salvaRichiesta(richiesta.build());
-//    }
-    public InformazioniAggiuntive salvaInformazioniAggiuntive(InformazioniAggiuntive info){
+
+    public Richiesta nuovaRichiestaInformazioni(Tipologia tipo, Long idMittente, String descrizione, String produzione,
+            String metodologie, File[] immagini, File[] certificati) {
+        RichiestaBuilder richiesta = new RichiestaBuilder();
+        richiesta.costruisciTipologia(tipo);
+        richiesta.costruisciIdMittente(idMittente);
+
+        if (tipo.equals(Tipologia.InfoAzienda)) {
+            // TODO cambiare a modo di switch per i casi Prodotto e Evento
+            long id = nuovaInformazioneAggiuntiva(descrizione, produzione, metodologie, immagini, certificati).getId();
+            richiesta.costruisciIdInformazioni(id);
+        }
+        return salvaRichiesta(richiesta.build());
+    }
+
+    public InformazioniAggiuntive salvaInformazioniAggiuntive(InformazioniAggiuntive info) {
         return informazioniAggiuntiveRepository.save(info);
     }
+
     public InformazioniAggiuntive nuovaInformazioneAggiuntiva(String descrizione,
-                                                              String produzione,
-                                                              String metodologie,
-                                                              List<File> immagini,
-                                                              List<File> certificati,
-                                                              Long idAziendaProduttrice){
-        InformazioniAggiuntiveBuilder builder=new InformazioniAggiuntiveBuilder();
+            String produzione,
+            String metodologie,
+            File[] immagini,
+            File[] certificati) {
+        InformazioniAggiuntiveBuilder builder = new InformazioniAggiuntiveBuilder();
         builder.costruisciDescrizione(descrizione);
         builder.costruisciProduzione(produzione);
         builder.costruisciMetodi(metodologie);
