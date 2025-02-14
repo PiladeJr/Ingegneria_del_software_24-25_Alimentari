@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,8 +28,10 @@ public class ContenutoService {
     InformazioniAggiuntiveBuilder builder;
     RichiestaBuilder richiestaBuilder;
 
-
-    public ContenutoService(RichiestaRepository richiestaRepository, InformazioniAggiuntiveRepository informazioniAggiuntiveRepository, UtenteAziendaEsternaRepository utenteAziendaRepository, UtenteRepository utenteRepository, AziendaRepository aziendaRepository) {
+    public ContenutoService(RichiestaRepository richiestaRepository,
+            InformazioniAggiuntiveRepository informazioniAggiuntiveRepository,
+            UtenteAziendaEsternaRepository utenteAziendaRepository, UtenteRepository utenteRepository,
+            AziendaRepository aziendaRepository) {
         this.richiestaRepository = richiestaRepository;
         this.informazioniAggiuntiveRepository = informazioniAggiuntiveRepository;
         this.utenteAziendaRepository = utenteAziendaRepository;
@@ -38,13 +39,13 @@ public class ContenutoService {
         this.aziendaRepository = aziendaRepository;
     }
 
-
     /**
      * metodo per salvare la richiesta
+     * 
      * @param richesta
      * @return
      */
-        public Richiesta salvaRichiesta(Richiesta richesta) {
+    public Richiesta salvaRichiesta(Richiesta richesta) {
         return richiestaRepository.save(richesta);
     }
 
@@ -85,29 +86,38 @@ public class ContenutoService {
                 builder.aggiungiCertificato(certificato);
             }
         }
-        Long idUtente= getIdUtenteAutenticato();
-        Optional<Utente> utente = utenteRepository.findById(idUtente);
-        if(utente.get().getRuolo() == Ruolo.TRASFORMATORE){
-        CollegaAzienda(idUtente,idAziendaProduttrice);
-        }
+
+        /*
+         * TODO
+         * Long idUtente= getIdUtenteAutenticato();
+         * Optional<Utente> utente = utenteRepository.findById(idUtente);
+         * if(utente.get().getRuolo() == Ruolo.TRASFORMATORE){
+         * CollegaAzienda(idUtente,idAziendaProduttrice);
+         * }
+         */
         return salvaInformazioniAggiuntive(builder.getInformazioniAggiuntive());
     }
 
     /**
-     * logica per il collegamento delle aziende Trasformatore alle aziende Produttore
-     * @param idUtente l'id dell'utente con l'account trasformatore
+     * logica per il collegamento delle aziende Trasformatore alle aziende
+     * Produttore
+     * 
+     * @param idUtente             l'id dell'utente con l'account trasformatore
      * @param idAziendaProduttrice l'id dell'azienda produttrice
      */
-    public void CollegaAzienda(long idUtente,Long idAziendaProduttrice){
+    public void CollegaAzienda(long idUtente, Long idAziendaProduttrice) {
         UtenteAziendaEsterna collegamento = new UtenteAziendaEsterna();
         Long utente = utenteRepository.findById(idUtente).getId();
         Long azienda = aziendaRepository.findById(idAziendaProduttrice).get().getId();
-        if (utente == null) throw new IllegalArgumentException("utente non trovato");
+        if (utente == null)
+            throw new IllegalArgumentException("utente non trovato");
         collegamento.setIdUtente(utente);
-        if (azienda == null) throw new IllegalArgumentException("azienda non trovata");
+        if (azienda == null)
+            throw new IllegalArgumentException("azienda non trovata");
         collegamento.setIdAziendaProduttrice(azienda);
         utenteAziendaRepository.save(collegamento);
     }
+
     private Long getIdUtenteAutenticato() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
