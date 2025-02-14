@@ -3,6 +3,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.AziendaBuilder;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.AziendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,10 @@ public class AziendaService {
 
     public List<Azienda> getAllAziende(){
         return aziendaRepository.findAll();
+    }
+    public List<Azienda> getAziendeByRuolo(Ruolo ruolo){
+        List<Azienda> aziendeProduttori = aziendaRepository.findAziendeByRuolo(ruolo);
+        return aziendeProduttori;
     }
 
     public Optional<Azienda> getAziendaById(long id){

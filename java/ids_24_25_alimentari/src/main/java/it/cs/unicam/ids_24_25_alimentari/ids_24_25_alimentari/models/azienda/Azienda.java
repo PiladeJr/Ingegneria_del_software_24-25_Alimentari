@@ -111,4 +111,5 @@ public class Azienda {
 
     public void setCertificato(File certificato) { this.certificato = certificato; }
 
+
 }

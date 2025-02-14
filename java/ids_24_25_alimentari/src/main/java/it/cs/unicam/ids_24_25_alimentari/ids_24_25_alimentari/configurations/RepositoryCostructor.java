@@ -40,11 +40,11 @@ public class RepositoryCostructor {
     @PostConstruct
     public void init() {
         impostaUtenti(utenteRepository);
+        impostaIndirizzi(indirizzoRepository);
         impostaAziende(aziendaRepository);
         impostaRichiesteInformazioniAggiuntive(informazioniAggiuntiveRepository);
         impostaRichiesteCollaborazione(richiestaCollaborazioneRepository);
         impostaRichieste(richiestaRepository);
-        impostaIndirizzi(indirizzoRepository);
     }
 
     public boolean isRichiestaInformazioniAggiuntiveRepositorySet = false;
@@ -117,20 +117,11 @@ public class RepositoryCostructor {
         isIndirizzoRepositorySet = false;
     }
 
-    public void impostaIndirizzi(IndirizzoRepository indirizzoRepository) {
-        pulisciIndirizzi(indirizzoRepository);
-    }
-
     public void pulisciAziende(AziendaRepository aziendaRepository) {
         aziendaRepository.deleteAll();
         aziendaRepository.flush();
         isAziendaRepositorySet = false;
     }
-
-    public void impostaAziende(AziendaRepository aziendaRepository) {
-        pulisciAziende(aziendaRepository);
-    }
-
     public void pulisciUtenti(UtenteRepository repo) {
         repo.deleteAll();
         repo.flush();
@@ -168,6 +159,60 @@ public class RepositoryCostructor {
 
         repo.flush();
         isUtenteRepositorySet = true;
+    }
+    public void impostaIndirizzi(IndirizzoRepository indirizzoRepository) {
+        pulisciIndirizzi(indirizzoRepository);
+
+        // Creazione e salvataggio degli indirizzi
+        INDIRIZZO_PRODUTTORE = new Indirizzo();
+        INDIRIZZO_PRODUTTORE.setCitta("Milano");
+        INDIRIZZO_PRODUTTORE.setCap("20100");
+        INDIRIZZO_PRODUTTORE.setVia("Via Roma");
+        INDIRIZZO_PRODUTTORE.setNumeroCivico("1");
+        INDIRIZZO_PRODUTTORE.setProvincia("MI");
+        INDIRIZZO_PRODUTTORE.setCoordinate("45.4642, 9.1900");
+
+        INDIRIZZO_TRASFORMATORE = new Indirizzo();
+        INDIRIZZO_TRASFORMATORE.setCitta("Torino");
+        INDIRIZZO_TRASFORMATORE.setCap("10100");
+        INDIRIZZO_TRASFORMATORE.setVia("Via Garibaldi");
+        INDIRIZZO_TRASFORMATORE.setNumeroCivico("5");
+        INDIRIZZO_TRASFORMATORE.setProvincia("TO");
+        INDIRIZZO_TRASFORMATORE.setCoordinate("45.0703, 7.6869");
+
+    }
+
+    public void impostaAziende(AziendaRepository aziendaRepository) {
+        pulisciAziende(aziendaRepository);
+
+        AZIENDA_PRODUTTORE = new Azienda();
+        AZIENDA_PRODUTTORE.setDenominazioneSociale("Azienda Agricola Rossi");
+        AZIENDA_PRODUTTORE.setIva("IT12345678901");
+        AZIENDA_PRODUTTORE.setIban("IT60X0542811101000000123456");
+        AZIENDA_PRODUTTORE.setSedeLegale(INDIRIZZO_PRODUTTORE);
+        AZIENDA_PRODUTTORE.setSedeOperativa(INDIRIZZO_PRODUTTORE);
+
+        AZIENDA_TRASFORMATORE = new Azienda();
+        AZIENDA_TRASFORMATORE.setDenominazioneSociale("Industria Alimentare Bianchi");
+        AZIENDA_TRASFORMATORE.setIva("IT09876543210");
+        AZIENDA_TRASFORMATORE.setIban("IT20Z0300203280000400167890");
+        AZIENDA_TRASFORMATORE.setSedeLegale(INDIRIZZO_TRASFORMATORE);
+        AZIENDA_TRASFORMATORE.setSedeOperativa(INDIRIZZO_TRASFORMATORE);
+
+        AZIENDA_PRODUTTORE = aziendaRepository.save(AZIENDA_PRODUTTORE);
+        AZIENDA_TRASFORMATORE = aziendaRepository.save(AZIENDA_TRASFORMATORE);
+
+        aziendaRepository.flush();  // Assicura la persistenza immediata
+
+        // Associare le aziende agli utenti
+        PRODUTTORE.setIdAzienda(AZIENDA_PRODUTTORE.getId());
+        TRASFORMATORE.setIdAzienda(AZIENDA_TRASFORMATORE.getId());
+
+        utenteRepository.save(PRODUTTORE);
+        utenteRepository.save(TRASFORMATORE);
+        utenteRepository.flush();
+
+        isAziendaRepositorySet = true;
     }
 
 }
