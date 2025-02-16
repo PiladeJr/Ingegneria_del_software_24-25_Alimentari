@@ -36,6 +36,8 @@ public class RepositoryCostructor {
 
     @Autowired
     private UtenteRepository utenteRepository;
+    @Autowired
+    private UtenteAziendaEsternaRepository utenteAziendaEsternaRepository;
 
     @PostConstruct
     public void init() {
@@ -45,6 +47,7 @@ public class RepositoryCostructor {
         impostaRichiesteInformazioniAggiuntive(informazioniAggiuntiveRepository);
         impostaRichiesteCollaborazione(richiestaCollaborazioneRepository);
         impostaRichieste(richiestaRepository);
+        impostaAziendeEsterne(utenteAziendaEsternaRepository);
     }
 
     public boolean isRichiestaInformazioniAggiuntiveRepositorySet = false;
@@ -53,6 +56,7 @@ public class RepositoryCostructor {
     public boolean isRichiestaCollaborazioneRepositorySet = false;
     public boolean isUtenteRepositorySet = false;
     public boolean isAziendaRepositorySet = false;
+    public boolean isUtenteAziendaEsternaRepositorySet = false;
 
     public Utente PRODUTTORE,
             TRASFORMATORE,
@@ -77,6 +81,7 @@ public class RepositoryCostructor {
             RICHIESTA_ANIMATORE, RICHIESTA_CURATORE;
 
     public RichiestaRepository RICHIESTA_TIPO_INFORMAZIONI_AGGIUNTIVE;
+    public UtenteAziendaEsternaRepository UTENTE_TRASFORMATORE_PRODUTTORE;
 
     public void pulisciRichieste(RichiestaRepository richiestaRepository) {
         richiestaRepository.deleteAll();
@@ -109,6 +114,14 @@ public class RepositoryCostructor {
     public void impostaRichiesteInformazioniAggiuntive(
             InformazioniAggiuntiveRepository informazioniAggiuntiveRepository) {
         pulisciRichiesteInformazioniAggiuntive(informazioniAggiuntiveRepository);
+    }
+    public void pulisciAziendeEsterne(UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
+        utenteAziendaEsternaRepository.deleteAll();
+        utenteAziendaEsternaRepository.flush();
+        isUtenteAziendaEsternaRepositorySet = false;
+    }
+    public void impostaAziendeEsterne(UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
+        pulisciAziendeEsterne(utenteAziendaEsternaRepository);
     }
 
     public void pulisciIndirizzi(IndirizzoRepository indirizzoRepository) {

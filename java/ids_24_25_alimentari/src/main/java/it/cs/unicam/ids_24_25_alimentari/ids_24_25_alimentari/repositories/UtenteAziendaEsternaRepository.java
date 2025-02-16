@@ -2,18 +2,14 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.UtenteAziendaEsterna;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface UtenteAziendaEsternaRepository extends JpaRepository<UtenteAziendaEsterna, Long> {
 
-    /*
-
-        public getUtenteAziendaEsternaById(long id)
-
-        public getByIdAziendaProduttrice(long idAziendaProduttrice)
-
-        public getByIdUtente(long idUtente)
-
-
-     */
+    public List<UtenteAziendaEsterna> findByUtenteId(long utenteId);
+    public List<UtenteAziendaEsterna> findByAziendaId(long aziendaId);
 
 }
