@@ -36,7 +36,9 @@ public class ContenutoService {
     RichiestaBuilder richiestaBuilder;
 
 
+
     public ContenutoService(RichiestaRepository richiestaRepository, InformazioniAggiuntiveRepository informazioniAggiuntiveRepository, UtenteRepository utenteRepository, AziendaRepository aziendaRepository, UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
+
         this.richiestaRepository = richiestaRepository;
         this.informazioniAggiuntiveRepository = informazioniAggiuntiveRepository;
         this.utenteRepository = utenteRepository;
@@ -44,9 +46,9 @@ public class ContenutoService {
         this.utenteAziendaEsternaRepository = utenteAziendaEsternaRepository;
     }
 
-
     /**
      * metodo per salvare la richiesta
+     * 
      * @param richesta
      * @return
      */
@@ -115,6 +117,7 @@ public class ContenutoService {
                 builder.aggiungiCertificato(certificato);
             }
         }
+
         Long idUtente = isTrasformatore();
         System.out.println("idUtente: " + idUtente);
         if (idUtente!= null)
@@ -128,14 +131,18 @@ public class ContenutoService {
            }
 
         }
+
         return salvaInformazioniAggiuntive(builder.getInformazioniAggiuntive());
     }
 
     /**
-     * logica per il collegamento delle aziende Trasformatore alle aziende Produttore
-     * @param idUtente l'id dell'utente con l'account trasformatore
+     * logica per il collegamento delle aziende Trasformatore alle aziende
+     * Produttore
+     * 
+     * @param idUtente             l'id dell'utente con l'account trasformatore
      * @param idAziendaProduttrice l'id dell'azienda produttrice
      */
+
     public UtenteAziendaEsterna CollegaAzienda(Long idUtente, Long idAziendaProduttrice){
         UtenteAziendaEsterna collegamento = new UtenteAziendaEsterna();
         Azienda azienda = aziendaRepository.findAziendaByIdAndruolo(idAziendaProduttrice,Ruolo.PRODUTTORE);
@@ -167,6 +174,7 @@ public class ContenutoService {
      * ottieni l'id dell'utente autenticato estraendolo dal suo token
      * @return l'id dell'utente autenticato
      */
+
     private Long getIdUtenteAutenticato() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {

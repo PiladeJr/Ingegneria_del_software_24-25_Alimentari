@@ -1,6 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.UtenteDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.JwtService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.UtenteService;
 import org.springframework.http.HttpStatus;
@@ -25,48 +26,49 @@ public class UtenteController {
         this.jwtService = jwtService;
     }
 
-    @GetMapping("/visualizzaUtenti")
-    public ResponseEntity<List<UtenteDTO>> visualizzaUtenti() {
-        return ResponseEntity.ok(utenteService.visualizzaUtenti());
-    }
-
- /*   @PostMapping("/registrazione")
-    public ResponseEntity<String> registraUtente(
-            @RequestParam String nome,
-            @RequestParam String cognome,
-            @RequestParam String email,
-            @RequestParam String password,
-            @RequestParam String telefono) {
+    @GetMapping()
+    public ResponseEntity<?> visualizzaUtenti() {
         try {
-            UtenteDTO utente = new UtenteDTO(nome, cognome, email, password, telefono, );
-            utenteService.registraUtente(utente);
-            return new ResponseEntity<>("Utente registrato correttamente", HttpStatus.OK);
+            List<UtenteDTO> utenti = utenteService.visualizzaUtenti();
+            return ResponseEntity.ok(utenti);
         } catch (Exception e) {
-            e.printStackTrace(); // Log dettagliato per identificare il problema
-            return new ResponseEntity<>("Errore interno del server: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Errore nel recuperare gli utenti.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-*/
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        try {
+            Utente utente = utenteService.selezionaUtenteById(id).orElse(null);
+            if (utente == null) {
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Utente non trovato.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+            return ResponseEntity.ok(utente);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Errore nel recuperare l'utente.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
     @GetMapping("/me")
-    public ResponseEntity<Map<String, Object>> authenticatedUser() {
-        // Get the authentication object from the security context
-        Authentication authentication = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-
-        // Retrieve the current user details (UserDetails) from the authentication
-        // object
-        UserDetails currentUser = (UserDetails) authentication.getPrincipal();
-
-        // Generate a JWT token for the current user
-        String token = jwtService.generateToken(currentUser);
-
-        // Prepare the response containing the user details and the token
-        Map<String, Object> response = new HashMap<>();
-        response.put("user", currentUser);
-        response.put("token", token);
-
-        // Return the response with HTTP 200 OK status
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> authenticatedUser() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails currentUser = (UserDetails) authentication.getPrincipal();
+            String token = jwtService.generateToken(currentUser);
+            Map<String, Object> response = new HashMap<>();
+            response.put("user", currentUser);
+            response.put("token", token);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Errore durante l'autenticazione.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 }
