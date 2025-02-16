@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.CambiaStatoRichiestaCollaborazioneDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneAziendaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneCuratoreDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneAnimatoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.RichiestaCollaborazione;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.RichiesteCollaborazioneService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.smtp.ServizioEmail;
@@ -58,13 +60,22 @@ public class RichiestaCollaborazioneController {
      *
      * @param id the unique identifier of the collaboration request
      * @return a ResponseEntity containing the found collaboration request, or a 404
-     *         status if not found
+     *         status if not found, or 500 if an error occurs
      */
     @GetMapping("/{id}")
-    public ResponseEntity<RichiestaCollaborazione> getRichiestaById(@PathVariable Long id) {
-        return richiesteCollaborazioneService.getRichiestaById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getRichiestaById(@PathVariable Long id) {
+        try {
+            Optional<RichiestaCollaborazione> richiesta = richiesteCollaborazioneService.getRichiestaById(id);
+            if (richiesta.isPresent()) {
+                return ResponseEntity.ok(richiesta.get());
+            } else {
+                return ResponseEntity.status(404)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body("{\"error\": \"Richiesta non trovata\"}");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Errore interno del server: " + e.getMessage());
+        }
     }
 
     /**
@@ -83,12 +94,25 @@ public class RichiestaCollaborazioneController {
      * Deletes an existing collaboration request by its unique identifier.
      *
      * @param id the unique identifier of the collaboration request to delete
-     * @return a ResponseEntity with no content to indicate successful deletion
+     * @return a ResponseEntity with no content to indicate successful deletion, or
+     *         an error status if deletion fails
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRichiesta(@PathVariable Long id) {
-        richiesteCollaborazioneService.deleteRichiesta(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteRichiesta(@PathVariable Long id) {
+        try {
+            Optional<RichiestaCollaborazione> richiesta = richiesteCollaborazioneService.getRichiestaById(id);
+            if (richiesta.isPresent()) {
+                richiesteCollaborazioneService.deleteRichiesta(id);
+                return ResponseEntity.ok(Collections.singletonMap("message", "Richiesta eliminata con successo"));
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Collections.singletonMap("error", "Richiesta non trovata"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error",
+                            "Errore nella cancellazione della richiesta: " + e.getMessage()));
+        }
     }
 
     /**
@@ -105,7 +129,7 @@ public class RichiestaCollaborazioneController {
      *         error status if creation fails
      */
     @PostMapping(value = "/azienda", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RichiestaCollaborazione> creaRichiestaAzienda(
+    public ResponseEntity<?> creaRichiestaAzienda(
             @ModelAttribute RichiestaCollaborazioneAziendaDTO richiestaAziendaDTO) {
 
         try {
@@ -130,8 +154,9 @@ public class RichiestaCollaborazioneController {
 
             return ResponseEntity.ok(richiesta);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error",
+                            "Errore nella creazione della richiesta: " + e.getMessage()));
         }
     }
 
@@ -150,28 +175,29 @@ public class RichiestaCollaborazioneController {
      *         error status if creation fails
      */
     @PostMapping(value = "/animatore", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RichiestaCollaborazione> creaRichiestaAnimatore(
-            @RequestParam String nome,
-            @RequestParam String cognome,
-            @RequestParam String telefono,
-            @RequestParam String email,
-            @RequestParam Ruolo ruolo,
-            @RequestParam String aziendaReferente,
-            @RequestParam String iban,
-            @RequestPart("cartaIdentita") MultipartFile cartaIdentita) {
+    public ResponseEntity<?> creaRichiestaAnimatore(
+            @ModelAttribute RichiestaCollaborazioneAnimatoreDTO richiestaAnimatoreDTO) {
 
         try {
             // Convert the MultipartFile to a File object.
-            File fileCartaIdentita = convertiMultipartFileToFile(cartaIdentita);
+            File fileCartaIdentita = convertiMultipartFileToFile(richiestaAnimatoreDTO.getCartaIdentita());
 
             // Create the collaboration request.
             RichiestaCollaborazione richiesta = richiesteCollaborazioneService.creaRichiestaAnimatore(
-                    nome, cognome, telefono, email, ruolo, aziendaReferente, iban, fileCartaIdentita);
+                    richiestaAnimatoreDTO.getNome(),
+                    richiestaAnimatoreDTO.getCognome(),
+                    richiestaAnimatoreDTO.getTelefono(),
+                    richiestaAnimatoreDTO.getEmail(),
+                    richiestaAnimatoreDTO.getRuolo(),
+                    richiestaAnimatoreDTO.getAziendaReferente(),
+                    richiestaAnimatoreDTO.getIban(),
+                    fileCartaIdentita);
 
             return ResponseEntity.ok(richiesta);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error",
+                            "Errore nella creazione della richiesta: " + e.getMessage()));
         }
     }
 
@@ -190,29 +216,30 @@ public class RichiestaCollaborazioneController {
      *         error status if creation fails
      */
     @PostMapping(value = "/curatore", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RichiestaCollaborazione> creaRichiestaCuratore(
-            @RequestParam String nome,
-            @RequestParam String cognome,
-            @RequestParam String telefono,
-            @RequestParam String email,
-            @RequestParam Ruolo ruolo,
-            @RequestParam String iban,
-            @RequestPart("cartaIdentita") MultipartFile cartaIdentita,
-            @RequestPart("cv") MultipartFile cv) {
+    public ResponseEntity<?> creaRichiestaCuratore(
+            @ModelAttribute RichiestaCollaborazioneCuratoreDTO richiestaCuratoreDTO) {
 
         try {
             // Convert MultipartFiles to File objects.
-            File fileCartaIdentita = convertiMultipartFileToFile(cartaIdentita);
-            File fileCv = convertiMultipartFileToFile(cv);
+            File fileCartaIdentita = convertiMultipartFileToFile(richiestaCuratoreDTO.getCartaIdentita());
+            File fileCv = convertiMultipartFileToFile(richiestaCuratoreDTO.getCv());
 
             // Create the collaboration request.
             RichiestaCollaborazione richiesta = richiesteCollaborazioneService.creaRichiestaCuratore(
-                    nome, cognome, telefono, email, ruolo, iban, fileCartaIdentita, fileCv);
+                    richiestaCuratoreDTO.getNome(),
+                    richiestaCuratoreDTO.getCognome(),
+                    richiestaCuratoreDTO.getTelefono(),
+                    richiestaCuratoreDTO.getEmail(),
+                    richiestaCuratoreDTO.getRuolo(),
+                    richiestaCuratoreDTO.getIban(),
+                    fileCartaIdentita,
+                    fileCv);
 
             return ResponseEntity.ok(richiesta);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error",
+                            "Errore nella creazione della richiesta: " + e.getMessage()));
         }
     }
 
@@ -255,6 +282,6 @@ public class RichiestaCollaborazioneController {
             return ResponseEntity.ok().body(Collections.singletonMap("message",
                     dto.getStato() ? "Richiesta accettata con successo." : "Richiesta correttamente rifiutata."));
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(404).body(Collections.singletonMap("error", "Richiesta non trovata"));
     }
 }

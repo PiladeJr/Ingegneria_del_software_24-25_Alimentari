@@ -58,14 +58,23 @@ public class AziendaController {
      * ottiene un'azienda dal suo id.
      *
      * @param id l'ID della Azienda.
-     * @return ResponseEntity contenente l'azienda se trovata, oppure un 404 status se
-     * non trovata.
+     * @return ResponseEntity contenente l'azienda se trovata, oppure un 404 status
+     *         se
+     *         non trovata, oppure un errore 500 in caso di eccezione.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Azienda> getAziendaById(@PathVariable Long id) {
-        return aziendaService.getAziendaById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getAziendaById(@PathVariable Long id) {
+        try {
+            Azienda azienda = aziendaService.getAziendaById(id).orElse(null);
+            if (azienda == null) {
+                return ResponseEntity.status(404)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body("{\"error\": \"Azienda non trovata\"}");
+            }
+            return ResponseEntity.ok(azienda);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Errore interno del server: " + e.getMessage());
+        }
     }
 
     /**
@@ -80,6 +89,7 @@ public class AziendaController {
         List<Azienda> aziende = aziendaService.getAziendeByRuolo(ruolo);
         return ResponseEntity.ok(aziende);
     }
+
     /**
      * salva una nuova entità Azienda.
      *
