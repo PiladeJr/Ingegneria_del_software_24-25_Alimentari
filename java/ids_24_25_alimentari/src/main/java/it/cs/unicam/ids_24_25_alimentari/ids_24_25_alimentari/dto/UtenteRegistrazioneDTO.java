@@ -13,7 +13,6 @@ public class UtenteRegistrazioneDTO {
     private String nome;
     private String cognome;
     private String telefono;
-    private Ruolo ruolo;
 
     public String getEmail() {
         return email;
@@ -57,15 +56,6 @@ public class UtenteRegistrazioneDTO {
 
     public UtenteRegistrazioneDTO setTelefono(String telefono) {
         this.telefono = telefono;
-        return this;
-    }
-
-    public Ruolo getRuolo() {
-        return ruolo;
-    }
-
-    public UtenteRegistrazioneDTO setRuolo(Ruolo ruolo) {
-        this.ruolo = ruolo;
         return this;
     }
 

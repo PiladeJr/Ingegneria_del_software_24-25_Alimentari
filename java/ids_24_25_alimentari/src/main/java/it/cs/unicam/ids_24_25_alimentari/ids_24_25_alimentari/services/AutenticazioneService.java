@@ -2,6 +2,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.LoginUserDto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.UtenteRegistrazioneDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
 import jakarta.validation.Valid;
@@ -40,7 +41,7 @@ public class AutenticazioneService {
         utente.setTelefono(input.getTelefono());
         utente.setEmail(input.getEmail());
         utente.setPassword(input.getPassword());
-        utente.setRuolo(input.getRuolo());
+        utente.setRuolo(Ruolo.ACQUIRENTE);
         return utenteRepository.save(utente);
     }
 
