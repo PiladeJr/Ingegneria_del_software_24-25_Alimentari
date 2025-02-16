@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Utente Azienda Esterna")
+@Table(name = "utente_azienda_esterna")
 @NoArgsConstructor
 public class UtenteAziendaEsterna {
 
@@ -12,34 +12,29 @@ public class UtenteAziendaEsterna {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "ID Azienda Produttrice")
-    private long idAziendaProduttrice;
+    private long aziendaId;
 
-    @Column(name = "ID Utente")
-    private long idUtente;
+    private long utenteId;
 
-    public UtenteAziendaEsterna(long idAzienda, long idUtente) {
-        this.idAziendaProduttrice = idAzienda;
-        this.idUtente = idUtente;
-    }
+
 
     public long getId() {
         return id;
     }
 
-    public long getIdAziendaProduttrice() {
-        return idAziendaProduttrice;
+    public long getAziendaId() {
+        return aziendaId;
     }
 
-    public void setIdAziendaProduttrice(long idAziendaProduttrice) {
-        this.idAziendaProduttrice = idAziendaProduttrice;
+    public void setAziendaId(long aziendaProduttrice) {
+        this.aziendaId = aziendaProduttrice;
     }
 
-    public long getIdUtente() {
-        return idUtente;
+    public long getUtenteId() {
+        return utenteId;
     }
 
-    public void setIdUtente(long idUtente) {
-        this.idUtente = idUtente;
+    public void setUtenteId(long utente) {
+        this.utenteId = utente;
     }
 }

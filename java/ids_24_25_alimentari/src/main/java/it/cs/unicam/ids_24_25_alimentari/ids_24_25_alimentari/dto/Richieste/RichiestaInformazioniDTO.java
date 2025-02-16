@@ -8,6 +8,7 @@ public class RichiestaInformazioniDTO extends RichiestaDTO {
     private String metodologie;
     private MultipartFile[] immagini;
     private MultipartFile[] certificati;
+    private Long[] idAziendeCollegate;
 
     public String getDescrizione() {
         return descrizione;
@@ -47,5 +48,13 @@ public class RichiestaInformazioniDTO extends RichiestaDTO {
 
     public void setCertificati(MultipartFile[] certificati) {
         this.certificati = certificati;
+    }
+
+    public Long[] getIdAziendeCollegate() {
+        return idAziendeCollegate;
+    }
+
+    public void setIdAziendeCollegate(Long[] idAziendeCollegate) {
+        this.idAziendeCollegate = idAziendeCollegate;
     }
 }

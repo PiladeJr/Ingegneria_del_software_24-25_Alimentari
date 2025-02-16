@@ -12,6 +12,8 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.AziendaSe
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.ContenutoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -129,14 +132,17 @@ public class AziendaController {
     }
 
     @PostMapping(value = "/informazioni/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Richiesta> createAziendaInformazioni(
-            @RequestParam("idMittente") Long idMittente,
-            @RequestParam("descrizione") String descrizione,
-            @RequestParam("produzione") String produzione,
-            @RequestParam("metodologie") String metodologie,
-            @RequestParam("immagini") MultipartFile[] immagini,
-            @RequestParam("certificati") MultipartFile[] certificati) {
-
+    public ResponseEntity<?> createAziendaInformazioni(@RequestParam("descrizione") String descrizione,
+                                                               @RequestParam("produzione") String produzione,
+                                                               @RequestParam("metodologie") String metodologie,
+                                                               @RequestParam("immagini") MultipartFile[] immagini,
+                                                               @RequestParam("certificati") MultipartFile[] certificati,
+                                                               @RequestParam(value="aziendeCollegate", required = false) Long[]idAziendeCollegate)
+    {
+        // Se aziendeCollegate è null, assegna un array vuoto per evitare NullPointerException
+        if (idAziendeCollegate == null) {
+            idAziendeCollegate = new Long[0];  //  Gestione valore facoltativo
+        }
         File[] immaginiFiles;
         try {
             immaginiFiles = convertMultipartFileArrayToFileArray(immagini);
@@ -158,18 +164,15 @@ public class AziendaController {
         try {
             Richiesta richiesta = contentutoService.nuovaRichiestaInformazioni(
                     Tipologia.valueOf("InfoAzienda"),
-                    idMittente,
                     descrizione,
                     produzione,
                     metodologie,
                     immaginiFiles,
-                    certificatiFiles);
-
+                    certificatiFiles,
+                    idAziendeCollegate);
             return ResponseEntity.ok(richiesta);
         } catch (Exception e) {
-            System.err.println("Errore durante la creazione della richiesta: " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Errore durante la creazione della richiesta", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(Collections.singletonMap("error", e.getMessage()));
         }
     }
 }

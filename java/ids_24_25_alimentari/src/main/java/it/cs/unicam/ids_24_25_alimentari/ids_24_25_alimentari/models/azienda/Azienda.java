@@ -1,5 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.InformazioniAggiuntive;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -45,8 +47,9 @@ public class Azienda {
     private File certificato;
 
     //private List<Long> catalogo;
-
-    //private long idInfoAggiuntive;
+    @OneToOne(cascade = CascadeType.ALL)
+    @Nullable
+    private InformazioniAggiuntive informazioniAggiuntive;
 
     // Getters and Setters
     public long getId() {
@@ -111,5 +114,12 @@ public class Azienda {
 
     public void setCertificato(File certificato) { this.certificato = certificato; }
 
+    @Nullable
+    public InformazioniAggiuntive getInformazioniAggiuntive() {
+        return informazioniAggiuntive;
+    }
 
+    public void setInformazioniAggiuntive(@Nullable InformazioniAggiuntive informazioniAggiuntive) {
+        this.informazioniAggiuntive = informazioniAggiuntive;
+    }
 }
