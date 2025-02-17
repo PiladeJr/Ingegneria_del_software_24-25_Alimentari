@@ -19,15 +19,16 @@ public class AziendaService {
     private AziendaRepository aziendaRepository;
     private AziendaBuilder builder = new AziendaBuilder();
 
-    public List<Azienda> getAllAziende(){
+    public List<Azienda> getAllAziende() {
         return aziendaRepository.findAll();
     }
-    public List<Azienda> getAziendeByRuolo(Ruolo ruolo){
+
+    public List<Azienda> getAziendeByRuolo(Ruolo ruolo) {
         List<Azienda> aziendeProduttori = aziendaRepository.findAziendeByRuolo(ruolo);
         return aziendeProduttori;
     }
 
-    public Optional<Azienda> getAziendaById(long id){
+    public Optional<Azienda> getAziendaById(long id) {
         return aziendaRepository.findById(id);
     }
 
@@ -45,8 +46,7 @@ public class AziendaService {
             Indirizzo sedeOperativa,
             String iva,
             String iban,
-            File certificato
-            ) {
+            File certificato) {
         builder.costruisciDenSociale(denSociale);
         builder.costruisciSedeLegale(sedeLegale);
         builder.costruisciSedeOperativa(sedeOperativa);
