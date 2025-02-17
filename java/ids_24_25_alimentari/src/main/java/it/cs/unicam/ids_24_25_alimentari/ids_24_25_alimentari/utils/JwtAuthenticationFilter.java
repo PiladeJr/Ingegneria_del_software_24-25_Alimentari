@@ -28,7 +28,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
-    // Constructor for dependency injection
     public JwtAuthenticationFilter(
             JwtService jwtService,
             UserDetailsService userDetailsService,
@@ -43,71 +42,41 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
-        // Extract the Authorization header from the request
+
         final String authHeader = request.getHeader("Authorization");
 
-        // Check if the header is present and starts with "Bearer "
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            // If not, continue the filter chain without authentication
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
-            // Extract the JWT from the header
             final String jwt = authHeader.substring(7);
-            // Get the username (email) from the JWT
             final String userEmail = jwtService.extractUsername(jwt);
-            // Get the current authentication from the security context
-            Authentication authentication = SecurityContextHolder
-                    .getContext()
-                    .getAuthentication();
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
             List<String> roles = jwtService.extractRoles(jwt);
             List<SimpleGrantedAuthority> authorities = roles.stream()
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
-            // If the userEmail is not null and there is no existing authentication
             if (userEmail != null && authentication == null) {
-                // Load user details using the userDetailsService
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-                // Validate the JWT token
                 if (jwtService.isTokenValid(jwt, userDetails)) {
-                    // Create an authentication token
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            authorities);
+                            userDetails, null, authorities);
 
-                    // Set the request details for the authentication token
-                    authToken.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request));
-                    // Set the authentication in the security context
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-
                 } else {
-                    // If the token is invalid, set the response status to 403
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    return;
+                    throw new CustomJwtException("Token non valido");
                 }
             }
 
-            // Continue the filter chain
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
-            // Handle any exceptions by resolving them with the exception resolver
-            sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "Errore nel processamento del token");
-
+            handlerExceptionResolver.resolveException(request, response, null, exception);
         }
-    }
-
-    private void sendErrorResponse(HttpServletResponse response, int status, String message) throws IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(status);
-        response.getWriter().write("{\"error\": \"" + message + "\"}");
-        response.getWriter().flush();
     }
 }

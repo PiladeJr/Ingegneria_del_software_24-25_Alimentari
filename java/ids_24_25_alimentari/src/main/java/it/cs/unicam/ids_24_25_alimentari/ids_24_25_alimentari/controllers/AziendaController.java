@@ -1,10 +1,8 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneAziendaDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.Richieste.RichiestaDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.Richieste.RichiestaInformazioniDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaInformazioniAggiuntiveAziendaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.InformazioniAggiuntive;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Richiesta;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
@@ -13,7 +11,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.AziendaSe
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.ContenutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,15 +20,14 @@ import java.io.IOException;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileToFile.convertiMultipartFileToFile;
 import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileArrayToFileArray.convertMultipartFileArrayToFileArray;
 
 /**
- * Controller for handling operations related to Azienda.
- * It provides endpoints for fetching, saving, deleting, and creating Azienda
- * entities.
+ * Controller per la gestione delle operazioni relative all'entità Azienda.
+ * Fornisce endpoint per ottenere, salvare, eliminare e creare entità Azienda.
  */
 @RestController
 @RequestMapping("/api/azienda")
@@ -62,21 +58,18 @@ public class AziendaController {
      *
      * @param id l'ID della Azienda.
      * @return ResponseEntity contenente l'azienda se trovata, oppure un 404 status
-     *         se
-     *         non trovata, oppure un errore 500 in caso di eccezione.
+     *         se non trovata, oppure un errore 500 in caso di eccezione.
      */
     @GetMapping("/{id}")
     public ResponseEntity<?> getAziendaById(@PathVariable Long id) {
         try {
-            Azienda azienda = aziendaService.getAziendaById(id).orElse(null);
-            if (azienda == null) {
-                return ResponseEntity.status(404)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body("{\"error\": \"Azienda non trovata\"}");
-            }
-            return ResponseEntity.ok(azienda);
+            return aziendaService.getAziendaById(id)
+                    .map(azienda -> ResponseEntity.<Object>ok(azienda))
+                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body(Collections.singletonMap("error", "Azienda non trovata")));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Errore interno del server: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Errore interno del server: " + e.getMessage()));
         }
     }
 
@@ -87,102 +80,109 @@ public class AziendaController {
      * @param ruolo il ruolo dell'utente in base a cui filtrare le aziende
      * @return la lista di aziende appartenenti ad utenti con il ruolo specificato
      */
-    @GetMapping("/roles")
-    public ResponseEntity<List<Azienda>> getAziendeByRuolo(@PathVariable Ruolo ruolo) {
-        List<Azienda> aziende = aziendaService.getAziendeByRuolo(ruolo);
-        return ResponseEntity.ok(aziende);
-    }
+    @GetMapping("/roles/{ruolo}")
+    public ResponseEntity<?> getAziendeByRuolo(@PathVariable String ruolo) {
+        try {
+            Ruolo ruoloEnum = Ruolo.valueOf(ruolo.toUpperCase());
+            List<Azienda> aziende = aziendaService.getAziendeByRuolo(ruoloEnum);
 
-    /**
-     * salva una nuova entità Azienda.
-     *
-     * @param azienda l'oggetto Azienda da salvare.
-     * @return ResponseEntity contenente l'azienda salvata.
-     */
-    @PostMapping
-    public ResponseEntity<Azienda> saveAzienda(@RequestBody Azienda azienda) {
-        Azienda saveAzienda = aziendaService.saveAzienda(azienda);
-        return ResponseEntity.ok(saveAzienda);
+            if (aziende == null || aziende.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Collections.singletonMap("error", "Nessuna azienda trovata per il ruolo specificato"));
+            }
+
+            return ResponseEntity.ok(aziende);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", "Ruolo non valido: " + ruolo));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Errore interno del server: " + e.getMessage()));
+        }
     }
 
     /**
      * Deletes an Azienda entity by its ID.
      *
      * @param id The ID of the Azienda to be deleted.
-     * @return ResponseEntity with no content if deletion is successful.
+     * @return ResponseEntity with a JSON body containing an error message if
+     *         deletion fails, otherwise no content.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAzienda(@PathVariable Long id) {
-        aziendaService.deleteAzienda(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteAzienda(@PathVariable Long id) {
+        try {
+            Optional<Azienda> azienda = aziendaService.getAziendaById(id);
+            if (azienda.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Collections.singletonMap("error", "Azienda non trovata"));
+            } else {
+                aziendaService.deleteAzienda(id);
+                return ResponseEntity.status(200)
+                        .body(Collections.singletonMap("message", "Azienda eliminata correttamente"));
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", "ID non valido: " + id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Errore interno del server: " + e.getMessage()));
+        }
     }
 
     /**
-     * Creates a new Azienda entity with a multipart file upload.
-     * This endpoint expects a RichiestaCollaborazioneAziendaDTO containing detailed
-     * information and a file.
+     * Crea una nuova Richiesta di informazioni di tipo InfoAzienda.
+     * Questo endpoint si aspetta una serie di parametri in formato
+     * multipart/form-data per creare una nuova Richiesta di informazioni di tipo
+     * InfoAzienda.
      *
-     * @param collaborazione The DTO containing Azienda details and file data.
-     * @return ResponseEntity containing the created Azienda.
+     * @param descrizione        La descrizione dell'azienda.
+     * @param produzione         Il tipo di produzione dell'azienda.
+     * @param metodologie        Le metodologie di produzione dell'azienda.
+     * @param immagini           Le immagini dell'azienda.
+     * @param certificati        I certificati dell'azienda.
+     * @param idAziendeCollegate Gli ID delle aziende collegate.
+     * @return ResponseEntity contenente la Richiesta creata.
      */
-    @PostMapping(value = "/azienda", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Azienda> createAzienda(@RequestBody RichiestaCollaborazioneAziendaDTO collaborazione) {
-        try {
-            Azienda azienda = aziendaService.createAzienda(
-                    collaborazione.getDenSociale(),
-                    collaborazione.getSedeLegale(),
-                    collaborazione.getSedeOperativa(),
-                    collaborazione.getIva(),
-                    collaborazione.getIban(),
-                    convertiMultipartFileToFile(collaborazione.getCertificato()));
-            return ResponseEntity.ok(azienda);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @PostMapping(value = "/informazioni/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createAziendaInformazioni(@RequestParam("descrizione") String descrizione,
-                                                               @RequestParam("produzione") String produzione,
-                                                               @RequestParam("metodologie") String metodologie,
-                                                               @RequestParam("immagini") MultipartFile[] immagini,
-                                                               @RequestParam("certificati") MultipartFile[] certificati,
-                                                               @RequestParam(value="aziendeCollegate", required = false) Long[]idAziendeCollegate)
-    {
-        // Se aziendeCollegate è null, assegna un array vuoto per evitare NullPointerException
-        if (idAziendeCollegate == null) {
-            idAziendeCollegate = new Long[0];  //  Gestione valore facoltativo
-        }
+    public ResponseEntity<?> createAziendaInformazioni(
+            @ModelAttribute RichiestaInformazioniAggiuntiveAziendaDTO richiestaInformazioniAggiuntiveAziendaDTO) {
+
         File[] immaginiFiles;
         try {
-            immaginiFiles = convertMultipartFileArrayToFileArray(immagini);
+            immaginiFiles = convertMultipartFileArrayToFileArray(
+                    richiestaInformazioniAggiuntiveAziendaDTO.getImmagini());
         } catch (IOException e) {
-            System.err.println("Errore durante la conversione delle immagini: " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Error converting multipart file array", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error",
+                            "Errore durante la conversione delle immagini: " + e.getMessage()));
         }
 
         File[] certificatiFiles;
         try {
-            certificatiFiles = convertMultipartFileArrayToFileArray(certificati);
+            certificatiFiles = convertMultipartFileArrayToFileArray(
+                    richiestaInformazioniAggiuntiveAziendaDTO.getCertificati());
         } catch (IOException e) {
-            System.err.println("Errore durante la conversione dei certificati: " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Error converting multipart file array", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error",
+                            "Errore durante la conversione dei certificati: " + e.getMessage()));
         }
 
         try {
             Richiesta richiesta = contentutoService.nuovaRichiestaInformazioni(
                     Tipologia.valueOf("InfoAzienda"),
-                    descrizione,
-                    produzione,
-                    metodologie,
+                    richiestaInformazioniAggiuntiveAziendaDTO.getDescrizione(),
+                    richiestaInformazioniAggiuntiveAziendaDTO.getProduzione(),
+                    richiestaInformazioniAggiuntiveAziendaDTO.getMetodologie(),
                     immaginiFiles,
                     certificatiFiles,
-                    idAziendeCollegate);
+                    richiestaInformazioniAggiuntiveAziendaDTO.getAziendeCollegate());
             return ResponseEntity.ok(richiesta);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", "Parametro non valido: " + e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(Collections.singletonMap("error", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Errore interno del server: " + e.getMessage()));
         }
     }
 }

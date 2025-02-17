@@ -19,7 +19,8 @@ public interface AziendaRepository extends JpaRepository<Azienda, Long> {
      */
 
     @Query("SELECT a FROM Azienda a JOIN Utente u ON a.id = u.idAzienda WHERE u.ruolo = :ruolo")
-    List<Azienda> findAziendeByRuolo( Ruolo ruolo);
+    List<Azienda> findAziendeByRuolo(Ruolo ruolo);
+
     @Query("SELECT a FROM Azienda a JOIN Utente u ON a.id = u.idAzienda WHERE u.ruolo = :ruolo AND a.id = :idAzienda")
-    Azienda findAziendaByIdAndruolo(long idAzienda,Ruolo ruolo);
+    Azienda findAziendaByIdAndruolo(long idAzienda, Ruolo ruolo);
 }

@@ -1,5 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -130,7 +132,7 @@ public class RichiestaCollaborazioneController {
      */
     @PostMapping(value = "/azienda", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> creaRichiestaAzienda(
-            @ModelAttribute RichiestaCollaborazioneAziendaDTO richiestaAziendaDTO) {
+            @ModelAttribute @Valid RichiestaCollaborazioneAziendaDTO richiestaAziendaDTO) {
 
         try {
             // Convert MultipartFiles to File objects.

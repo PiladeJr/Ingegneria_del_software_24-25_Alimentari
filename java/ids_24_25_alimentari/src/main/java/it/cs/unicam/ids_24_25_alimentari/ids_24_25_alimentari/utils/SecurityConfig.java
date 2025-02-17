@@ -45,7 +45,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/visualizzaUtenti").permitAll()
                         .requestMatchers("/api/richieste-collaborazione/azienda").permitAll()
                         .requestMatchers("/api/richieste-collaborazione/**").permitAll()
-                        .requestMatchers("/api/azienda/informazioni/new").hasAnyAuthority("ROLE_PRODUTTORE","ROLE_TRASFORMATORE")
+                        .requestMatchers("/api/azienda/informazioni/new")
+                        .hasAnyAuthority("ROLE_PRODUTTORE", "ROLE_TRASFORMATORE")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception
