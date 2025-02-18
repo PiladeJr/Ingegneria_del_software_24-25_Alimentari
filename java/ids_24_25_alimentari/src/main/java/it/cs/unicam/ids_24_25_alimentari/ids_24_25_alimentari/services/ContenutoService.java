@@ -119,15 +119,12 @@ public class ContenutoService {
         }
 
         Long idUtente = isTrasformatore();
-        System.out.println("idUtente: " + idUtente);
         if (idUtente!= null)
         {
            for (long id:idAzienda){
                UtenteAziendaEsterna collegamento = CollegaAzienda(idUtente, id);
-               if(collegamento!= null)
-                   System.out.println("Collegamento avvenuto con successo");
-               else
-                   System.out.println("Collegamento non riuscito");
+               if(collegamento== null)
+                    throw new IllegalArgumentException("errore durante il collegamento delle aziende");
            }
 
         }
@@ -147,7 +144,6 @@ public class ContenutoService {
         UtenteAziendaEsterna collegamento = new UtenteAziendaEsterna();
         Azienda azienda = aziendaRepository.findAziendaByIdAndruolo(idAziendaProduttrice,Ruolo.PRODUTTORE);
         if (azienda == null) throw new IllegalArgumentException("azienda non trovata");
-        System.out.println("idAzienda: " + azienda);
         collegamento.setUtenteId(idUtente);
         collegamento.setAziendaId(azienda.getId());
 
