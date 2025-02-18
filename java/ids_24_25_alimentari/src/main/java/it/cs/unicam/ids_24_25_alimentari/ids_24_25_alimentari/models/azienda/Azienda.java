@@ -40,18 +40,13 @@ public class Azienda {
     @CollectionTable(name = "immagini", joinColumns = @JoinColumn(name = "richiesta_id"))
     @Column(name = "immagine")
     private List<File> immagini;
-
-    //@ElementCollection
-    //@CollectionTable(name = "certificati", joinColumns = @JoinColumn(name = "richiesta_id"))
     @Column(name = "certificato")
     private File certificato;
 
-    //private List<Long> catalogo;
     @OneToOne(cascade = CascadeType.ALL)
     @Nullable
     private InformazioniAggiuntive informazioniAggiuntive;
 
-    // Getters and Setters
     public long getId() {
         return id;
     }

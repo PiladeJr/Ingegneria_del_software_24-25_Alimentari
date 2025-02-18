@@ -32,15 +32,33 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
         this.jwtService = jwtService;/* add */
     }
-
+    /**
+     * <h2> Registra un nuovo utente </h2>
+     * <br>
+     * Questo metodo gestisce una richiesta HTTP POST per registrare un nuovo utente nel sistema.
+     * I dati dell'utente vengono validati e passati al servizio di autenticazione
+     * per completare la registrazione.
+     * Se la registrazione ha successo, restituisce lo stato HTTP 200 (OK) con i dettagli dell'utente.
+     *
+     * @param registerUserDto L'oggetto {@code UtenteRegistrazioneDTO} contenente i dati dell'utente da registrare.
+     * @return {@code ResponseEntity} con i dettagli dell'utente registrato e stato HTTP 200.
+     */
     @PostMapping("/signup")
     public ResponseEntity<Utente> register(
             @Valid @RequestBody UtenteRegistrazioneDTO registerUserDto) {
         Utente registeredUser = authenticationService.registrazione(registerUserDto);
         return ResponseEntity.ok(registeredUser);
     }
-
-    // Endpoint for user login
+    /**
+     * <h2>Autentica un utente e genera un token JWT</h2>
+     * <br>
+     * Questo metodo gestisce una richiesta HTTP POST per autenticare un utente nel sistema.
+     * Se l'autenticazione ha successo, genera un token JWT e restituisce una risposta
+     * contenente il token e il tempo di scadenza.
+     *
+     * @param loginUserDto L'oggetto {@code LoginUserDto} contenente le credenziali dell'utente.
+     * @return {@code ResponseEntity} con il token JWT e il tempo di scadenza se l'autenticazione ha successo.
+     */
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> authenticate(
             @RequestBody LoginUserDto loginUserDto) {
@@ -54,7 +72,18 @@ public class AuthenticationController {
 
         return ResponseEntity.ok(loginResponse);
     }
-
+    /**
+     * <h2>Gestisce le eccezioni di validazione</h2>
+     * <br>
+     * Questo metodo intercetta le eccezioni {@code MethodArgumentNotValidException}
+     * generate dalla validazione degli input nei controller.
+     * Raccoglie tutti gli errori di validazione e li restituisce in una mappa,
+     * dove la chiave è il nome del campo e il valore è il messaggio di errore associato.
+     *
+     * @param ex L'eccezione {@code MethodArgumentNotValidException} catturata.
+     * @return {@code ResponseEntity} contenente una mappa con i campi non validi e i relativi messaggi di errore,
+     *         con stato HTTP 400 (BAD REQUEST).
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {

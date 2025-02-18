@@ -3,6 +3,12 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Richiesta;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Tipologia;
 
+/**
+ * -- GETTER --
+ *  metodo che restituisce l'oggetto utente creato
+ *
+ * @return l'oggetto Richiesta creata
+ */
 public class RichiestaBuilder {
      Richiesta richiesta;
      public RichiestaBuilder() {

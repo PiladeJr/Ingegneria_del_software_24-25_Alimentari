@@ -3,7 +3,6 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import lombok.Getter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.File;
 
