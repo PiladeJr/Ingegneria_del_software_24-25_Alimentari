@@ -26,6 +26,18 @@ public class UtenteController {
         this.jwtService = jwtService;
     }
 
+    /**
+     * <h2>Recupera e restituisce la lista degli utenti registrati</h2>
+     * <br/>
+     * Questo metodo gestisce una richiesta HTTP GET per ottenere l'elenco di tutti gli utenti.
+     * Se la richiesta va a buon fine, restituisce un {@code ResponseEntity} con la lista
+     * degli utenti e lo status HTTP 200 (OK). In caso di errore, restituisce uno stato
+     * HTTP 500 (INTERNAL_SERVER_ERROR) con un messaggio di errore.
+     *
+     *
+     * @return {@code ResponseEntity} contenente la lista di {@code UtenteDTO} se la richiesta ha successo,
+     *         altrimenti un messaggio di errore con stato HTTP 500.
+     */
     @GetMapping()
     public ResponseEntity<?> visualizzaUtenti() {
         try {
@@ -37,7 +49,19 @@ public class UtenteController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
+    /**
+     * <h2> Recupera un utente tramite ID </h2>
+     * <br>
+     * Questo metodo gestisce una richiesta HTTP GET per ottenere i dettagli di un utente
+     * specifico in base all'ID fornito.
+     * Se l'utente esiste, restituisce un {@code ResponseEntity} con i suoi dati e lo stato HTTP 200 (OK).
+     * Se l'utente non viene trovato, restituisce uno stato HTTP 404 (NOT FOUND).
+     * In caso di errore, restituisce uno stato HTTP 500 (INTERNAL_SERVER_ERROR) con un messaggio di errore.
+     *
+     * @param id L'ID dell'utente da recuperare.
+     * @return {@code ResponseEntity} con i dettagli dell'utente se trovato,
+     *         oppure un messaggio di errore con stato HTTP 404 o 500.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
@@ -55,6 +79,18 @@ public class UtenteController {
         }
     }
 
+    /**
+     * <h2> Restituisce i dettagli dell'utente autenticato </h2>.
+     * <br>
+     * Questo metodo recupera l'utente attualmente autenticato dal contesto di sicurezza
+     * e genera un token JWT per l'autenticazione.
+     * Se la richiesta va a buon fine, restituisce un {@code ResponseEntity} contenente
+     * i dettagli dell'utente e il token. In caso di errore, restituisce uno stato
+     * HTTP 500 (INTERNAL_SERVER_ERROR) con un messaggio di errore.
+     *
+     * @return {@code ResponseEntity} con i dettagli dell'utente autenticato e il token JWT,
+     *         oppure un messaggio di errore con stato HTTP 500.
+     */
     @GetMapping("/me")
     public ResponseEntity<?> authenticatedUser() {
         try {

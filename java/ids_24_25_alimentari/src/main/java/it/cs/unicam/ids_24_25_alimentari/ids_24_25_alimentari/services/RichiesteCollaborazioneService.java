@@ -2,6 +2,9 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
 
 import java.util.List;
 import java.util.Optional;
+
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.RichiesteCollaborazione.RichiestaCollaborazione;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.RichiesteCollaborazione.RichiestaCollaborazioneDirector;
 import org.apache.commons.lang3.RandomStringUtils;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Indirizzo;
@@ -9,7 +12,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruol
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.smtp.ServizioEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.RichiestaCollaborazioneRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.BuilderRichiestaCollaborazione;
 import java.io.File;
@@ -45,6 +47,26 @@ public class RichiesteCollaborazioneService {
         richiestaCollaborazioneRepository.deleteById(id);
     }
 
+    /**
+     * <h2>Crea una richiesta di collaborazione per un'azienda</h2>
+     * <br>
+     * Questo metodo costruisce e salva una richiesta di collaborazione per un'azienda,
+     * utilizzando il pattern Builder e un Director per orchestrare la creazione dell'oggetto.
+     *
+     * @param nome          Il nome del rappresentante dell'azienda.
+     * @param cognome       Il cognome del rappresentante dell'azienda.
+     * @param telefono      Il numero di telefono del rappresentante.
+     * @param email         L'indirizzo email del rappresentante.
+     * @param ruolo         Il ruolo PRODUTTORE, TRASFORMATORE O DISTRIBUTORE.
+     * @param denSociale    La denominazione sociale dell'azienda.
+     * @param sedeLegale    L'indirizzo della sede legale dell'azienda.
+     * @param sedeOperativa L'indirizzo della sede operativa dell'azienda.
+     * @param iban          Il codice IBAN dell'azienda.
+     * @param iva           Il numero di partita IVA dell'azienda.
+     * @param certificato   Il file contenente il certificato dell'azienda.
+     * @param cartaIdentita Il file della carta d'identità del rappresentante.
+     * @return L'oggetto {@code RichiestaCollaborazione} creato e salvato nel sistema.
+     */
     public RichiestaCollaborazione creaRichiestaAzienda(
             String nome,
             String cognome,
@@ -64,7 +86,20 @@ public class RichiesteCollaborazioneService {
                 certificato, cartaIdentita);
         return saveRichiesta(builder.getRichiesta());
     }
-
+    /**
+     * <h2>Crea una richiesta di collaborazione per un animatore</h2>
+     * <br>
+     *
+     * @param nome            Il nome dell'animatore
+     * @param cognome         Il cognome dell'animatore
+     * @param telefono        Il numero di telefono dell'animatore
+     * @param email           L'email dell'animatore
+     * @param ruolo           Il ruolo ANIMATORE
+     * @param aziendaReferente L'azienda referente dell'animatore
+     * @param iban            L'IBAN dell'animatore
+     * @param cartaIdentita   Il file della carta d'identità dell'animatore
+     * @return La richiesta di collaborazione creata e salvata
+     */
     public RichiestaCollaborazione creaRichiestaAnimatore(
             String nome,
             String cognome,
@@ -79,7 +114,20 @@ public class RichiesteCollaborazioneService {
         director.creaAnimatore(nome, cognome, telefono, email, ruolo, aziendaReferente, iban, cartaIdentita);
         return saveRichiesta(builder.getRichiesta());
     }
-
+    /**
+     * <h2>Crea una richiesta di collaborazione per un curatore</h2>
+     * <br>
+     *
+     * @param nome           Il nome del curatore
+     * @param cognome        Il cognome del curatore
+     * @param telefono       Il numero di telefono del curatore
+     * @param email          L'email del curatore
+     * @param ruolo          Il ruolo CURATORE
+     * @param iban           L'IBAN del curatore
+     * @param cartaIdentita  Il file della carta d'identità del curatore
+     * @param cv             Il file del curriculum vitae del curatore
+     * @return La richiesta di collaborazione creata e salvata
+     */
     public RichiestaCollaborazione creaRichiestaCuratore(
             String nome,
             String cognome,
@@ -94,7 +142,17 @@ public class RichiesteCollaborazioneService {
         director.creaCuratore(nome, cognome, telefono, email, ruolo, iban, cartaIdentita, cv);
         return saveRichiesta(builder.getRichiesta());
     }
-
+    /**
+     * <h2>Imposta lo stato di una richiesta di collaborazione</h2>
+     * <br>
+     * Questo metodo aggiorna lo stato di una richiesta di collaborazione.
+     * Se lo stato viene impostato su "accettato" (true), viene generato
+     * automaticamente un account per l'utente.
+     *
+     * @param id    L'ID della richiesta di collaborazione da aggiornare.
+     * @param stato Il nuovo stato della richiesta (true = accettata, false = rifiutata).
+     * @return La richiesta di collaborazione aggiornata, o null se non trovata.
+     */
     public RichiestaCollaborazione setStato(long id, boolean stato) {
         Optional<RichiestaCollaborazione> richiesta = getRichiestaById(id);
         if (richiesta.isPresent()) {
@@ -106,7 +164,17 @@ public class RichiesteCollaborazioneService {
         }
         return null;
     }
-
+    /**
+     * <h2>Genera un account per un nuovo utente</h2>
+     * <br>
+     * Questo metodo crea un nuovo account per un utente che ha presentato
+     * una richiesta di collaborazione. Se il ruolo dell'utente è
+     * un'azienda (Produttore, Trasformatore, Distributore), viene
+     * prima creata l'azienda e successivamente l'utente associato.
+     * Una password casuale viene generata e inviata via email.
+     *
+     * @param id L'ID della richiesta di collaborazione da elaborare.
+     */
     public void generaAccount(long id) {
         Optional<RichiestaCollaborazione> richiesta = getRichiestaById(id);
         if (richiesta.isPresent()) {

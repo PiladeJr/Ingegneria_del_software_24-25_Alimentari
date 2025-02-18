@@ -27,14 +27,24 @@ public class AutenticazioneService {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
     }
-
+    /**
+     * <h2>Registra un nuovo utente</h2>
+     * <br>
+     * Questo metodo crea e salva un nuovo utente nel database dopo aver verificato
+     * che non esista già un utente con la stessa email.
+     * Se un utente con la stessa email è già registrato, viene lanciata un'eccezione.
+     *
+     * @param input L'oggetto {@code UtenteRegistrazioneDTO} contenente i dati dell'utente da registrare.
+     * @return L'oggetto {@code Utente} appena creato e salvato nel database.
+     * @throws IllegalArgumentException Se esiste già un utente con la stessa email.
+     */
     public Utente registrazione(@Valid UtenteRegistrazioneDTO input) {
-        // Check if user already exists
+        //controllo se l'utente esiste
         if (utenteRepository.findByEmail(input.getEmail()).isPresent()) {
             throw new IllegalArgumentException(
                     "User already exists with email: " + input.getEmail());
         }
-        // Create and save the new user
+        // crea e salva un nuovo utente
         Utente utente = new Utente();
         utente.setNome(input.getNome());
         utente.setCognome(input.getCognome());
@@ -45,27 +55,35 @@ public class AutenticazioneService {
         return utenteRepository.save(utente);
     }
 
+    /**
+     * <h2>Autentica un utente</h2>
+     * <br>
+     * Questo metodo verifica le credenziali di un utente confrontando l'email e la password
+     * con quelle salvate nel database.
+     * Se l'email non è registrata o la password è errata, viene lanciata un'eccezione.
+     * Se l'autenticazione ha successo, restituisce l'utente autenticato.
+     *
+     * @param input L'oggetto {@code LoginUserDto} contenente le credenziali dell'utente.
+     * @return L'oggetto {@code Utente} autenticato.
+     * @throws IllegalArgumentException Se l'email non esiste o la password è errata.
+     */
     public Utente authenticate(LoginUserDto input) {
         Utente user = utenteRepository
                 .findByEmail(input.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Email not found: " + input.getEmail()));
 
-        // Check if password is correct
+        // controlla che la password sia corretta
         if (!passwordEncoder.matches(input.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException(
                     "Incorrect password for email: " + input.getEmail());
         }
 
-        // Perform authentication
+        // effettua l'autenticazione
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),
                         input.getPassword()));
 
-        return user; // Return authenticated user
-    }
-
-    public List<Utente> allUsers() {
-        return utenteRepository.findAll();
+        return user;
     }
 }

@@ -6,6 +6,13 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Ind
 import java.io.File;
 import java.util.List;
 
+/**
+ * -- GETTER --
+ *  metodo che restituisce l'oggetto utente creato
+ *
+ * @return l'oggetto utente creato
+ */
+
 public class AziendaBuilder {
     Azienda azienda;
 

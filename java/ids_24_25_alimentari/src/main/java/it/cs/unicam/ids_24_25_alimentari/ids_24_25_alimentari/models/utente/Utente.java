@@ -1,7 +1,5 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente;
 
-import ch.qos.logback.classic.encoder.JsonEncoder;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.SecurityConfig;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +13,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -86,6 +83,15 @@ public class Utente implements UserDetails {
         this.email = email;
     }
 
+    /**
+     * Restituisce l'elenco delle autorità (ruoli) assegnate all'utente.
+     * <p>
+     * Questo metodo implementa l'interfaccia {@code GrantedAuthority} di Spring Security,
+     * restituendo una lista contenente il ruolo dell'utente con il prefisso "ROLE_".
+     * </p>
+     *
+     * @return Una collezione di {@code GrantedAuthority} contenente il ruolo dell'utente.
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + ruolo.name()));
@@ -94,6 +100,13 @@ public class Utente implements UserDetails {
     public String getPassword() {
         return password;
     }
+
+    /**
+     * salva nell'oggetto Utente la password dopo averla crittografata
+     * mediante algoritmo BCrypt
+     *
+     * @param hashedPassword la password da crittografare e salvare
+     */
 
     public void setPassword(String hashedPassword) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -159,11 +172,6 @@ public class Utente implements UserDetails {
         this.idAzienda = idAzienda;
     }
 
-    /*
-     * public List<Ruolo> getRuoliDisponibili() {
-     * return Arrays.asList(Ruolo.values());
-     * }
-     */
     public Utente(String nome, String cognome, String email, String password, String telefono) {
 
         this.nome = nome;

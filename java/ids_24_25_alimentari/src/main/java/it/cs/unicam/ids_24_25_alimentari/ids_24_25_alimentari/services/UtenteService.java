@@ -5,7 +5,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruol
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.UtenteBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.AccountManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

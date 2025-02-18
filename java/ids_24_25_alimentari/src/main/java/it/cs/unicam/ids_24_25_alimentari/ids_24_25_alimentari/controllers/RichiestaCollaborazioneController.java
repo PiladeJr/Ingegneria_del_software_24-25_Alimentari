@@ -5,19 +5,17 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.CambiaStatoRichiestaCollaborazioneDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneAziendaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneCuratoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneAnimatoreDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.RichiestaCollaborazione;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.RichiesteCollaborazione.RichiestaCollaborazione;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.RichiesteCollaborazioneService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.smtp.ServizioEmail;
 import java.io.File;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import java.util.List;
 import java.util.Optional;
 import java.util.Collections;
@@ -31,15 +29,7 @@ public class RichiestaCollaborazioneController {
     private final RichiesteCollaborazioneService richiesteCollaborazioneService;
     private final ServizioEmail servizioEmail;
 
-    /**
-     * Constructs the RichiestaCollaborazioneController with the required service
-     * dependencies.
-     *
-     * @param richiesteCollaborazioneService the service managing collaboration
-     *                                       requests
-     * @param servizioEmail                  the email service for sending
-     *                                       notifications
-     */
+
     public RichiestaCollaborazioneController(RichiesteCollaborazioneService richiesteCollaborazioneService,
             ServizioEmail servizioEmail) {
         this.richiesteCollaborazioneService = richiesteCollaborazioneService;
@@ -47,9 +37,11 @@ public class RichiestaCollaborazioneController {
     }
 
     /**
-     * Retrieves all collaboration requests.
+     * <h2>Recupera tutte le richieste di collaborazione</h2>
+     * <br>
+     * Questo metodo restituisce tutte le richieste di collaborazione presenti nel sistema.
      *
-     * @return a ResponseEntity containing the list of collaboration requests
+     * @return {@code ResponseEntity} contenente la lista di {@code RichiestaCollaborazione}.
      */
     @GetMapping
     public ResponseEntity<List<RichiestaCollaborazione>> getAllRichieste() {
@@ -58,11 +50,16 @@ public class RichiestaCollaborazioneController {
     }
 
     /**
-     * Retrieves a collaboration request by its unique identifier.
+     * <h2>Recupera una richiesta di collaborazione per ID</h2>
+     * <br>
+     * Questo metodo cerca una richiesta di collaborazione specifica in base all'ID fornito.
+     * Se la richiesta esiste, viene restituita con stato HTTP 200 (OK).
+     * Se la richiesta non viene trovata, restituisce uno stato HTTP 404 (NOT FOUND)
+     * con un messaggio di errore in formato JSON.
+     * In caso di errore imprevisto, restituisce uno stato HTTP 500 (INTERNAL SERVER ERROR).
      *
-     * @param id the unique identifier of the collaboration request
-     * @return a ResponseEntity containing the found collaboration request, or a 404
-     *         status if not found, or 500 if an error occurs
+     * @param id L'ID della richiesta di collaborazione da recuperare.
+     * @return {@code ResponseEntity} contenente la richiesta trovata o un messaggio di errore.
      */
     @GetMapping("/{id}")
     public ResponseEntity<?> getRichiestaById(@PathVariable Long id) {
@@ -81,23 +78,18 @@ public class RichiestaCollaborazioneController {
     }
 
     /**
-     * Creates a new collaboration request.
+     * <h2>Elimina una richiesta di collaborazione</h2>
+     * <br>
+     * Questo metodo permette di eliminare una richiesta di collaborazione specifica
+     * in base all'ID fornito.
+     * Se la richiesta esiste, viene eliminata e viene restituito un messaggio di conferma
+     * con stato HTTP 200 (OK).
+     * Se la richiesta non viene trovata, restituisce uno stato HTTP 404 (NOT FOUND)
+     * con un messaggio di errore in formato JSON.
+     * In caso di errore durante l'eliminazione, restituisce uno stato HTTP 500 (INTERNAL SERVER ERROR).
      *
-     * @param richiesta the RichiestaCollaborazione object to be created
-     * @return a ResponseEntity containing the saved collaboration request
-     */
-    @PostMapping
-    public ResponseEntity<RichiestaCollaborazione> createRichiesta(@RequestBody RichiestaCollaborazione richiesta) {
-        RichiestaCollaborazione savedRichiesta = richiesteCollaborazioneService.saveRichiesta(richiesta);
-        return ResponseEntity.ok(savedRichiesta);
-    }
-
-    /**
-     * Deletes an existing collaboration request by its unique identifier.
-     *
-     * @param id the unique identifier of the collaboration request to delete
-     * @return a ResponseEntity with no content to indicate successful deletion, or
-     *         an error status if deletion fails
+     * @param id L'ID della richiesta di collaborazione da eliminare.
+     * @return {@code ResponseEntity} contenente un messaggio di conferma o di errore.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRichiesta(@PathVariable Long id) {
@@ -118,17 +110,16 @@ public class RichiestaCollaborazioneController {
     }
 
     /**
-     * Creates a collaboration request for an azienda (company).
+     * <h2>Crea una richiesta di collaborazione per un'azienda</h2>
+     * <br>
+     * Questo metodo permette di creare una richiesta di collaborazione per un'azienda,
+     * accettando i dati sotto forma di `multipart/form-data`.
+     * I file allegati (certificato e carta d'identità) vengono convertiti e inclusi nella richiesta.
      *
-     * <p>
-     * This method converts the provided MultipartFiles into Files and delegates the
-     * creation logic
-     * to the service layer.
-     * </p>
-     *
-     * @param richiestaAziendaDTO a DTO containing the azienda request details
-     * @return a ResponseEntity containing the created collaboration request, or an
-     *         error status if creation fails
+     * @param richiestaAziendaDTO L'oggetto {@code RichiestaCollaborazioneAziendaDTO} contenente
+     *                             i dati dell'azienda e i file allegati.
+     * @return {@code ResponseEntity} contenente la richiesta creata con stato HTTP 200 (OK)
+     *         o un messaggio di errore con stato HTTP 500 (INTERNAL SERVER ERROR).
      */
     @PostMapping(value = "/azienda", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> creaRichiestaAzienda(
@@ -161,20 +152,17 @@ public class RichiestaCollaborazioneController {
                             "Errore nella creazione della richiesta: " + e.getMessage()));
         }
     }
-
     /**
-     * Creates a collaboration request for an animatore.
+     * <h2>Crea una richiesta di collaborazione per un animatore</h2>
+     * <br>
+     * Questo metodo permette di creare una richiesta di collaborazione per un animatore,
+     * accettando i dati sotto forma di `multipart/form-data`.
+     * Il file allegato (carta d'identità) viene convertito e incluso nella richiesta.
      *
-     * @param nome             the first name of the applicant
-     * @param cognome          the last name of the applicant
-     * @param telefono         the phone number of the applicant
-     * @param email            the email address of the applicant
-     * @param ruolo            the role of the applicant
-     * @param aziendaReferente the company reference for the applicant
-     * @param iban             the IBAN of the applicant
-     * @param cartaIdentita    the identity card file of the applicant
-     * @return a ResponseEntity containing the created collaboration request, or an
-     *         error status if creation fails
+     * @param richiestaAnimatoreDTO L'oggetto {@code RichiestaCollaborazioneAnimatoreDTO} contenente
+     *                               i dati dell'animatore e il file della carta d'identità.
+     * @return {@code ResponseEntity} contenente la richiesta creata con stato HTTP 200 (OK)
+     *         o un messaggio di errore con stato HTTP 500 (INTERNAL SERVER ERROR).
      */
     @PostMapping(value = "/animatore", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> creaRichiestaAnimatore(
@@ -202,20 +190,17 @@ public class RichiestaCollaborazioneController {
                             "Errore nella creazione della richiesta: " + e.getMessage()));
         }
     }
-
     /**
-     * Creates a collaboration request for a curatore.
+     * <h2>Crea una richiesta di collaborazione per un curatore</h2>
+     * <br>
+     * Questo metodo permette di creare una richiesta di collaborazione per un curatore,
+     * accettando i dati sotto forma di `multipart/form-data`.
+     * I file allegati (carta d'identità e curriculum vitae) vengono convertiti e inclusi nella richiesta.
      *
-     * @param nome          the first name of the applicant
-     * @param cognome       the last name of the applicant
-     * @param telefono      the phone number of the applicant
-     * @param email         the email address of the applicant
-     * @param ruolo         the role of the applicant
-     * @param iban          the IBAN of the applicant
-     * @param cartaIdentita the identity card file of the applicant
-     * @param cv            the curriculum vitae file of the applicant
-     * @return a ResponseEntity containing the created collaboration request, or an
-     *         error status if creation fails
+     * @param richiestaCuratoreDTO L'oggetto {@code RichiestaCollaborazioneCuratoreDTO} contenente
+     *                              i dati del curatore e i file allegati.
+     * @return {@code ResponseEntity} contenente la richiesta creata con stato HTTP 200 (OK)
+     *         o un messaggio di errore con stato HTTP 500 (INTERNAL SERVER ERROR).
      */
     @PostMapping(value = "/curatore", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> creaRichiestaCuratore(
@@ -244,19 +229,21 @@ public class RichiestaCollaborazioneController {
                             "Errore nella creazione della richiesta: " + e.getMessage()));
         }
     }
-
     /**
-     * Updates the status of a collaboration request.
+     * <h2>Aggiorna lo stato di una richiesta di collaborazione</h2>
+     * <br>
+     * Questo metodo permette di accettare o rifiutare una richiesta di collaborazione.
+     * Se la richiesta è già stata elaborata, restituisce un errore.
+     * In caso di rifiuto, è necessario fornire un messaggio di motivazione.
+     * Se la richiesta viene rifiutata, viene inviata una mail di notifica all'utente.
      *
-     * <p>
-     * If the request is already processed, a bad request status is returned.
-     * Depending on the new status,
-     * the appropriate email notification is sent to the requester.
-     * </p>
-     *
-     * @param dto an object containing the id of the collaboration request, the new
-     *            status, and an optional additional message
-     * @return a ResponseEntity with a success or error message
+     * @param dto L'oggetto {@code CambiaStatoRichiestaCollaborazioneDTO} contenente
+     *            l'ID della richiesta e il nuovo stato da impostare.
+     * @return {@code ResponseEntity} con un messaggio di conferma o errore:
+     *         - HTTP 200 (OK) se lo stato è stato aggiornato correttamente.
+     *         - HTTP 400 (BAD REQUEST) se la richiesta è già stata elaborata
+     *           o se manca il messaggio in caso di rifiuto.
+     *         - HTTP 404 (NOT FOUND) se la richiesta non esiste.
      */
     @PatchMapping("/stato")
     public ResponseEntity<?> updateStato(@RequestBody CambiaStatoRichiestaCollaborazioneDTO dto) {

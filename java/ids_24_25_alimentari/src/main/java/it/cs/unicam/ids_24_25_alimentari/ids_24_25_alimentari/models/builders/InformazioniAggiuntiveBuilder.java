@@ -6,6 +6,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * -- GETTER --
+ *  metodo che restituisce l'oggetto utente creato
+ *
+ * @return l'oggetto InformazioniAggiuntive creato
+ */
 public class InformazioniAggiuntiveBuilder {
     private InformazioniAggiuntive informazioniAggiuntive;
 
