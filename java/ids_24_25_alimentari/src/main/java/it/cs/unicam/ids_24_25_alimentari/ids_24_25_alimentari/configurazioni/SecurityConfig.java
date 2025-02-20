@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-
+import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -38,12 +38,28 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/api/users/visualizzaUtenti").permitAll()
-                        .requestMatchers("/api/richieste-collaborazione/azienda").permitAll()
-                        .requestMatchers("/api/richieste-collaborazione/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/richieste-collaborazione/azienda").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/richieste-collaborazione/animatore").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/richieste-collaborazione/curatore").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/richieste-collaborazione/stato")
+                        .hasAnyAuthority("ROLE_GESTORE")
+                        .requestMatchers("/api/richieste-collaborazione/**").hasAnyAuthority("ROLE_GESTORE")
+                        .requestMatchers(HttpMethod.GET, "/api/azienda/{id}")
+                        .hasAnyAuthority("ROLE_GESTORE", "ROLE_CURATORE")
+                        .requestMatchers("/api/azienda/roles/**")
+                        .hasAnyAuthority("ROLE_GESTORE", "ROLE_CURATORE", "ROLE_TRASFORMATORE")
+                        .requestMatchers(HttpMethod.DELETE, "/api/azienda/{id}").hasAuthority("ROLE_GESTORE")
+                        .requestMatchers("/api/azienda/informazioni/new")
+                        .hasAnyAuthority("ROLE_PRODUTTORE", "ROLE_TRASFORMATORE",
+                                "ROLE_GESTORE", "ROLE_CURATORE")
                         .requestMatchers("/api/azienda/informazioni/new")
                         .hasAnyAuthority("ROLE_PRODUTTORE", "ROLE_TRASFORMATORE")
+                        .requestMatchers("/api/azienda/**").hasAnyAuthority("ROLE_GESTORE", "ROLE_CURATORE")
+                        .requestMatchers("/api/users").hasAnyAuthority("ROLE_GESTORE")
+                        .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
+                        .requestMatchers("/api/users/**").hasAnyAuthority("ROLE_GESTORE")
                         .anyRequest().authenticated())
+
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
