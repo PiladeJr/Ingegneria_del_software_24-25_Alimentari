@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.LoginResponseDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.LoginUserDto;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.UtenteRegistrazioneDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.AutenticazioneService;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.JwtService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.login.LoginResponseDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.login.LoginUserDto;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.utente.UtenteRegistrazioneDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.AutenticazioneService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.JwtService;
 
 @RequestMapping("/api/auth")
 @RestController
