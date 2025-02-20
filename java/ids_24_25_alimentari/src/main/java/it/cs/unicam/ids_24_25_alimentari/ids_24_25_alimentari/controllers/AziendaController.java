@@ -1,20 +1,19 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneAziendaDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaInformazioniAggiuntiveAziendaDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Richiesta;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Tipologia;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.AziendaService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesta.RichiestaInformazioniAggiuntiveAziendaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Tipologia;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.AziendaService;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.ContenutoService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.ContenutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -22,8 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileToFile.convertiMultipartFileToFile;
-import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileArrayToFileArray.convertMultipartFileArrayToFileArray;
+import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multipartConverter.ConvertitoreMultipartFileArrayToFileArray.convertMultipartFileArrayToFileArray;
 
 /**
  * Controller per la gestione delle operazioni relative all'entità Azienda.
@@ -102,11 +100,11 @@ public class AziendaController {
     }
 
     /**
-     * Deletes an Azienda entity by its ID.
-     *
-     * @param id The ID of the Azienda to be deleted.
-     * @return ResponseEntity with a JSON body containing an error message if
-     *         deletion fails, otherwise no content.
+     * Rimuove un'istanza di Azienda tramite il suo ID
+     * 
+     * @param id L'id dell'Azienda da eliminare.
+     * @return ResponseEntity con un body JSON contenente un messaggio di errore se
+     *         l'eliminazione fallisce, altrimenti non ritorna nulla.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAzienda(@PathVariable Long id) {
@@ -135,12 +133,8 @@ public class AziendaController {
      * multipart/form-data per creare una nuova Richiesta di informazioni di tipo
      * InfoAzienda.
      *
-     * @param descrizione        La descrizione dell'azienda.
-     * @param produzione         Il tipo di produzione dell'azienda.
-     * @param metodologie        Le metodologie di produzione dell'azienda.
-     * @param immagini           Le immagini dell'azienda.
-     * @param certificati        I certificati dell'azienda.
-     * @param idAziendeCollegate Gli ID delle aziende collegate.
+     * @param richiestaInformazioniAggiuntiveAziendaDTO     L'oggetto {@code richiestaInformazioniAggiuntiveAziendaDTO} contenente
+     *                                                      i dati relativi alle informazioni aggiuntivi ed i file allegati.
      * @return ResponseEntity contenente la Richiesta creata.
      */
     @PostMapping(value = "/informazioni/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -7,20 +7,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.CambiaStatoRichiestaCollaborazioneDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneAziendaDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneCuratoreDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneAnimatoreDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.RichiesteCollaborazione.RichiestaCollaborazione;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.RichiesteCollaborazioneService;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.smtp.ServizioEmail;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesteCollaborazione.CambiaStatoRichiestaCollaborazioneDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesteCollaborazione.RichiestaCollaborazioneAziendaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesteCollaborazione.RichiestaCollaborazioneCuratoreDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesteCollaborazione.RichiestaCollaborazioneAnimatoreDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesteCollaborazione.RichiestaCollaborazione;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.RichiesteCollaborazioneService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;
 import java.io.File;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Collections;
 
-import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileToFile.convertiMultipartFileToFile;
+import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multipartConverter.ConvertitoreMultipartFileToFile.convertiMultipartFileToFile;
 
 @RestController
 @RequestMapping("/api/richieste-collaborazione")
