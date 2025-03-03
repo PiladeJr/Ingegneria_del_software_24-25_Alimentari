@@ -50,8 +50,10 @@ public class RichiesteCollaborazioneService {
     /**
      * <h2>Crea una richiesta di collaborazione per un'azienda</h2>
      * <br>
-     * Questo metodo costruisce e salva una richiesta di collaborazione per un'azienda,
-     * utilizzando il pattern Builder e un Director per orchestrare la creazione dell'oggetto.
+     * Questo metodo costruisce e salva una richiesta di collaborazione per
+     * un'azienda,
+     * utilizzando il pattern Builder e un Director per orchestrare la creazione
+     * dell'oggetto.
      *
      * @param nome          Il nome del rappresentante dell'azienda.
      * @param cognome       Il cognome del rappresentante dell'azienda.
@@ -65,7 +67,8 @@ public class RichiesteCollaborazioneService {
      * @param iva           Il numero di partita IVA dell'azienda.
      * @param certificato   Il file contenente il certificato dell'azienda.
      * @param cartaIdentita Il file della carta d'identità del rappresentante.
-     * @return L'oggetto {@code RichiestaCollaborazione} creato e salvato nel sistema.
+     * @return L'oggetto {@code RichiestaCollaborazione} creato e salvato nel
+     *         sistema.
      */
     public RichiestaCollaborazione creaRichiestaAzienda(
             String nome,
@@ -80,24 +83,28 @@ public class RichiesteCollaborazioneService {
             String iva,
             File certificato,
             File cartaIdentita) {
+        if (utenteService.isRegistrato(email)) {
+            throw new IllegalArgumentException("Utente già registrato");
+        }
         RichiestaCollaborazioneBuilder builder = new RichiestaCollaborazioneBuilder();
         RichiestaCollaborazioneDirector director = new RichiestaCollaborazioneDirector(builder);
         director.creaAzienda(nome, cognome, telefono, email, ruolo, denSociale, sedeLegale, sedeOperativa, iban, iva,
                 certificato, cartaIdentita);
         return saveRichiesta(builder.getRichiesta());
     }
+
     /**
      * <h2>Crea una richiesta di collaborazione per un animatore</h2>
      * <br>
      *
-     * @param nome            Il nome dell'animatore
-     * @param cognome         Il cognome dell'animatore
-     * @param telefono        Il numero di telefono dell'animatore
-     * @param email           L'email dell'animatore
-     * @param ruolo           Il ruolo ANIMATORE
+     * @param nome             Il nome dell'animatore
+     * @param cognome          Il cognome dell'animatore
+     * @param telefono         Il numero di telefono dell'animatore
+     * @param email            L'email dell'animatore
+     * @param ruolo            Il ruolo ANIMATORE
      * @param aziendaReferente L'azienda referente dell'animatore
-     * @param iban            L'IBAN dell'animatore
-     * @param cartaIdentita   Il file della carta d'identità dell'animatore
+     * @param iban             L'IBAN dell'animatore
+     * @param cartaIdentita    Il file della carta d'identità dell'animatore
      * @return La richiesta di collaborazione creata e salvata
      */
     public RichiestaCollaborazione creaRichiestaAnimatore(
@@ -109,23 +116,27 @@ public class RichiesteCollaborazioneService {
             String aziendaReferente,
             String iban,
             File cartaIdentita) {
+        if (utenteService.isRegistrato(email)) {
+            throw new IllegalArgumentException("Utente già registrato");
+        }
         RichiestaCollaborazioneBuilder builder = new RichiestaCollaborazioneBuilder();
         RichiestaCollaborazioneDirector director = new RichiestaCollaborazioneDirector(builder);
         director.creaAnimatore(nome, cognome, telefono, email, ruolo, aziendaReferente, iban, cartaIdentita);
         return saveRichiesta(builder.getRichiesta());
     }
+
     /**
      * <h2>Crea una richiesta di collaborazione per un curatore</h2>
      * <br>
      *
-     * @param nome           Il nome del curatore
-     * @param cognome        Il cognome del curatore
-     * @param telefono       Il numero di telefono del curatore
-     * @param email          L'email del curatore
-     * @param ruolo          Il ruolo CURATORE
-     * @param iban           L'IBAN del curatore
-     * @param cartaIdentita  Il file della carta d'identità del curatore
-     * @param cv             Il file del curriculum vitae del curatore
+     * @param nome          Il nome del curatore
+     * @param cognome       Il cognome del curatore
+     * @param telefono      Il numero di telefono del curatore
+     * @param email         L'email del curatore
+     * @param ruolo         Il ruolo CURATORE
+     * @param iban          L'IBAN del curatore
+     * @param cartaIdentita Il file della carta d'identità del curatore
+     * @param cv            Il file del curriculum vitae del curatore
      * @return La richiesta di collaborazione creata e salvata
      */
     public RichiestaCollaborazione creaRichiestaCuratore(
@@ -137,11 +148,15 @@ public class RichiesteCollaborazioneService {
             String iban,
             File cartaIdentita,
             File cv) {
+        if (utenteService.isRegistrato(email)) {
+            throw new IllegalArgumentException("Utente già registrato");
+        }
         RichiestaCollaborazioneBuilder builder = new RichiestaCollaborazioneBuilder();
         RichiestaCollaborazioneDirector director = new RichiestaCollaborazioneDirector(builder);
         director.creaCuratore(nome, cognome, telefono, email, ruolo, iban, cartaIdentita, cv);
         return saveRichiesta(builder.getRichiesta());
     }
+
     /**
      * <h2>Imposta lo stato di una richiesta di collaborazione</h2>
      * <br>
@@ -150,7 +165,8 @@ public class RichiesteCollaborazioneService {
      * automaticamente un account per l'utente.
      *
      * @param id    L'ID della richiesta di collaborazione da aggiornare.
-     * @param stato Il nuovo stato della richiesta (true = accettata, false = rifiutata).
+     * @param stato Il nuovo stato della richiesta (true = accettata, false =
+     *              rifiutata).
      * @return La richiesta di collaborazione aggiornata, o null se non trovata.
      */
     public RichiestaCollaborazione setStato(long id, boolean stato) {
@@ -164,6 +180,7 @@ public class RichiesteCollaborazioneService {
         }
         return null;
     }
+
     /**
      * <h2>Genera un account per un nuovo utente</h2>
      * <br>
