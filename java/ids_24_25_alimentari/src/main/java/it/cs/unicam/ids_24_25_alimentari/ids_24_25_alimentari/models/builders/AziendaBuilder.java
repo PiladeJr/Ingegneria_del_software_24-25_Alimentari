@@ -32,8 +32,6 @@ public class AziendaBuilder {
 
     public void aggiungiCertificato(File certificato){ this.azienda.setCertificato(certificato); }
 
-    public void aggiungiImmagini(List<File> immagini){ this.azienda.setImmagini(immagini); }
-
     public Azienda getAzienda() {
         Azienda a = this.azienda;
         this.reset();

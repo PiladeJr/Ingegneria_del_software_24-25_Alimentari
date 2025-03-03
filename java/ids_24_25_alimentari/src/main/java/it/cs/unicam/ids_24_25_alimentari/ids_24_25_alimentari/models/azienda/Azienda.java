@@ -1,5 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.prodotto.Prodotto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.InformazioniAggiuntive;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -36,16 +37,17 @@ public class Azienda {
 
     @Column(name = "iban", nullable = false)
     private String iban;
-    @ElementCollection
-    @CollectionTable(name = "immagini", joinColumns = @JoinColumn(name = "richiesta_id"))
-    @Column(name = "immagine")
-    private List<File> immagini;
+
     @Column(name = "certificato")
     private File certificato;
 
     @OneToOne(cascade = CascadeType.ALL)
     @Nullable
     private InformazioniAggiuntive informazioniAggiuntive;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @Column(name = "prodotto", nullable = true)
+    private List<Prodotto> prodotti;
 
     public long getId() {
         return id;
@@ -93,14 +95,6 @@ public class Azienda {
 
     public void setIban(String iban) {
         this.iban = iban;
-    }
-
-    public List<File> getImmagini() {
-        return immagini;
-    }
-
-    public void setImmagini(List<File> immagini) {
-        this.immagini = immagini;
     }
 
     public File getCertificato() {

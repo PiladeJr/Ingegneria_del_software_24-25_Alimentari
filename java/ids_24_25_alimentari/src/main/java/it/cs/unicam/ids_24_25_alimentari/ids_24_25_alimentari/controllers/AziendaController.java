@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
@@ -22,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileToFile.convertiMultipartFileToFile;
 import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileArrayToFileArray.convertMultipartFileArrayToFileArray;
 
 /**
@@ -135,12 +133,7 @@ public class AziendaController {
      * multipart/form-data per creare una nuova Richiesta di informazioni di tipo
      * InfoAzienda.
      *
-     * @param descrizione        La descrizione dell'azienda.
-     * @param produzione         Il tipo di produzione dell'azienda.
-     * @param metodologie        Le metodologie di produzione dell'azienda.
-     * @param immagini           Le immagini dell'azienda.
-     * @param certificati        I certificati dell'azienda.
-     * @param idAziendeCollegate Gli ID delle aziende collegate.
+     * @param richiestaInformazioniAggiuntiveAziendaDTO
      * @return ResponseEntity contenente la Richiesta creata.
      */
     @PostMapping(value = "/informazioni/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
