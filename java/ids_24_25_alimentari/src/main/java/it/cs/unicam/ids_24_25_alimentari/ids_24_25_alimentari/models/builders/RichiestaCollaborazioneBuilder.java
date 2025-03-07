@@ -12,10 +12,10 @@ import java.io.File;
  *
  * @return l'oggetto RichiestaCollaborazione creato
  */
-public class BuilderRichiestaCollaborazione {
+public class RichiestaCollaborazioneBuilder {
     private RichiestaCollaborazione collaborazione;
 
-    public BuilderRichiestaCollaborazione() {
+    public RichiestaCollaborazioneBuilder() {
         reset();
     }
 

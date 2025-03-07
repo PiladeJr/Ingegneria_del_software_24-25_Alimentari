@@ -1,14 +1,12 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaCollaborazioneAziendaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.RichiestaInformazioniAggiuntiveAziendaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Richiesta;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.AziendaService;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.ContenutoService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.RichiestaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileArrayToFileArray.convertMultipartFileArrayToFileArray;
+import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileToFile.convertMultipartFileArrayToFileArray;
 
 /**
  * Controller per la gestione delle operazioni relative all'entità Azienda.
@@ -32,12 +30,13 @@ import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.Conve
 public class AziendaController {
 
     @Autowired
-    AziendaService aziendaService = new AziendaService();
+    private final AziendaService aziendaService;
     @Autowired
-    ContenutoService contentutoService;
+    private final RichiestaService richiestaService;
 
-    public AziendaController(ContenutoService contentutoService) {
-        this.contentutoService = contentutoService;
+    public AziendaController(AziendaService aziendaService, RichiestaService richiestaService) {
+        this.aziendaService = aziendaService;
+        this.richiestaService = richiestaService;
     }
 
     /**
@@ -100,11 +99,11 @@ public class AziendaController {
     }
 
     /**
-     * Deletes an Azienda entity by its ID.
+     * Elimina un'entità {@link Azienda} tramite il suo ID
      *
-     * @param id The ID of the Azienda to be deleted.
-     * @return ResponseEntity with a JSON body containing an error message if
-     *         deletion fails, otherwise no content.
+     * @param id dell'azienda che vogliamo eliminare.
+     * @return ResponseEntity con un body JSON contenente un messaggio d'errore se l'eliminazione
+     *         fallisce, altrimenti nessun contenuto.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAzienda(@PathVariable Long id) {
@@ -161,8 +160,7 @@ public class AziendaController {
         }
 
         try {
-            Richiesta richiesta = contentutoService.nuovaRichiestaInformazioni(
-                    Tipologia.valueOf("InfoAzienda"),
+            Richiesta richiesta = this.richiestaService.nuovaRichiestaInformazioniAggiuntive(
                     richiestaInformazioniAggiuntiveAziendaDTO.getDescrizione(),
                     richiestaInformazioniAggiuntiveAziendaDTO.getProduzione(),
                     richiestaInformazioniAggiuntiveAziendaDTO.getMetodologie(),

@@ -7,8 +7,10 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.Ut
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -47,6 +49,19 @@ public class UtenteService implements UserDetailsService {
     }
 
     /**
+     * ottieni l'id dell'utente autenticato estraendolo dal suo token
+     * @return l'id dell'utente autenticato
+     */
+    public Long getIdUtenteAutenticato() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
+            Optional<Utente> utente = utenteRepository.findByEmail(userDetails.getUsername());
+            return utente.isPresent() ? utente.get().getId() : null;
+        }
+        throw new RuntimeException("Utente non autenticato");
+    }
+
+    /**
      * seleziona l'utente dalla lista tramite il suo id
      *
      * @param idUtente
@@ -82,7 +97,6 @@ public class UtenteService implements UserDetailsService {
     }
 
     /**
-     *
      * verifica che l'utente sia registrato tramite la sua mail
      *
      * @param email cercata nel database
@@ -94,6 +108,16 @@ public class UtenteService implements UserDetailsService {
         Optional<Utente> registrato = utenteRepository.findByEmail(email);
 
         return (registrato.isPresent());
+    }
+
+    /**
+     * restituisce il ruolo dell'utente
+     *
+     * @return ruolo se l'utente esiste, null altrimenti
+     */
+    public Ruolo getRuoloUtenteById(Long idUtente){
+        Optional<Utente> utente = utenteRepository.findById(idUtente);
+        return utente.isPresent() ? utente.get().getRuolo() : null;
     }
 
     /**

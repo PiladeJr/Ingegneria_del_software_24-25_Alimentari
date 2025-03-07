@@ -20,4 +20,14 @@ public class ConvertitoreMultipartFileToFile {
         // Ritorna il file
         return file;
     }
+
+    public static File[] convertMultipartFileArrayToFileArray(MultipartFile[] multipartFiles) throws IOException {
+        File[] files = new File[multipartFiles.length];
+        for (int i = 0; i < multipartFiles.length; i++) {
+            files[i] = convertiMultipartFileToFile(multipartFiles[i]);
+        }
+        return files;
+    }
+
+
 }

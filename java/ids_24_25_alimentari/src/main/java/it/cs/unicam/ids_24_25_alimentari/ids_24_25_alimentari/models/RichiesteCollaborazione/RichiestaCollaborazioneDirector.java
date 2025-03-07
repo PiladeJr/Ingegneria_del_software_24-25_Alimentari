@@ -3,13 +3,13 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.RichiesteC
 import java.io.File;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Indirizzo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.BuilderRichiestaCollaborazione;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.RichiestaCollaborazioneBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 
 public class RichiestaCollaborazioneDirector {
-    private BuilderRichiestaCollaborazione builder;
+    private RichiestaCollaborazioneBuilder builder;
 
-    public RichiestaCollaborazioneDirector(BuilderRichiestaCollaborazione builder) {
+    public RichiestaCollaborazioneDirector(RichiestaCollaborazioneBuilder builder) {
         this.builder = builder;
     }
 

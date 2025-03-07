@@ -13,7 +13,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.smtp.ServizioEmail
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.RichiestaCollaborazioneRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.BuilderRichiestaCollaborazione;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.RichiestaCollaborazioneBuilder;
 import java.io.File;
 
 @Service
@@ -80,7 +80,7 @@ public class RichiesteCollaborazioneService {
             String iva,
             File certificato,
             File cartaIdentita) {
-        BuilderRichiestaCollaborazione builder = new BuilderRichiestaCollaborazione();
+        RichiestaCollaborazioneBuilder builder = new RichiestaCollaborazioneBuilder();
         RichiestaCollaborazioneDirector director = new RichiestaCollaborazioneDirector(builder);
         director.creaAzienda(nome, cognome, telefono, email, ruolo, denSociale, sedeLegale, sedeOperativa, iban, iva,
                 certificato, cartaIdentita);
@@ -109,7 +109,7 @@ public class RichiesteCollaborazioneService {
             String aziendaReferente,
             String iban,
             File cartaIdentita) {
-        BuilderRichiestaCollaborazione builder = new BuilderRichiestaCollaborazione();
+        RichiestaCollaborazioneBuilder builder = new RichiestaCollaborazioneBuilder();
         RichiestaCollaborazioneDirector director = new RichiestaCollaborazioneDirector(builder);
         director.creaAnimatore(nome, cognome, telefono, email, ruolo, aziendaReferente, iban, cartaIdentita);
         return saveRichiesta(builder.getRichiesta());
@@ -137,7 +137,7 @@ public class RichiesteCollaborazioneService {
             String iban,
             File cartaIdentita,
             File cv) {
-        BuilderRichiestaCollaborazione builder = new BuilderRichiestaCollaborazione();
+        RichiestaCollaborazioneBuilder builder = new RichiestaCollaborazioneBuilder();
         RichiestaCollaborazioneDirector director = new RichiestaCollaborazioneDirector(builder);
         director.creaCuratore(nome, cognome, telefono, email, ruolo, iban, cartaIdentita, cv);
         return saveRichiesta(builder.getRichiesta());

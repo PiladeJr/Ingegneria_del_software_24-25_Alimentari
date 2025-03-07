@@ -35,7 +35,7 @@ public class Prodotto implements Acquistabile{
     private double prezzo;
 
     @Column(name = "quantità", nullable = false)
-    private String quantita;
+    private int quantita;
 
     @Column(name = "allergeni")
     private String allergeni;
@@ -92,11 +92,11 @@ public class Prodotto implements Acquistabile{
         this.prezzo = prezzo;
     }
 
-    public String getQuantita() {
+    public int getQuantita() {
         return quantita;
     }
 
-    public void setQuantita(String quantita) {
+    public void setQuantita(int quantita) {
         this.quantita = quantita;
     }
 
