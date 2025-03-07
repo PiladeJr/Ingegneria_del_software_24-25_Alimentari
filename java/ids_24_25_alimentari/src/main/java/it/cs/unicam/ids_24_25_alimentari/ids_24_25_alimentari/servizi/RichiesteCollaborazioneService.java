@@ -218,10 +218,51 @@ public class RichiesteCollaborazioneService {
                             richiestaCollaborazione.getCartaIdentita(),
                             password);
 
-                    String messaggio = "La sua richiesta di collaborazione è stata accettata con successo! Ecco le sue credenziali:\n"
+                    String messaggio = "La sua richiesta di collaborazione per il ruolo di "
+                            + richiestaCollaborazione.getRuolo()
+                            + " è stata accettata con successo! Ecco le sue credenziali:\n"
                             + "Email: " + richiestaCollaborazione.getEmail() + "\n" + "Password: " + password;
                     this.servizioEmail.inviaMail(richiestaCollaborazione.getEmail(), messaggio,
                             "Accettazione Richiesta di Collaborazione");
+                }
+                case ANIMATORE -> {
+                    String password = RandomStringUtils.randomAlphanumeric(8);
+                    // crea un utente che è un animatore
+                    utenteService.nuovoAnimatore(
+                            richiestaCollaborazione.getNome(),
+                            richiestaCollaborazione.getCognome(),
+                            richiestaCollaborazione.getEmail(),
+                            password,
+                            richiestaCollaborazione.getTelefono(),
+                            richiestaCollaborazione.getIban(),
+                            richiestaCollaborazione.getCartaIdentita());
+
+                    String messaggio = "La sua richiesta di collaborazione per il ruolo di Animatore è stata accettata con successo! Ecco le sue credenziali:\n"
+                            + "Email: " + richiestaCollaborazione.getEmail() + "\n" + "Password: " + password;
+                    this.servizioEmail.inviaMail(richiestaCollaborazione.getEmail(), messaggio,
+                            "Accettazione Richiesta di Collaborazione");
+                }
+                case CURATORE -> {
+                    String password = RandomStringUtils.randomAlphanumeric(8);
+                    // crea un utente che è un curatore
+                    utenteService.nuovoCuratore(
+                            richiestaCollaborazione.getNome(),
+                            richiestaCollaborazione.getCognome(),
+                            richiestaCollaborazione.getEmail(),
+                            password,
+                            richiestaCollaborazione.getTelefono(),
+                            richiestaCollaborazione.getIban(),
+                            richiestaCollaborazione.getCartaIdentita(),
+                            richiestaCollaborazione.getCurriculum());
+
+                    String messaggio = "La sua richiesta di collaborazione per il ruolo di Curatore è stata accettata con successo! Ecco le sue credenziali:\n"
+                            + "Email: " + richiestaCollaborazione.getEmail() + "\n" + "Password: " + password;
+                    this.servizioEmail.inviaMail(richiestaCollaborazione.getEmail(), messaggio,
+                            "Accettazione Richiesta di Collaborazione");
+                }
+                case ACQUIRENTE -> {
+                }
+                case GESTORE -> {
                 }
             }
 
