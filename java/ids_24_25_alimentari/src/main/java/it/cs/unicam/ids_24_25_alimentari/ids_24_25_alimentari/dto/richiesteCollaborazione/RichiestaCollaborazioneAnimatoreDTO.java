@@ -1,5 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesteCollaborazione;
 
+import java.beans.ConstructorProperties;
+
 import org.springframework.web.multipart.MultipartFile;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 
@@ -14,6 +16,8 @@ public class RichiestaCollaborazioneAnimatoreDTO {
     private String iban;
     private MultipartFile cartaIdentita;
 
+    @ConstructorProperties({ "nome", "cognome", "telefono", "email", "ruolo", "aziendaReferente", "iban",
+            "cartaIdentita" })
     public RichiestaCollaborazioneAnimatoreDTO(String nome, String cognome, String telefono, String email, Ruolo ruolo,
             String aziendaReferente, String iban, MultipartFile cartaIdentita) {
         this.nome = nome;
