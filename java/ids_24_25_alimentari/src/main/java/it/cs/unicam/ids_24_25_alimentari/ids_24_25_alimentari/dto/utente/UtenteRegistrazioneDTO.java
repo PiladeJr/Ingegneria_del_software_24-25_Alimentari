@@ -1,6 +1,5 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.utente;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 

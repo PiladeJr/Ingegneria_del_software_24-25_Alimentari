@@ -53,7 +53,7 @@ public class Pacchetto implements Acquistabile{
         this.descrizione = descrizione;
     }
 
-    public double getPrezzo() {
+    public Double getPrezzo() {
         return prezzo;
     }
 

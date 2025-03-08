@@ -9,7 +9,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.Richi
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.smtp.ImplementazioneServizioMail;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -20,17 +19,12 @@ import java.util.List;
  */
 @Service
 public class RichiestaService {
-    @Autowired
-    private final RichiestaRepository richiestaRepository;
-    @Autowired
-    private final UtenteRepository utenteRepository;
-    @Autowired
-    private final InfoAggiuntiveService infoAggiuntiveService;
-    @Autowired
-    private final ProdottoService prodottoService;
-    @Autowired
-    private final UtenteService utenteService;
 
+    private final RichiestaRepository richiestaRepository;
+    private final UtenteRepository utenteRepository;
+    private final InfoAggiuntiveService infoAggiuntiveService;
+    private final ProdottoService prodottoService;
+    private final UtenteService utenteService;
 
     public RichiestaService(RichiestaRepository richiestaRepository, UtenteRepository utenteRepository, InfoAggiuntiveService infoAggiuntiveService, ProdottoService prodottoService, UtenteService utenteService) {
         this.richiestaRepository = richiestaRepository;
@@ -44,10 +38,18 @@ public class RichiestaService {
      * Salva una richiesta nel database.
      *
      * @param richiesta La richiesta da salvare.
-     * @return La richiesta salvata.
+     * @return La richiesta creata e salvata nel database.
      */
     public Richiesta salvaRichiesta(Richiesta richiesta) {
         return richiestaRepository.save(richiesta);
+    }
+
+    public List<Richiesta> getAllRichiesteContenuto() {
+        return this.richiestaRepository.getAllRichiesteContenuto();
+    }
+
+    public List<Richiesta> getRichiesteByTipo(Tipologia tipologia) {
+        return this.richiestaRepository.getRichiesteByTipo(tipologia);
     }
 
     /**
@@ -59,7 +61,7 @@ public class RichiestaService {
      * @param immagini     File contenenti immagini relative alle informazioni aggiuntive.
      * @param certificati  File contenenti eventuali certificazioni dell'azienda.
      * @param idAzienda    Identificativi dell'azienda coinvolta.
-     * @return La richiesta creata e salvata nel database.
+     * @return La richiesta di informazioni aggiuntive creata e salvata nel database.
      */
     public Richiesta nuovaRichiestaInformazioniAggiuntive(
             String descrizione,
@@ -75,11 +77,24 @@ public class RichiestaService {
         return salvaRichiesta(richiesta);
     }
 
+    /**
+     * Crea una nuova richiesta per un nuovo prodotto per un'azienda
+     *
+     * @param nome          Nome del prodotto
+     * @param descrizione   Descrizione del prodotto
+     * @param idAzienda     Identificativo dell'azienda produttrice
+     * @param immagini      File contenenti immagini relative al prodotto
+     * @param prezzo        Prezzo del prodotto
+     * @param quantita      Quantita del prodotto
+     * @param allergeni     Allergeni relativi al prodotto
+     * @param tecniche      Tecniche adottate per la realizzazione del prodotto
+     * @return la richiesta di prodotto creata e salvata nel database
+     */
     public Richiesta nuovaRichiestaProdotto(
             String nome,
             String descrizione,
             Long idAzienda,
-            List<File> immagini,
+            File[] immagini,
             double prezzo,
             int quantita,
             String allergeni,
@@ -126,4 +141,5 @@ public class RichiestaService {
             mailService.inviaMail(curatore.getEmail(), messaggio, oggetto);
         }
     }
+
 }

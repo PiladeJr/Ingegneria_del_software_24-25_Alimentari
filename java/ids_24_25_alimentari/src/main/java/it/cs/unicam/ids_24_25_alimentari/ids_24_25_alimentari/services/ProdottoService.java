@@ -3,7 +3,6 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.ProdottoBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.prodotto.Prodotto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.ProdottoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -12,7 +11,6 @@ import java.util.List;
 @Service
 public class ProdottoService {
 
-    @Autowired
     private final ProdottoRepository prodottoRepository;
 
     public ProdottoService(ProdottoRepository prodottoRepository) {
@@ -27,7 +25,7 @@ public class ProdottoService {
             String nome,
             String descrizione,
             Long idAzienda,
-            List<File> immagini,
+            File[] immagini,
             double prezzo,
             int quantita,
             String allergeni,
@@ -37,7 +35,7 @@ public class ProdottoService {
         builder.costruisciNome(nome);
         builder.costruisciDescrizione(descrizione);
         builder.costruisciIdAzienda(idAzienda);
-        if(immagini != null && !immagini.isEmpty()) {
+        if(immagini != null) {
             for(File immagine : immagini) {
                 builder.aggiungiImmagine(immagine);
             }
@@ -49,6 +47,15 @@ public class ProdottoService {
 
         return salvaProdotto(builder.getProdotto());
     }
+
+    public Prodotto getProdottoByNome(String nome) {
+        return this.prodottoRepository.getProdottoByNome(nome);
+    }
+
+    public List<Prodotto> getProdottiByIdAzienda(Long idAzienda) {
+        return this.prodottoRepository.getProdottiByIdAzienda(idAzienda);
+    }
+
 
 
 }

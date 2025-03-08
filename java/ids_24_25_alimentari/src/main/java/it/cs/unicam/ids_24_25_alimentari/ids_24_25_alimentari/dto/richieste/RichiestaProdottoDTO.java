@@ -1,55 +1,22 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.prodotto;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste;
 
-import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.util.List;
+import javax.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "prodotto")
-@NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-public class Prodotto implements Acquistabile{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "nome", nullable = false)
+public class RichiestaProdottoDTO extends RichiestaDTO {
+    @NotNull(message = "Nome prodotto obbligatorio")
     private String nome;
-
-    @Column(name = "descrizione")
     private String descrizione;
-
-    @Column(name = "id_azienda", nullable = false)
+    @NotNull(message = "Id azienda obbligatorio")
     private Long idAzienda;
-
-    @ElementCollection
-    @CollectionTable(name = "immagini", joinColumns = @JoinColumn(name = "richiesta_id"))
-    @Column(name = "immagine")
-    private List<File> immagini;
-
-    @Column(name = "prezzo", nullable = false)
+    private MultipartFile[] immagini;
+    @NotNull(message = "Prezzo prodotto obbligatorio")
     private Double prezzo;
-
-    @Column(name = "quantità", nullable = false)
+    @NotNull(message = "Quantita prodotto obbligatoria")
     private Integer quantita;
-
-    @Column(name = "allergeni")
     private String allergeni;
-
-    @Column(name = "tecniche")
     private String tecniche;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getNome() {
         return nome;
@@ -75,20 +42,19 @@ public class Prodotto implements Acquistabile{
         this.idAzienda = idAzienda;
     }
 
-    public List<File> getImmagini() {
+    public MultipartFile[] getImmagini() {
         return immagini;
     }
 
-    public void setImmagini(List<File> immagini) {
+    public void setImmagini(MultipartFile[] immagini) {
         this.immagini = immagini;
     }
 
-    @Override
     public Double getPrezzo() {
-        return this.prezzo;
+        return prezzo;
     }
 
-    public void setPrezzo(double prezzo) {
+    public void setPrezzo(Double prezzo) {
         this.prezzo = prezzo;
     }
 
@@ -115,5 +81,4 @@ public class Prodotto implements Acquistabile{
     public void setTecniche(String tecniche) {
         this.tecniche = tecniche;
     }
-
 }

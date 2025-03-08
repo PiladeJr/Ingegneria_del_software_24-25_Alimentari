@@ -1,10 +1,10 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste;
 
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 import jakarta.validation.constraints.NotNull;
 
-public class RichiestaInformazioniAggiuntiveAziendaDTO {
+public class RichiestaInformazioniAggiuntiveAziendaDTO extends RichiestaDTO {
     @NotNull(message = "Descrizione obbligatoria")
     private String descrizione;
     @NotNull(message = "Produzione obbligatoria")

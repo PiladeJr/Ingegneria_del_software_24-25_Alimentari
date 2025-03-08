@@ -5,5 +5,5 @@ public interface Acquistabile {
 
     String getNome();
 
-    double getPrezzo();
+    Double getPrezzo();
 }

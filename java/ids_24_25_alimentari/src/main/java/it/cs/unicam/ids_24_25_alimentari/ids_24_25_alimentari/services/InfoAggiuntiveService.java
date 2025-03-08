@@ -1,15 +1,12 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
 
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.InformazioniAggiuntiveBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.InformazioniAggiuntive;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.UtenteAziendaEsterna;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.InformazioniAggiuntiveRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.AziendaRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteAziendaEsternaRepository;
 
 import org.springframework.stereotype.Service;
 import java.io.File;
@@ -21,19 +18,17 @@ import java.io.File;
 public class InfoAggiuntiveService {
     private final InformazioniAggiuntiveRepository informazioniAggiuntiveRepository;
     private final UtenteService utenteService;
-    private final AziendaRepository aziendaRepository;
-    private final UtenteAziendaEsternaRepository utenteAziendaEsternaRepository;
+    private final AziendaService aziendaService;
 
 
     public InfoAggiuntiveService(
             InformazioniAggiuntiveRepository informazioniAggiuntiveRepository,
             UtenteService utenteService,
-            AziendaRepository aziendaRepository,
-            UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
+            AziendaService aziendaService
+    ) {
         this.informazioniAggiuntiveRepository = informazioniAggiuntiveRepository;
         this.utenteService = utenteService;
-        this.aziendaRepository = aziendaRepository;
-        this.utenteAziendaEsternaRepository = utenteAziendaEsternaRepository;
+        this.aziendaService = aziendaService;
     }
 
     /**
@@ -89,7 +84,7 @@ public class InfoAggiuntiveService {
         // Se l'utente è un trasformatore, deve essere collegato alle aziende specificate
         if (ruoloUtente.equals(Ruolo.TRASFORMATORE)) {
             for (long id : idAzienda) {
-                UtenteAziendaEsterna collegamento = CollegaAzienda(idUtente, id);
+                UtenteAziendaEsterna collegamento = this.aziendaService.CollegaAzienda(idUtente, id);
                 if (collegamento == null) {
                     throw new IllegalArgumentException("Errore durante il collegamento delle aziende");
                 }
@@ -99,25 +94,25 @@ public class InfoAggiuntiveService {
         return salvaInformazioniAggiuntive(builder.getInformazioniAggiuntive());
     }
 
-    /**
-     * Collega un utente con ruolo di trasformatore a un'azienda produttrice.
-     *
-     * @param idUtente             ID dell'utente con ruolo di trasformatore.
-     * @param idAziendaProduttrice ID dell'azienda produttrice da collegare.
-     * @return l'associazione salvata  nel database.
-     * @throws IllegalArgumentException Se l'azienda produttrice non viene trovata.
-     */
-    public UtenteAziendaEsterna CollegaAzienda(Long idUtente, Long idAziendaProduttrice) {
-        UtenteAziendaEsterna collegamento = new UtenteAziendaEsterna();
-        Azienda azienda = aziendaRepository.findAziendaByIdAndruolo(idAziendaProduttrice, Ruolo.PRODUTTORE);
-
-        if (azienda == null) {
-            throw new IllegalArgumentException("Azienda non trovata");
-        }
-
-        collegamento.setUtenteId(idUtente);
-        collegamento.setAziendaId(azienda.getId());
-
-        return utenteAziendaEsternaRepository.save(collegamento);
-    }
+//    /**
+//     * Collega un utente con ruolo di trasformatore a un'azienda produttrice.
+//     *
+//     * @param idUtente             ID dell'utente con ruolo di trasformatore.
+//     * @param idAziendaProduttrice ID dell'azienda produttrice da collegare.
+//     * @return l'associazione salvata  nel database.
+//     * @throws IllegalArgumentException Se l'azienda produttrice non viene trovata.
+//     */
+//    public UtenteAziendaEsterna CollegaAzienda(Long idUtente, Long idAziendaProduttrice) {
+//        UtenteAziendaEsterna collegamento = new UtenteAziendaEsterna();
+//        Azienda azienda = aziendaRepository.findAziendaByIdAndruolo(idAziendaProduttrice, Ruolo.PRODUTTORE);
+//
+//        if (azienda == null) {
+//            throw new IllegalArgumentException("Azienda non trovata");
+//        }
+//
+//        collegamento.setUtenteId(idUtente);
+//        collegamento.setAziendaId(azienda.getId());
+//
+//        return utenteAziendaEsternaRepository.save(collegamento);
+//    }
 }

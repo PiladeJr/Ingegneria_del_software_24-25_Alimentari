@@ -1,4 +1,4 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.login;
 
     public class LoginResponseDTO {
 
