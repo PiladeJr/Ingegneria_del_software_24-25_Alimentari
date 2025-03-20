@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RichiestaRepository extends JpaRepository<Richiesta, Long> {
@@ -15,13 +16,10 @@ public interface RichiestaRepository extends JpaRepository<Richiesta, Long> {
     List<Richiesta> getAllRichiesteContenuto();
     @Query("SELECT r FROM Richiesta r WHERE r.tipologia = ?1")
     List<Richiesta> getRichiesteByTipo(Tipologia tipologia);
-
+    @Query("SELECT r FROM Richiesta r WHERE r.id = ?1")
+    Richiesta getRichiestaById(Long id);
 
     /*
-     * public Richiesta findRichiestaById(Long id);
-     * 
      * public Richiesta findRichiestaByUtenteId(Long idMittente);
-     * 
-     * public Richiesta findRichiestaByTipologia(Tipologia tipologia);
      */
 }

@@ -9,21 +9,27 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.Richi
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.smtp.ImplementazioneServizioMail;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Servizio responsabile della creazione, del salvataggio e della notifica delle nuove richieste ({@link Richiesta}).
  */
 @Service
 public class RichiestaService {
-
+    @Autowired
     private final RichiestaRepository richiestaRepository;
+    @Autowired
     private final UtenteRepository utenteRepository;
+    @Autowired
     private final InfoAggiuntiveService infoAggiuntiveService;
+    @Autowired
     private final ProdottoService prodottoService;
+    @Autowired
     private final UtenteService utenteService;
 
     public RichiestaService(RichiestaRepository richiestaRepository, UtenteRepository utenteRepository, InfoAggiuntiveService infoAggiuntiveService, ProdottoService prodottoService, UtenteService utenteService) {
@@ -48,8 +54,10 @@ public class RichiestaService {
         return this.richiestaRepository.getAllRichiesteContenuto();
     }
 
-    public List<Richiesta> getRichiesteByTipo(Tipologia tipologia) {
-        return this.richiestaRepository.getRichiesteByTipo(tipologia);
+    public List<Richiesta> getRichiesteByTipo(Tipologia tipologia) { return this.richiestaRepository.getRichiesteByTipo(tipologia); }
+
+    public Optional<Richiesta> getRichiestaById(Long id) {
+        return this.richiestaRepository.findById(id);
     }
 
     /**
@@ -142,4 +150,9 @@ public class RichiestaService {
         }
     }
 
+    
+    public Richiesta valutaRichiesta(Richiesta richiesta, Boolean stato) {
+        richiesta.setApprovazione(stato);
+        return this.salvaRichiesta(richiesta);
+    }
 }

@@ -65,7 +65,6 @@ public class AziendaService {
      * @param idUtente             ID dell'utente con ruolo di trasformatore.
      * @param idAziendaProduttrice ID dell'azienda produttrice da collegare.
      * @return l'associazione salvata  nel database.
-     * @throws IllegalArgumentException Se l'azienda produttrice non viene trovata.
      */
     public UtenteAziendaEsterna CollegaAzienda(Long idUtente, Long idAziendaProduttrice) {
         UtenteAziendaEsterna collegamento = new UtenteAziendaEsterna();

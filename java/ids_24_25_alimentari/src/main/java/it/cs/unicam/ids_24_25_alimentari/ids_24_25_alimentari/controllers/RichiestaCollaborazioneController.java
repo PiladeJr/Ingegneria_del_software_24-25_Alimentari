@@ -2,6 +2,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,9 @@ import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.Conve
 @RestController
 @RequestMapping("/api/richieste-collaborazione")
 public class RichiestaCollaborazioneController {
-
+    @Autowired
     private final RichiesteCollaborazioneService richiesteCollaborazioneService;
+    @Autowired
     private final ServizioEmail servizioEmail;
 
 

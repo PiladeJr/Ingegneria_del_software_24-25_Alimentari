@@ -65,13 +65,13 @@ public class UtenteService implements UserDetailsService {
      * seleziona l'utente dalla lista tramite il suo id
      *
      * @param idUtente
-     * @return
+     * @return l'utente se presente nel database
      */
     public Optional<Utente> selezionaUtenteById(Long idUtente) {
         if (idUtente == null)
             throw new NullPointerException();
         Optional<Utente> user = utenteRepository.findById(idUtente);
-        if (user == null)
+        if (user.isEmpty())
             throw new NullPointerException();
         return user;
     }

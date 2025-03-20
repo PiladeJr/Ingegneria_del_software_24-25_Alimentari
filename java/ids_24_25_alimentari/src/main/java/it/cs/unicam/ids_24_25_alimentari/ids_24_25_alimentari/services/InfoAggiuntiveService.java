@@ -94,25 +94,4 @@ public class InfoAggiuntiveService {
         return salvaInformazioniAggiuntive(builder.getInformazioniAggiuntive());
     }
 
-//    /**
-//     * Collega un utente con ruolo di trasformatore a un'azienda produttrice.
-//     *
-//     * @param idUtente             ID dell'utente con ruolo di trasformatore.
-//     * @param idAziendaProduttrice ID dell'azienda produttrice da collegare.
-//     * @return l'associazione salvata  nel database.
-//     * @throws IllegalArgumentException Se l'azienda produttrice non viene trovata.
-//     */
-//    public UtenteAziendaEsterna CollegaAzienda(Long idUtente, Long idAziendaProduttrice) {
-//        UtenteAziendaEsterna collegamento = new UtenteAziendaEsterna();
-//        Azienda azienda = aziendaRepository.findAziendaByIdAndruolo(idAziendaProduttrice, Ruolo.PRODUTTORE);
-//
-//        if (azienda == null) {
-//            throw new IllegalArgumentException("Azienda non trovata");
-//        }
-//
-//        collegamento.setUtenteId(idUtente);
-//        collegamento.setAziendaId(azienda.getId());
-//
-//        return utenteAziendaEsternaRepository.save(collegamento);
-//    }
 }
