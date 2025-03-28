@@ -1,8 +1,10 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.prodotto;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Contenuto;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.File;
@@ -10,14 +12,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "prodotto")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Prodotto implements Acquistabile{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Prodotto extends Contenuto implements Acquistabile{
 
     @Column(name = "nome", nullable = false)
     private String nome;
@@ -29,7 +28,7 @@ public class Prodotto implements Acquistabile{
     private Long idAzienda;
 
     @ElementCollection
-    @CollectionTable(name = "immagini", joinColumns = @JoinColumn(name = "contenuto_id"))
+    @CollectionTable(name = "immagini_prodotto", joinColumns = @JoinColumn(name = "contenuto_id", referencedColumnName = "id"))
     @Column(name = "immagine")
     private List<File> immagini;
 
@@ -45,13 +44,6 @@ public class Prodotto implements Acquistabile{
     @Column(name = "tecniche")
     private String tecniche;
 
-    public List<File> getImmagini() {
-        return immagini;
-    }
-
-    public void setImmagini(List<File> immagini) {
-        this.immagini = immagini;
-    }
 
     @Override
     public Double getPrezzo() {
