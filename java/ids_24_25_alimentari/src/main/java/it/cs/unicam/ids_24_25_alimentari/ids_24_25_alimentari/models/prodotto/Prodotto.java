@@ -1,6 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.prodotto;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "prodotto")
+@Data
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Prodotto implements Acquistabile{
@@ -27,7 +29,7 @@ public class Prodotto implements Acquistabile{
     private Long idAzienda;
 
     @ElementCollection
-    @CollectionTable(name = "immagini", joinColumns = @JoinColumn(name = "richiesta_id"))
+    @CollectionTable(name = "immagini", joinColumns = @JoinColumn(name = "contenuto_id"))
     @Column(name = "immagine")
     private List<File> immagini;
 
@@ -42,38 +44,6 @@ public class Prodotto implements Acquistabile{
 
     @Column(name = "tecniche")
     private String tecniche;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDescrizione() {
-        return descrizione;
-    }
-
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
-    }
-
-    public Long getIdAzienda() {
-        return idAzienda;
-    }
-
-    public void setIdAzienda(Long idAzienda) {
-        this.idAzienda = idAzienda;
-    }
 
     public List<File> getImmagini() {
         return immagini;
@@ -92,28 +62,5 @@ public class Prodotto implements Acquistabile{
         this.prezzo = prezzo;
     }
 
-    public Integer getQuantita() {
-        return quantita;
-    }
-
-    public void setQuantita(Integer quantita) {
-        this.quantita = quantita;
-    }
-
-    public String getAllergeni() {
-        return allergeni;
-    }
-
-    public void setAllergeni(String allergeni) {
-        this.allergeni = allergeni;
-    }
-
-    public String getTecniche() {
-        return tecniche;
-    }
-
-    public void setTecniche(String tecniche) {
-        this.tecniche = tecniche;
-    }
 
 }

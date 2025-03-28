@@ -12,18 +12,18 @@ import java.util.Optional;
 @Repository
 public interface UtenteRepository extends JpaRepository<Utente, Long> {
     @Query("SELECT u FROM Utente u WHERE u.id = ?1")
-    public Utente findById(long id);
+    Utente findById(long id);
     @Query("SELECT u FROM Utente u WHERE u.nome = ?1")
-    public Utente findByNome(String nome);
+    Utente findByNome(String nome);
     @Query("SELECT u FROM Utente u WHERE u.nome LIKE %?1%")
-    public List<Utente> findByNomeContaining(String partialName);
+    List<Utente> findByNomeContaining(String partialName);
     // Recupera tutti gli utenti il cui cognome contiene una specifica stringa
     @Query("SELECT u FROM Utente u WHERE u.cognome LIKE %?1%")
-    public List<Utente> findByCognomeContaining(String partialCognome);
+    List<Utente> findByCognomeContaining(String partialCognome);
     @Query("SELECT u FROM Utente u WHERE u.email = ?1")
-    public Optional<Utente> findByEmail(String email);
+    Optional<Utente> findByEmail(String email);
     @Query("SELECT u FROM Utente u WHERE u.ruolo = ?1")
-    public Utente findByRuolo(Ruolo ruolo);
+    Utente findByRuolo(Ruolo ruolo);
     @Query("SELECT u FROM Utente u WHERE u.ruolo = ?1")
-    public List<Utente> findAllByRuolo(Ruolo ruolo);
+    List<Utente> findAllByRuolo(Ruolo ruolo);
 }

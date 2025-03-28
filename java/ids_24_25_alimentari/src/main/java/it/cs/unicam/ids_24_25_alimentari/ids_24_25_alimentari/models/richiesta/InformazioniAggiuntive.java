@@ -1,13 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
 import java.io.File;
@@ -24,7 +17,7 @@ public class InformazioniAggiuntive {
     private String descrizioneMetodi;
 
     @ElementCollection
-    @CollectionTable(name = "immagini", joinColumns = @JoinColumn(name = "richiesta_id"))
+    @CollectionTable(name = "immagini", joinColumns = @JoinColumn(name = "contenuto_id"))
     @Column(name = "immagine")
     private List<File> immagini;
     @ElementCollection

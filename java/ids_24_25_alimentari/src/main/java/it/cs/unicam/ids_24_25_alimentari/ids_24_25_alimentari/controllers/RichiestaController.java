@@ -38,8 +38,6 @@ public class RichiestaController {
     private final ServizioEmail servizioEmail;
     @Autowired
     private final UtenteService utenteService;
-    @Autowired
-    private RichiesteCollaborazioneService richiesteCollaborazioneService;
 
     public RichiestaController(RichiestaService richiestaService, ServizioEmail servizioEmail, UtenteService utenteService) {
         this.richiestaService = richiestaService;

@@ -24,6 +24,7 @@ public class RichiesteCollaborazioneService {
     private AziendaService aziendaService;
     @Autowired
     private final UtenteService utenteService;
+    @Autowired
     private final ServizioEmail servizioEmail;
 
     public RichiesteCollaborazioneService(UtenteService utenteService, ServizioEmail servizioEmail) {

@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface ProdottoRepository extends JpaRepository<Prodotto, Long> {
     @Query("SELECT p FROM Prodotto p WHERE p.idAzienda = ?1")
-    public List<Prodotto> getProdottiByIdAzienda(Long idAzienda);
+    List<Prodotto> getProdottiByIdAzienda(Long idAzienda);
     @Query("SELECT p FROM Prodotto p WHERE p.nome = ?1")
     Prodotto getProdottoByNome(String nome);
 }
