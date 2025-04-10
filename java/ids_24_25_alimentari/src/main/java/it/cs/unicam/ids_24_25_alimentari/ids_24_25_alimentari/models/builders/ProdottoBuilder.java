@@ -1,16 +1,16 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.prodotto.Prodotto;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.contenuto.prodotto.ProdottoSingolo;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProdottoBuilder {
-    private Prodotto prodotto;
+    private ProdottoSingolo prodotto;
 
     public ProdottoBuilder() {
-        prodotto = new Prodotto();
+        prodotto = new ProdottoSingolo();
     }
 
     public void costruisciNome(String nome) {
@@ -51,15 +51,15 @@ public class ProdottoBuilder {
         prodotto.setTecniche(tecniche);
     }
 
-    public Prodotto getProdotto() {
-        Prodotto prodottoOttenuto = this.prodotto;
+    public ProdottoSingolo getProdotto() {
+        ProdottoSingolo prodottoOttenuto = this.prodotto;
         reset();
         return prodottoOttenuto;
 
     }
 
     public void reset() {
-        prodotto = new Prodotto();
+        prodotto = new ProdottoSingolo();
     }
 
 }

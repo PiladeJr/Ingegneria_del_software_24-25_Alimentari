@@ -2,12 +2,12 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.CambiaStatoRichiestaCollaborazioneDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.RichiestaInformazioniAggiuntiveAziendaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.RichiestaPacchettoDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.RichiestaProdottoDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Richiesta;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.RichiestaService;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.RichiesteCollaborazioneService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.UtenteService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.smtp.ServizioEmail;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.ConvertitoreMultipartFileToFile;
@@ -146,6 +146,27 @@ public class RichiestaController {
                     .body(Collections.singletonMap("error",
                             "Errore nella creazione della richiesta "+e.getMessage()));
         }
+    }
+
+
+    @PostMapping(value = "/pacchetto/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> nuovaRichiestaPacchetto(
+            @ModelAttribute @Valid RichiestaPacchettoDTO pacchettoDTO
+    ){
+
+        for (int i = 0; i<30; i++) {
+            System.out.println("CIAOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+        }
+
+        Richiesta richiestaPacchetto = this.richiestaService.nuovaRichiestaPacchetto(
+                pacchettoDTO.getNome(),
+                pacchettoDTO.getDescrizione(),
+                pacchettoDTO.getPrezzo(),
+                pacchettoDTO.getProdotti()
+        );
+
+        return ResponseEntity.ok(richiestaPacchetto);
+
     }
 
 

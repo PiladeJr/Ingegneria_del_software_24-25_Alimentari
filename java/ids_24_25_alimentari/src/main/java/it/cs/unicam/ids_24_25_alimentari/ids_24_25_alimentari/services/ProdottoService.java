@@ -1,27 +1,36 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.PacchettoBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.ProdottoBuilder;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.prodotto.Prodotto;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.ProdottoRepository;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.contenuto.prodotto.Pacchetto;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.contenuto.prodotto.ProdottoSingolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.PacchettoRepository;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.ProdottoSingoloRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ProdottoService {
 
-    private final ProdottoRepository prodottoRepository;
+    private final ProdottoSingoloRepository prodottoSingoloRepository;
 
-    public ProdottoService(ProdottoRepository prodottoRepository) {
-        this.prodottoRepository = prodottoRepository;
+    private final PacchettoRepository pacchettoRepository;
+
+    public ProdottoService(ProdottoSingoloRepository prodottoRepository, PacchettoRepository pacchettoRepository) {
+        this.prodottoSingoloRepository = prodottoRepository;
+        this.pacchettoRepository = pacchettoRepository;
     }
 
-    public Prodotto salvaProdotto(Prodotto prodotto) {
-        return prodottoRepository.save(prodotto);
+    public ProdottoSingolo salvaProdotto(ProdottoSingolo prodotto) {
+        return prodottoSingoloRepository.save(prodotto);
     }
 
-    public Prodotto nuovoProdotto(
+    private Pacchetto salvaPacchetto(Pacchetto pacchetto) { return pacchettoRepository.save(pacchetto); }
+
+    public ProdottoSingolo nuovoProdotto(
             String nome,
             String descrizione,
             Long idAzienda,
@@ -48,14 +57,32 @@ public class ProdottoService {
         return salvaProdotto(builder.getProdotto());
     }
 
-    public Prodotto getProdottoByNome(String nome) {
-        return this.prodottoRepository.getProdottoByNome(nome);
+    public Pacchetto nuovoPacchetto(
+            String nome,
+            String descrizione,
+            Double prezzo,
+            Set<Long> prodotti
+    ) {
+        PacchettoBuilder builder = new PacchettoBuilder();
+        builder.costruisciNome(nome);
+        builder.costruisciDescrizione(descrizione);
+        builder.costruisciPrezzo(prezzo);
+        if(prodotti != null) {
+            for(Long prodottoId : prodotti) {
+                ProdottoSingolo prod = this.prodottoSingoloRepository.getReferenceById(prodottoId);
+                builder.aggiungiProdotto(prod);
+            }
+        }
+
+        return salvaPacchetto(builder.getPacchetto());
     }
 
-    public List<Prodotto> getProdottiByIdAzienda(Long idAzienda) {
-        return this.prodottoRepository.getProdottiByIdAzienda(idAzienda);
+    public ProdottoSingolo getProdottoByNome(String nome) {
+        return this.prodottoSingoloRepository.getProdottoByNome(nome);
     }
 
-
+    public List<ProdottoSingolo> getProdottiByIdAzienda(Long idAzienda) {
+        return this.prodottoSingoloRepository.getProdottiByIdAzienda(idAzienda);
+    }
 
 }

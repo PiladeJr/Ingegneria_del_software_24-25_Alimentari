@@ -1,6 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.InformazioniAggiuntive;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.contenuto.InformazioniAggiuntive;
 
 import java.io.File;
 import java.util.ArrayList;

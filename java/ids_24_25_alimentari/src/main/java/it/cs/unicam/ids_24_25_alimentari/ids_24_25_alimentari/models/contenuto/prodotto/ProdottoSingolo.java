@@ -1,28 +1,19 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.prodotto;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.contenuto.prodotto;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.Contenuto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.io.File;
 import java.util.List;
 
 @Entity
-@Table(name = "prodotto")
 @Getter
 @Setter
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-public class Prodotto extends Contenuto implements Acquistabile{
-
-    @Column(name = "nome", nullable = false)
-    private String nome;
-
-    @Column(name = "descrizione")
-    private String descrizione;
+@Table(name = "prodotto_singolo")
+public class ProdottoSingolo extends Prodotto {
 
     @Column(name = "id_azienda", nullable = false)
     private Long idAzienda;
@@ -31,9 +22,6 @@ public class Prodotto extends Contenuto implements Acquistabile{
     @CollectionTable(name = "immagini_prodotto", joinColumns = @JoinColumn(name = "contenuto_id", referencedColumnName = "id"))
     @Column(name = "immagine")
     private List<File> immagini;
-
-    @Column(name = "prezzo", nullable = false)
-    private Double prezzo;
 
     @Column(name = "quantità", nullable = false)
     private Integer quantita;
@@ -44,15 +32,17 @@ public class Prodotto extends Contenuto implements Acquistabile{
     @Column(name = "tecniche")
     private String tecniche;
 
+    public ProdottoSingolo(String nome, String descrizione, Double prezzo, Long idAzienda, List<File> immagini, Integer quantita, String allergeni, String tecniche) {
+        super(nome, descrizione, prezzo);
+        this.idAzienda = idAzienda;
+        this.immagini = immagini;
+        this.quantita = quantita;
+        this.allergeni = allergeni;
+        this.tecniche = tecniche;
+    }
 
     @Override
-    public Double getPrezzo() {
+    Double getPrezzo() {
         return this.prezzo;
     }
-
-    public void setPrezzo(double prezzo) {
-        this.prezzo = prezzo;
-    }
-
-
 }

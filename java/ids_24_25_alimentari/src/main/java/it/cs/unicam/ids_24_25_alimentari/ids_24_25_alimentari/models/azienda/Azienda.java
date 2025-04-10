@@ -1,7 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.azienda;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.prodotto.Prodotto;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.InformazioniAggiuntive;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.contenuto.prodotto.ProdottoSingolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.contenuto.InformazioniAggiuntive;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
@@ -47,7 +47,7 @@ public class Azienda {
 
     @OneToMany(cascade = CascadeType.ALL)
     @Column(name = "prodotto", nullable = true)
-    private List<Prodotto> prodotti;
+    private List<ProdottoSingolo> prodotti;
 
     public long getId() {
         return id;

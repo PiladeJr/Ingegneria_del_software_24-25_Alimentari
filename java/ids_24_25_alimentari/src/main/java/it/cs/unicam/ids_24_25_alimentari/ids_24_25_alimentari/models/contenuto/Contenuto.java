@@ -1,4 +1,4 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.contenuto;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 public abstract class Contenuto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Setter

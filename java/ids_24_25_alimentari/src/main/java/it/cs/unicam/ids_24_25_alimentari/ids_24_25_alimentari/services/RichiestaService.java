@@ -1,6 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.builders.RichiestaBuilder;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.contenuto.prodotto.ProdottoSingolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Richiesta;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Servizio responsabile della creazione, del salvataggio e della notifica delle nuove richieste ({@link Richiesta}).
@@ -60,6 +62,7 @@ public class RichiestaService {
         return this.richiestaRepository.findById(id);
     }
 
+
     /**
      * Crea una nuova richiesta di informazioni aggiuntive per un'azienda.
      *
@@ -84,6 +87,7 @@ public class RichiestaService {
         this.notificaNuovaRichiesta();
         return salvaRichiesta(richiesta);
     }
+
 
     /**
      * Crea una nuova richiesta per un nuovo prodotto per un'azienda
@@ -114,6 +118,28 @@ public class RichiestaService {
         return salvaRichiesta(richiesta);
     }
 
+
+    /**
+     * Crea richiesta per un pacchetto di prodotti
+     *
+     * @param nome          Nome del pacchetto
+     * @param descrizione   Descrizione del pacchetto
+     * @param prezzo        Prezzo del pacchetto
+     * @param prodotti      Prodotti contenuti nel pacchetto
+     * @return la richiesta di pacchetto creata e salvata nel database
+     */
+    public Richiesta nuovaRichiestaPacchetto(
+            String nome,
+            String descrizione,
+            Double prezzo,
+            Set<Long> prodotti
+    ) {
+       long id = this.prodottoService.nuovoPacchetto(nome, descrizione, prezzo, prodotti).getId();
+        Richiesta richiesta = this.nuovaRichiesta(id, Tipologia.Prodotto);
+        this.notificaNuovaRichiesta();
+        return salvaRichiesta(richiesta);
+    }
+
     /**
      * Crea una nuova richiesta associata a un contenuto specifico.
      *
@@ -135,6 +161,7 @@ public class RichiestaService {
         return richiesta.build();
     }
 
+
     /**
      * Notifica i curatori dell'inserimento di una nuova richiesta nel database.
      * Viene inviata un'email a tutti gli utenti con ruolo Curatore.
@@ -155,4 +182,5 @@ public class RichiestaService {
         richiesta.setApprovazione(stato);
         return this.salvaRichiesta(richiesta);
     }
+
 }
