@@ -121,7 +121,7 @@ public class RichiestaController {
      * @param prodottoDTO Il DTO contenente le informazioni relative al prodotto.
      * @return La richiesta di prodotto creata.
      */
-    @PostMapping(value = "/prodotto/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/prodotto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> nuovaRichiestaProdotto(
             @ModelAttribute @Valid RichiestaProdottoDTO prodottoDTO
     ){
@@ -149,14 +149,10 @@ public class RichiestaController {
     }
 
 
-    @PostMapping(value = "/pacchetto/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/pacchetto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> nuovaRichiestaPacchetto(
             @ModelAttribute @Valid RichiestaPacchettoDTO pacchettoDTO
     ){
-
-        for (int i = 0; i<30; i++) {
-            System.out.println("CIAOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-        }
 
         Richiesta richiestaPacchetto = this.richiestaService.nuovaRichiestaPacchetto(
                 pacchettoDTO.getNome(),

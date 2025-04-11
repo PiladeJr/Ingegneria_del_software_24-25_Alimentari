@@ -1,6 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.contenuto;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

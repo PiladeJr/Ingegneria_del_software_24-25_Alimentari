@@ -1,9 +1,13 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 import jakarta.validation.constraints.NotNull;
 
+@Getter
+@Setter
 public class RichiestaInformazioniAggiuntiveAziendaDTO extends RichiestaDTO {
     @NotNull(message = "Descrizione obbligatoria")
     private String descrizione;
@@ -16,46 +20,6 @@ public class RichiestaInformazioniAggiuntiveAziendaDTO extends RichiestaDTO {
     @NotNull(message = "Certificati obbligatori")
     private MultipartFile[] certificati;
     private Optional<Long[]> aziendeCollegate = Optional.empty();
-
-    public String getDescrizione() {
-        return descrizione;
-    }
-
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
-    }
-
-    public String getProduzione() {
-        return produzione;
-    }
-
-    public void setProduzione(String produzione) {
-        this.produzione = produzione;
-    }
-
-    public String getMetodologie() {
-        return metodologie;
-    }
-
-    public void setMetodologie(String metodologie) {
-        this.metodologie = metodologie;
-    }
-
-    public MultipartFile[] getImmagini() {
-        return immagini;
-    }
-
-    public void setImmagini(MultipartFile[] immagini) {
-        this.immagini = immagini;
-    }
-
-    public MultipartFile[] getCertificati() {
-        return certificati;
-    }
-
-    public void setCertificati(MultipartFile[] certificati) {
-        this.certificati = certificati;
-    }
 
     public Long[] getAziendeCollegate() {
         return aziendeCollegate.orElse(new Long[0]);

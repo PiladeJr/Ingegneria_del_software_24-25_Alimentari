@@ -12,7 +12,9 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.contenuto.I
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.contenuto.prodotto.ProdottoSingolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.UtenteAziendaEsterna;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.*;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.AziendaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,6 +47,8 @@ public class RepositoryCostructor {
 
     @Autowired
     private ProdottoSingoloRepository prodottoSingoloRepository;
+    @Autowired
+    private AziendaService aziendaService;
 
     @PostConstruct
     public void init() {
@@ -114,23 +118,6 @@ public class RepositoryCostructor {
         pulisciRichiesteCollaborazione(richiestaCollaborazioneRepository);
 
     }
-
-//    public void pulisciRichiesteInformazioniAggiuntive(
-//            InformazioniAggiuntiveRepository informazioniAggiuntiveRepository
-//    ) {
-//        informazioniAggiuntiveRepository.deleteAll();
-//        informazioniAggiuntiveRepository.flush();
-//        isRichiestaInformazioniAggiuntiveRepositorySet = false;
-//    }
-//
-//    public void impostaRichiesteInformazioniAggiuntive(
-//            InformazioniAggiuntiveRepository informazioniAggiuntiveRepository) {
-//        pulisciRichiesteInformazioniAggiuntive(informazioniAggiuntiveRepository);
-//
-//
-//    }
-
-
 
     public void pulisciAziendeEsterne(UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
         utenteAziendaEsternaRepository.deleteAll();
@@ -245,8 +232,39 @@ public class RepositoryCostructor {
         isAziendaRepositorySet = true;
     }
 
-    public void impostaInfoAggiuntive(){
+    public void impostaInfoAggiuntive(InformazioniAggiuntiveRepository repo){
+        try {
+            List<File> immagini = new ArrayList<>(List.of(
+                    new File(getClass().getClassLoader().getResource("azienda1.jpg").toURI())
+            ));
 
+            List<File> certificati = new ArrayList<>(List.of(
+                    new File(getClass().getClassLoader().getResource("certificato.pdf").toURI())
+            ));
+
+            INFORMAZIONI_AGGIUNTIVE_PRODUTTORE = new InformazioniAggiuntive(
+                    null,
+                    "desc_Azienda",
+                    "desc_Produzione",
+                    "desc_Metodi",
+                    immagini,
+                    certificati
+                    );
+
+            INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE = new InformazioniAggiuntive(
+                    null,
+                    "desc_Azienda",
+                    "desc_Produzione",
+                    "desc_Metodi",
+                    immagini,
+                    certificati
+            );
+
+            UtenteAziendaEsterna collegamento = aziendaService.CollegaAzienda(TRASFORMATORE.getId(), AZIENDA_PRODUTTORE.getId());
+
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void pulisciProdottiSingoli(ProdottoSingoloRepository repo){
