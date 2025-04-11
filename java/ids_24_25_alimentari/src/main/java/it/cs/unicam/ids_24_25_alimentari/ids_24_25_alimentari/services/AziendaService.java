@@ -75,7 +75,7 @@ public class AziendaService {
         }
 
         collegamento.setUtenteId(idUtente);
-        collegamento.setAziendaId(azienda.getId());
+        collegamento.setAziendaId(idAziendaProduttrice);
 
         return utenteAziendaEsternaRepository.save(collegamento);
     }

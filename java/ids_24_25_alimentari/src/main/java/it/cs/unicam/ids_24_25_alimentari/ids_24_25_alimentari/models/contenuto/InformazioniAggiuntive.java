@@ -29,9 +29,4 @@ public class InformazioniAggiuntive extends Contenuto {
     @Column(name = "certificato")
     private List<File> certificati;
 
-    public InformazioniAggiuntive(Boolean approvato, String descAzienda, String descProduzione, String descMetodi, List<File> immagini, List<File> certificati) {
-        super();
-        this.immagini = immagini;
-        this.certificati = certificati;
-    }
 }
