@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.CambiaStatoRichiestaCollaborazioneDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.Richieste.CambiaStatoRichiestaCollaborazioneDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiestaCollaborazioneAziendaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiestaCollaborazioneCuratoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiestaCollaborazioneAnimatoreDTO;

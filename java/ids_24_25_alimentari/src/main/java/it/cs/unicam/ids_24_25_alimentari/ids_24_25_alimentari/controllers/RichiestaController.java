@@ -1,9 +1,9 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.CambiaStatoRichiestaCollaborazioneDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.RichiestaInformazioniAggiuntiveAziendaDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.RichiestaPacchettoDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.RichiestaProdottoDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.Richieste.CambiaStatoRichiestaCollaborazioneDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.Richieste.RichiestaInformazioniAggiuntiveAziendaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.Richieste.RichiestaPacchettoDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.Richieste.RichiestaProdottoDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Richiesta;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
