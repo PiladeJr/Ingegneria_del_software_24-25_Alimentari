@@ -1,6 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.JwtService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import java.util.List;

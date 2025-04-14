@@ -1,9 +1,9 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.utente.UtenteDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.models.utente.Utente;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.JwtService;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.services.UtenteService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.JwtService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
