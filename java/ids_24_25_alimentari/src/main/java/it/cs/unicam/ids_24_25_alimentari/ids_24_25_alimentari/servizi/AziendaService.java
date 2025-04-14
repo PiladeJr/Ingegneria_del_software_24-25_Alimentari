@@ -4,8 +4,9 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Az
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.AziendaBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.UtenteAziendaEsterna;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.AziendaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteAziendaEsternaRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -15,18 +16,19 @@ import java.util.Optional;
 @Service
 public class AziendaService {
 
-    @Autowired
-    private AziendaRepository aziendaRepository;
-    private AziendaBuilder builder = new AziendaBuilder();
+    private final AziendaRepository aziendaRepository;
+    private final UtenteAziendaEsternaRepository utenteAziendaEsternaRepository;
+
+    public AziendaService(AziendaRepository aziendaRepository, UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
+        this.aziendaRepository = aziendaRepository;
+        this.utenteAziendaEsternaRepository = utenteAziendaEsternaRepository;
+    }
 
     public List<Azienda> getAllAziende() {
         return aziendaRepository.findAll();
     }
 
-    public List<Azienda> getAziendeByRuolo(Ruolo ruolo) {
-        List<Azienda> aziendeProduttori = aziendaRepository.findAziendeByRuolo(ruolo);
-        return aziendeProduttori;
-    }
+    public List<Azienda> getAziendeByRuolo(Ruolo ruolo) { return aziendaRepository.findAziendeByRuolo(ruolo); }
 
     public Optional<Azienda> getAziendaById(long id) {
         return aziendaRepository.findById(id);
@@ -47,6 +49,7 @@ public class AziendaService {
             String iva,
             String iban,
             File certificato) {
+        AziendaBuilder builder = new AziendaBuilder();
         builder.costruisciDenSociale(denSociale);
         builder.costruisciSedeLegale(sedeLegale);
         builder.costruisciSedeOperativa(sedeOperativa);
@@ -54,6 +57,27 @@ public class AziendaService {
         builder.costruisciIban(iban);
         builder.aggiungiCertificato(certificato);
         return saveAzienda(builder.getAzienda());
+    }
+
+    /**
+     * Collega un utente con ruolo di trasformatore a un'azienda produttrice.
+     *
+     * @param idUtente             ID dell'utente con ruolo di trasformatore.
+     * @param idAziendaProduttrice ID dell'azienda produttrice da collegare.
+     * @return l'associazione salvata  nel database.
+     */
+    public UtenteAziendaEsterna CollegaAzienda(Long idUtente, Long idAziendaProduttrice) {
+        UtenteAziendaEsterna collegamento = new UtenteAziendaEsterna();
+        Azienda azienda = aziendaRepository.findAziendaByIdAndruolo(idAziendaProduttrice, Ruolo.PRODUTTORE);
+
+        if (azienda == null) {
+            throw new IllegalArgumentException("Azienda non trovata");
+        }
+
+        collegamento.setUtenteId(idUtente);
+        collegamento.setAziendaId(idAziendaProduttrice);
+
+        return utenteAziendaEsternaRepository.save(collegamento);
     }
 
 }

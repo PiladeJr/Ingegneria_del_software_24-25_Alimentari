@@ -1,15 +1,12 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.Column;
 
 
 
 @Entity
+@Table(name = "richiesta")
 @NoArgsConstructor
 public class Richiesta {
     @Id

@@ -1,5 +1,5 @@
 
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesteCollaborazione;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione;
 
 import org.springframework.web.multipart.MultipartFile;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;

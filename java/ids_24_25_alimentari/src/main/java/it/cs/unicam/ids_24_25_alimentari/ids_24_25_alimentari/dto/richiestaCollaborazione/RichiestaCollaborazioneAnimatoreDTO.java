@@ -1,20 +1,37 @@
 
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesteCollaborazione;
+
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione;
+import java.beans.ConstructorProperties;
+
+
+
 
 import org.springframework.web.multipart.MultipartFile;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 
-public class RichiestaCollaborazioneCuratoreDTO {
+public class RichiestaCollaborazioneAnimatoreDTO {
+
     private String nome;
     private String cognome;
     private String telefono;
     private String email;
     private Ruolo ruolo;
+    private String aziendaReferente;
     private String iban;
     private MultipartFile cartaIdentita;
-    private MultipartFile cv;
 
-    public RichiestaCollaborazioneCuratoreDTO() {
+    @ConstructorProperties({ "nome", "cognome", "telefono", "email", "ruolo", "aziendaReferente", "iban",
+            "cartaIdentita" })
+    public RichiestaCollaborazioneAnimatoreDTO(String nome, String cognome, String telefono, String email, Ruolo ruolo,
+            String aziendaReferente, String iban, MultipartFile cartaIdentita) {
+        this.nome = nome;
+        this.cognome = cognome;
+        this.telefono = telefono;
+        this.email = email;
+        this.ruolo = ruolo;
+        this.aziendaReferente = aziendaReferente;
+        this.iban = iban;
+        this.cartaIdentita = cartaIdentita;
     }
 
     public String getNome() {
@@ -57,6 +74,14 @@ public class RichiestaCollaborazioneCuratoreDTO {
         this.ruolo = ruolo;
     }
 
+    public String getAziendaReferente() {
+        return aziendaReferente;
+    }
+
+    public void setAziendaReferente(String aziendaReferente) {
+        this.aziendaReferente = aziendaReferente;
+    }
+
     public String getIban() {
         return iban;
     }
@@ -72,13 +97,4 @@ public class RichiestaCollaborazioneCuratoreDTO {
     public void setCartaIdentita(MultipartFile cartaIdentita) {
         this.cartaIdentita = cartaIdentita;
     }
-
-    public MultipartFile getCv() {
-        return cv;
-    }
-
-    public void setCv(MultipartFile cv) {
-        this.cv = cv;
-    }
-
 }

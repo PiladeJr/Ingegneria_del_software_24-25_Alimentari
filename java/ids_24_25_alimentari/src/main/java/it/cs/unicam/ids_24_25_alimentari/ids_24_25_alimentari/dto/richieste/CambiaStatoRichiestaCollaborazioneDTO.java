@@ -1,5 +1,5 @@
 
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesteCollaborazione;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste;
 
 public class CambiaStatoRichiestaCollaborazioneDTO {
 

@@ -1,19 +1,17 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesta.RichiestaInformazioniAggiuntiveAziendaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.AziendaService;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.ContenutoService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.RichiestaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -21,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multipartConverter.ConvertitoreMultipartFileArrayToFileArray.convertMultipartFileArrayToFileArray;
+import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multipartConverter.ConvertitoreMultipartFileToFile.convertMultipartFileArrayToFileArray;
 
 /**
  * Controller per la gestione delle operazioni relative all'entità Azienda.
@@ -32,12 +30,13 @@ import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multi
 public class AziendaController {
 
     @Autowired
-    AziendaService aziendaService = new AziendaService();
+    private final AziendaService aziendaService;
     @Autowired
-    ContenutoService contentutoService;
+    private final RichiestaService richiestaService;
 
-    public AziendaController(ContenutoService contentutoService) {
-        this.contentutoService = contentutoService;
+    public AziendaController(AziendaService aziendaService, RichiestaService richiestaService) {
+        this.aziendaService = aziendaService;
+        this.richiestaService = richiestaService;
     }
 
     /**
@@ -100,11 +99,11 @@ public class AziendaController {
     }
 
     /**
-     * Rimuove un'istanza di Azienda tramite il suo ID
-     * 
-     * @param id L'id dell'Azienda da eliminare.
-     * @return ResponseEntity con un body JSON contenente un messaggio di errore se
-     *         l'eliminazione fallisce, altrimenti non ritorna nulla.
+     * Elimina un'entità {@link Azienda} tramite il suo ID
+     *
+     * @param id dell'azienda che vogliamo eliminare.
+     * @return ResponseEntity con un body JSON contenente un messaggio d'errore se l'eliminazione
+     *         fallisce, altrimenti nessun contenuto.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAzienda(@PathVariable Long id) {
@@ -133,8 +132,7 @@ public class AziendaController {
      * multipart/form-data per creare una nuova Richiesta di informazioni di tipo
      * InfoAzienda.
      *
-     * @param richiestaInformazioniAggiuntiveAziendaDTO     L'oggetto {@code richiestaInformazioniAggiuntiveAziendaDTO} contenente
-     *                                                      i dati relativi alle informazioni aggiuntivi ed i file allegati.
+     * @param richiestaInformazioniAggiuntiveAziendaDTO
      * @return ResponseEntity contenente la Richiesta creata.
      */
     @PostMapping(value = "/informazioni/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -162,8 +160,7 @@ public class AziendaController {
         }
 
         try {
-            Richiesta richiesta = contentutoService.nuovaRichiestaInformazioni(
-                    Tipologia.valueOf("InfoAzienda"),
+            Richiesta richiesta = this.richiestaService.nuovaRichiestaInformazioniAggiuntive(
                     richiestaInformazioniAggiuntiveAziendaDTO.getDescrizione(),
                     richiestaInformazioniAggiuntiveAziendaDTO.getProduzione(),
                     richiestaInformazioniAggiuntiveAziendaDTO.getMetodologie(),

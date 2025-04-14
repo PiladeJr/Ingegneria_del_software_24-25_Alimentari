@@ -4,7 +4,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Az
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * -- GETTER --
@@ -31,8 +30,6 @@ public class AziendaBuilder {
     public void costruisciIban(String iban){ this.azienda.setIban(iban); }
 
     public void aggiungiCertificato(File certificato){ this.azienda.setCertificato(certificato); }
-
-    public void aggiungiImmagini(List<File> immagini){ this.azienda.setImmagini(immagini); }
 
     public Azienda getAzienda() {
         Azienda a = this.azienda;

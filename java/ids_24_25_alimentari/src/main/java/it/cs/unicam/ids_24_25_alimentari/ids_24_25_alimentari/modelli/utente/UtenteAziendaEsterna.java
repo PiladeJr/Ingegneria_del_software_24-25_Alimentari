@@ -18,14 +18,19 @@ public class UtenteAziendaEsterna {
     private long id;
     private long aziendaId;
     private long utenteId;
+
     public long getId() { return id; }
+
     public long getAziendaId() { return aziendaId; }
+
     public void setAziendaId(long aziendaProduttrice) {
         this.aziendaId = aziendaProduttrice;
     }
+
     public long getUtenteId() {
         return utenteId;
     }
+
     public void setUtenteId(long utente) {
         this.utenteId = utente;
     }

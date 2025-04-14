@@ -2,15 +2,16 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesteCollaborazione.CambiaStatoRichiestaCollaborazioneDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesteCollaborazione.RichiestaCollaborazioneAziendaDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesteCollaborazione.RichiestaCollaborazioneCuratoreDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesteCollaborazione.RichiestaCollaborazioneAnimatoreDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.CambiaStatoRichiestaCollaborazioneDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiestaCollaborazioneAziendaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiestaCollaborazioneCuratoreDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiestaCollaborazioneAnimatoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesteCollaborazione.RichiestaCollaborazione;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.RichiesteCollaborazioneService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;
@@ -25,8 +26,9 @@ import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multi
 @RestController
 @RequestMapping("/api/richieste-collaborazione")
 public class RichiestaCollaborazioneController {
-
+    @Autowired
     private final RichiesteCollaborazioneService richiesteCollaborazioneService;
+    @Autowired
     private final ServizioEmail servizioEmail;
 
 
