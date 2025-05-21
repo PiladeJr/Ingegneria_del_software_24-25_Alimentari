@@ -43,7 +43,7 @@ public class RichiestaCollaborazione {
     @Column(name = "certificato")
     private File certificato;
 
-    private String aziendaReferente;
+   // private String aziendaReferente;
     private Boolean stato;
 
     public long getId() {
@@ -154,13 +154,13 @@ public class RichiestaCollaborazione {
         this.certificato = certificato;
     }
 
-    public String getAziendaReferente() {
+   /* public String getAziendaReferente() {
         return aziendaReferente;
     }
 
     public void setAziendaReferente(String aziendaReferente) {
         this.aziendaReferente = aziendaReferente;
-    }
+    }*/
 
     public Boolean getStato() {
         return stato;

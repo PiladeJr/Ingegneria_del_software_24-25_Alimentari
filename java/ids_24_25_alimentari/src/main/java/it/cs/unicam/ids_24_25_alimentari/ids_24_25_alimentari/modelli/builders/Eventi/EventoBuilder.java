@@ -4,10 +4,10 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.In
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.Evento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.StatusEvento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.TipologiaEvento;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public abstract class EventoBuilder<T extends Evento , B extends EventoBuilder<T, B>> {
 
@@ -46,6 +46,8 @@ public abstract class EventoBuilder<T extends Evento , B extends EventoBuilder<T
     public B costruisciLocandina(File locandina) { evento.setLocandina(locandina); return (B) this;}
 
     public B costruisciIndirizzo(Indirizzo indirizzo) { evento.setIndirizzo(indirizzo); return (B) this;}
+
+    public B costruisciCreatore(Utente creatore) { evento.setCreatore(creatore); return (B) this;}
     /* ---------------------------------- */
 
     /** Restituisce l’istanza pronta all’uso */

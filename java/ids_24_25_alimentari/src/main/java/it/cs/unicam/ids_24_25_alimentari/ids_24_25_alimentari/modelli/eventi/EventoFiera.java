@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "evento_fiera")
+@DiscriminatorValue("FIERA")
 @NoArgsConstructor
 public class EventoFiera extends Evento{
     @ManyToMany

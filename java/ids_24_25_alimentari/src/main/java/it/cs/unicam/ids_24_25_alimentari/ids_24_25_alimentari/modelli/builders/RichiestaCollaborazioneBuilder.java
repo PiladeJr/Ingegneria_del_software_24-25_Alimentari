@@ -71,9 +71,7 @@ public class RichiestaCollaborazioneBuilder {
         collaborazione.setCertificato(certificato);
     }
 
-    public void costruisciReferente(String referente) {
-        collaborazione.setAziendaReferente(referente);
-    }
+   // public void costruisciReferente(String referente) { collaborazione.setAziendaReferente(referente); }
 
     public RichiestaCollaborazione getRichiesta() {
         RichiestaCollaborazione r = this.collaborazione;

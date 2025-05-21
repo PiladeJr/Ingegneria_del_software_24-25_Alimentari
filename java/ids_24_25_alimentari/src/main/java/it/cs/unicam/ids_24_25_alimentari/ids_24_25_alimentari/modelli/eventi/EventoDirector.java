@@ -6,6 +6,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.In
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.Eventi.EventoBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.Eventi.FieraBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.Eventi.VisitaBuilder;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -61,7 +62,8 @@ public class EventoDirector {
             LocalDateTime inizio,
             LocalDateTime fine,
             File file ,
-            Indirizzo luogo) {
+            Indirizzo luogo,
+            Utente utente) {
 
          builder.reset()
                 .costruisciTitolo(titolo)
@@ -71,7 +73,8 @@ public class EventoDirector {
                 .costruisciInizio(inizio)
                 .costruisciFine(fine)
                 .costruisciLocandina(file)
-                .costruisciIndirizzo(luogo);
+                .costruisciIndirizzo(luogo)
+                 .costruisciCreatore(utente);
         return builder;
     }
     /** Esempio di configurazione specifica per una Fiera */
@@ -84,12 +87,13 @@ public class EventoDirector {
             LocalDateTime fine,
             File file ,
             Indirizzo luogo,
+            Utente creatore,
             List<Azienda> aziende
     ) {
         cambiaBuilder(fieraBuilder);
         if (!(builderCorrente instanceof FieraBuilder fieraBuilder))
             throw new IllegalStateException("Builder non compatibile");
-        return creaBase(fieraBuilder,titolo,descr,tipo,inizio,fine,file,luogo)
+        return creaBase(fieraBuilder,titolo,descr,tipo,inizio,fine,file,luogo,creatore)
                 .costruisciAziende(aziende)
                 .build();
       }
@@ -102,13 +106,14 @@ public class EventoDirector {
                     LocalDateTime fine,
                     File file ,
                     Indirizzo luogo,
+                    Utente creatore,
                     Azienda azienda
             ) {
         cambiaBuilder(visitaBuilder);
         if (!(builderCorrente instanceof VisitaBuilder visitaBuilder))
             throw new IllegalStateException("Builder non compatibile");
 
-        return creaBase(visitaBuilder,titolo,descr,tipo,inizio,fine,file,luogo)
+        return creaBase(visitaBuilder,titolo,descr,tipo,inizio,fine,file,luogo,creatore)
                 .costruisciAzienda(azienda)
                 .costruisciIscritti(null)
                 .build();

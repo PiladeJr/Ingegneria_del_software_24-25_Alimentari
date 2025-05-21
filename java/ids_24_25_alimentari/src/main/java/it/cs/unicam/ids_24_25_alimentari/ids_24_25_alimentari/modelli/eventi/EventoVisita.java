@@ -15,7 +15,7 @@ import static jakarta.persistence.CascadeType.PERSIST;
 @Entity
 @Getter
 @Setter
-@Table(name = "evento_visita")
+@DiscriminatorValue("VISITA")
 @NoArgsConstructor
 public class EventoVisita extends Evento{
     @OneToOne(cascade = CascadeType.ALL)

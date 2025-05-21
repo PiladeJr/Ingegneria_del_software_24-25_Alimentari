@@ -1,6 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_evento", discriminatorType = DiscriminatorType.STRING)
 @SequenceGenerator(
         name = "evento_seq",
         sequenceName = "evento_sequence",
@@ -38,4 +40,7 @@ public abstract class Evento {
     private File locandina;
     @OneToOne(cascade = CascadeType.ALL)
     private Indirizzo indirizzo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "utente_creatore_id", nullable = false)
+    private Utente creatore;
 }

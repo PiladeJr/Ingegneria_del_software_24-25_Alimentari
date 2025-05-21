@@ -54,10 +54,7 @@ public class RepositoryCostructor {
     private ProdottoSingoloRepository prodottoSingoloRepository;
 
     @Autowired
-    private EventoFieraRepository fieraRepository;
-
-    @Autowired
-    private EventoVisitaRepository visitaRepository;
+    private EventoRepository eventoRepository;
 
     @Autowired
     private AziendaService aziendaService;
@@ -72,8 +69,7 @@ public class RepositoryCostructor {
         impostaRichiesteCollaborazione(richiestaCollaborazioneRepository);
         impostaRichieste(richiestaRepository);
         impostaAziendeEsterne(utenteAziendaEsternaRepository);
-        impostaFiere(fieraRepository);
-        impostaVisite(visitaRepository);
+        impostaEventi(eventoRepository);
     }
 
     public boolean isIndirizzoRepositorySet = false;
@@ -84,8 +80,9 @@ public class RepositoryCostructor {
     public boolean isUtenteRepositorySet = false;
     public boolean isAziendaRepositorySet = false;
     public boolean isUtenteAziendaEsternaRepositorySet = false;
-    public boolean isFieraRepositorySet = false;
-    public boolean isVisitaRepositorySet = false;
+    public boolean isEventoRepositorySet = false;
+//    public boolean isFieraRepositorySet = false;
+//    public boolean isVisitaRepositorySet = false;
 
     public Utente
             PRODUTTORE,
@@ -189,16 +186,10 @@ public class RepositoryCostructor {
         repo.flush();
         isProdottoSingoloRepositorySet = false;
     }
-
-    public void pulisciFiere(EventoFieraRepository repo){
+    public void pulisciEventi(EventoRepository repo){
         repo.deleteAll();
         repo.flush();
-        isFieraRepositorySet = false;
-    }
-    public void pulisciVisite(EventoVisitaRepository repo){
-        repo.deleteAll();
-        repo.flush();
-        isVisitaRepositorySet = false;
+        isEventoRepositorySet = false;
     }
     public void impostaUtenti(UtenteRepository repo) {
         pulisciUtenti(repo);
@@ -378,80 +369,71 @@ public class RepositoryCostructor {
             throw new RuntimeException(e);
         }
     }
-    public void impostaFiere(EventoFieraRepository repo){
+
+    public void impostaEventi(EventoRepository repo){
         try {
-                File immagine = new File(getClass().getClassLoader().getResource("facSimileLocandinaFiera2.jpeg").toURI());
+            File immagine1 = new File(getClass().getClassLoader().getResource("facSimileLocandinaFiera2.jpeg").toURI());
+            File immagine2 = new File(getClass().getClassLoader().getResource("facSimileLocandinaFiera.jpeg").toURI());
+            File immagine3 = new File(getClass().getClassLoader().getResource("visita.jpeg").toURI());
+            File immagine4 = new File(getClass().getClassLoader().getResource("visita2.jpeg").toURI());
 
-                File immagine2 = new File(getClass().getClassLoader().getResource("facSimileLocandinaFiera.jpeg").toURI());
+            pulisciEventi(repo);
+            FIERA_CONTADINA = new EventoFiera();
+            FIERA_CONTADINA.setTitolo("Fiera Contadina");
+            FIERA_CONTADINA.setDescrizione("Fiera dedicata ai prodotti locali e biologici");
+            FIERA_CONTADINA.setTipologia(TipologiaEvento.FIERA);
+            FIERA_CONTADINA.setStatus(StatusEvento.PROGRAMMATO);
+            FIERA_CONTADINA.setInizio(LocalDateTime.of(2025, 4, 28, 10, 0));
+            FIERA_CONTADINA.setFine(LocalDateTime.of(2025, 5, 1, 18, 0));
+            FIERA_CONTADINA.setLocandina(immagine1);
+            FIERA_CONTADINA.setIndirizzo(INDIRIZZO_FIERA_CONTADINA);
+            FIERA_CONTADINA.setCreatore(ANIMATORE);
+            FIERA_CONTADINA.setAziendePresenti(new ArrayList<>(Arrays.asList(AZIENDA_PRODUTTORE, AZIENDA_TRASFORMATORE)));
 
-                pulisciFiere(repo);
-                FIERA_CONTADINA = new EventoFiera();
-                FIERA_CONTADINA.setTitolo("Fiera Contadina");
-                FIERA_CONTADINA.setDescrizione("Fiera dedicata ai prodotti locali e biologici");
-                FIERA_CONTADINA.setTipologia(TipologiaEvento.EVENTO_FIERA);
-                FIERA_CONTADINA.setStatus(StatusEvento.PROGRAMMATO);
-                FIERA_CONTADINA.setInizio(LocalDateTime.of(2025, 4, 28, 10, 0));
-                FIERA_CONTADINA.setFine(LocalDateTime.of(2025, 5, 1, 18, 0));
-                FIERA_CONTADINA.setLocandina(immagine);
-                FIERA_CONTADINA.setIndirizzo(INDIRIZZO_FIERA_CONTADINA);
-                FIERA_CONTADINA.setAziendePresenti(new ArrayList<>(Arrays.asList(AZIENDA_PRODUTTORE, AZIENDA_TRASFORMATORE)));
+            FIERA_AUTUNNO = new EventoFiera();
+            FIERA_AUTUNNO.setTitolo("Fiera di Autunno");
+            FIERA_AUTUNNO.setDescrizione("Fiera dedicata ai prodotti autunnali e locali");
+            FIERA_AUTUNNO.setTipologia(TipologiaEvento.FIERA);
+            FIERA_AUTUNNO.setStatus(StatusEvento.PROGRAMMATO);
+            FIERA_AUTUNNO.setInizio(LocalDateTime.of(2025, 10, 9, 10, 0));
+            FIERA_AUTUNNO.setFine(LocalDateTime.of(2025, 10, 9, 18, 0));
+            FIERA_AUTUNNO.setLocandina(immagine2);
+            FIERA_AUTUNNO.setIndirizzo(INDIRIZZO_FIERA_AUTUNNO);
+            FIERA_AUTUNNO.setCreatore(ANIMATORE);
+            FIERA_AUTUNNO.setAziendePresenti(new ArrayList<>(Arrays.asList(AZIENDA_PRODUTTORE, AZIENDA_TRASFORMATORE)));
 
-                FIERA_AUTUNNO = new EventoFiera();
-                FIERA_AUTUNNO.setTitolo("Fiera di Autunno");
-                FIERA_AUTUNNO.setDescrizione("Fiera dedicata ai prodotti autunnali e locali");
-                FIERA_AUTUNNO.setTipologia(TipologiaEvento.EVENTO_FIERA);
-                FIERA_AUTUNNO.setStatus(StatusEvento.PROGRAMMATO);
-                FIERA_AUTUNNO.setInizio(LocalDateTime.of(2025, 10, 9, 10, 0));
-                FIERA_AUTUNNO.setFine(LocalDateTime.of(2025, 10, 9, 18, 0));
-                FIERA_AUTUNNO.setLocandina(immagine2);
-                FIERA_AUTUNNO.setIndirizzo(INDIRIZZO_FIERA_AUTUNNO);
-                FIERA_AUTUNNO.setAziendePresenti(new ArrayList<>(Arrays.asList(AZIENDA_PRODUTTORE, AZIENDA_TRASFORMATORE)));
-
-                repo.save(FIERA_CONTADINA);
-                repo.save(FIERA_AUTUNNO);
-
-                isFieraRepositorySet = true;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void impostaVisite(EventoVisitaRepository repo){
-        try {
-            File immagine = new File(getClass().getClassLoader().getResource("visita.jpeg").toURI());
-            File immagine2 = new File(getClass().getClassLoader().getResource("visita2.jpeg").toURI());
-
-            if (immagine == null || immagine2 == null) throw new RuntimeException("non osare");
-
-            pulisciVisite(repo);
             VISITA_PRODUTTORE = new EventoVisita();
             VISITA_PRODUTTORE.setTitolo("Visita Aziendale");
             VISITA_PRODUTTORE.setDescrizione("Visita guidata presso l'azienda agricola");
-            VISITA_PRODUTTORE.setTipologia(TipologiaEvento.EVENTO_VISITA);
+            VISITA_PRODUTTORE.setTipologia(TipologiaEvento.VISITA);
             VISITA_PRODUTTORE.setStatus(StatusEvento.PROGRAMMATO);
             VISITA_PRODUTTORE.setInizio(LocalDateTime.of(2025, 6, 15, 10, 0));
             VISITA_PRODUTTORE.setFine(LocalDateTime.of(2025, 6, 15, 18, 0));
-            VISITA_PRODUTTORE.setLocandina(immagine);
+            VISITA_PRODUTTORE.setLocandina(immagine3);
             //VISITA_PRODUTTORE.setIndirizzo(indirizzoRepository.findById(INDIRIZZO_PRODUTTORE.getId()).orElseThrow());
             //VISITA_PRODUTTORE.setAziendaRiferimento(aziendaRepository.findById(AZIENDA_PRODUTTORE.getId()).orElseThrow());
+            VISITA_PRODUTTORE.setCreatore(ANIMATORE);
             VISITA_PRODUTTORE.setIscritti(new ArrayList<>());
 
             VISITA_TRASFORMATORE = new EventoVisita();
             VISITA_TRASFORMATORE.setTitolo("Visita Aziendale Trasformatore");
             VISITA_TRASFORMATORE.setDescrizione("Visita guidata presso l'azienda di trasformazione");
-            VISITA_TRASFORMATORE.setTipologia(TipologiaEvento.EVENTO_VISITA);
+            VISITA_TRASFORMATORE.setTipologia(TipologiaEvento.VISITA);
             VISITA_TRASFORMATORE.setStatus(StatusEvento.PROGRAMMATO);
             VISITA_TRASFORMATORE.setInizio(LocalDateTime.of(2025, 7, 20, 10, 0));
             VISITA_TRASFORMATORE.setFine(LocalDateTime.of(2025, 7, 20, 18, 0));
-            VISITA_TRASFORMATORE.setLocandina(immagine2);
+            VISITA_TRASFORMATORE.setLocandina(immagine4);
             //VISITA_TRASFORMATORE.setIndirizzo(indirizzoRepository.findById(INDIRIZZO_TRASFORMATORE.getId()).orElseThrow());
             //VISITA_TRASFORMATORE.setAziendaRiferimento(aziendaRepository.findById(AZIENDA_TRASFORMATORE.getId()).orElseThrow());
+            VISITA_TRASFORMATORE.setCreatore(ANIMATORE);
             VISITA_TRASFORMATORE.setIscritti(new ArrayList<>());
 
             repo.save(VISITA_PRODUTTORE);
             repo.save(VISITA_TRASFORMATORE);
+            repo.save(FIERA_CONTADINA);
+            repo.save(FIERA_AUTUNNO);
 
-            isVisitaRepositorySet = true;
+            isEventoRepositorySet = true;
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
