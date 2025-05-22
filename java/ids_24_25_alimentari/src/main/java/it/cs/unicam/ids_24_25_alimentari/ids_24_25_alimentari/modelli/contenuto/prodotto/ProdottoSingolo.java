@@ -44,4 +44,9 @@ public class ProdottoSingolo extends Prodotto {
     Double getPrezzo() {
         return this.prezzo;
     }
+
+    @Override
+    TipoProdotto getTipo() {
+        return TipoProdotto.SINGOLO;
+    }
 }

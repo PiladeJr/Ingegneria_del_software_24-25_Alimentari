@@ -178,7 +178,7 @@ public class RichiestaService {
 
     
     public Richiesta valutaRichiesta(Richiesta richiesta, Boolean stato) {
-        richiesta.setApprovazione(stato);
+        richiesta.setApprovato(stato);
         return this.salvaRichiesta(richiesta);
     }
 
