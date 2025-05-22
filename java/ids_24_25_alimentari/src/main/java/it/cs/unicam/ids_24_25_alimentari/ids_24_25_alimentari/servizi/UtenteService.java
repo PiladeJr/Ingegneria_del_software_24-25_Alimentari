@@ -200,7 +200,7 @@ public class UtenteService implements UserDetailsService {
      *
      * @return l'utente salvato nel sistema
      */
-    public Utente mostraUtente(long id) {
+    public Utente getUtenteById(long id) {
         Utente utente = utenteRepository.findById(id);
         if (utente == null)
             throw new IllegalArgumentException("utente non trovato");

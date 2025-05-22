@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -110,5 +111,82 @@ public class EventoController {
     @GetMapping("/anteprime")
     public ResponseEntity<List<EventoPreviewDTO>> getAnteprimeEventi() {
         return ResponseEntity.ok(eventoService.getAnteprimeEventi());
+    }
+
+    /**
+     * <h2>Restituisce le anteprime degli eventi ordinati per data di inizio</h2>
+     * <br>
+     * Elenco semplificato di tutti gli eventi, ordinati dalla data più recente alla meno recente.
+     *
+     * @return {@code ResponseEntity<List<EventoPreviewDTO>>} anteprime ordinate per data.
+     */
+    @GetMapping("/anteprime/data-inizio")
+    public ResponseEntity<List<EventoPreviewDTO>> getAnteprimeEventiInizio() {
+        return ResponseEntity.ok(eventoService.getAnteprimeEventiInizio());
+    }
+
+    /**
+     * <h2>Restituisce le anteprime degli eventi di tipo fiera</h2>
+     * <br>
+     * Elenco semplificato di tutte le fiere registrate nel sistema.
+     *
+     * @return {@code ResponseEntity<List<EventoPreviewDTO>>} anteprime delle fiere.
+     */
+    @GetMapping("/anteprime/fiere")
+    public ResponseEntity<List<EventoPreviewDTO>> getAnteprimeFiera() {
+        return ResponseEntity.ok(eventoService.getAnteprimeFiera());
+    }
+
+    /**
+     * <h2>Restituisce le anteprime delle visite aziendali</h2>
+     * <br>
+     * Lista degli eventi classificati come visite aziendali.
+     *
+     * @return {@code ResponseEntity<List<EventoPreviewDTO>>} anteprime delle visite.
+     */
+    @GetMapping("/anteprime/visite")
+    public ResponseEntity<List<EventoPreviewDTO>> getAnteprimeVisite() {
+        return ResponseEntity.ok(eventoService.getAnteprimeVisite());
+    }
+
+    /**
+     * <h2>Restituisce le anteprime delle fiere ordinate per data di inizio</h2>
+     * <br>
+     * Le fiere vengono ordinate dalla più recente alla meno recente.
+     *
+     * @return {@code ResponseEntity<List<EventoPreviewDTO>>} anteprime delle fiere ordinate per data.
+     */
+    @GetMapping("/anteprime/fiere/data-inizio")
+    public ResponseEntity<List<EventoPreviewDTO>> getAnteprimeFieraPerDataInizio() {
+        return ResponseEntity.ok(eventoService.getAnteprimeFieraPerDataInizio());
+    }
+
+    /**
+     * <h2>Restituisce le anteprime delle visite aziendali ordinate per data di inizio</h2>
+     * <br>
+     * Le visite vengono presentate in ordine decrescente a partire da quelle più recenti.
+     *
+     * @return {@code ResponseEntity<List<EventoPreviewDTO>>} anteprime delle visite ordinate per data.
+     */
+    @GetMapping("/anteprime/visite/data-inizio")
+    public ResponseEntity<List<EventoPreviewDTO>> getAnteprimeVisitePerDataInizio() {
+        return ResponseEntity.ok(eventoService.getAnteprimeVisitePerDataInizio());
+    }
+    /**
+     * <h2>Iscrive l'utente autenticato a un evento visita</h2>
+     * <br>
+     * Questo endpoint consente all'utente autenticato di iscriversi a un evento
+     * di tipo visita. L'evento deve essere in stato "PROGRAMMATO" e l'utente
+     * non deve essere già iscritto.
+     *
+     * @param idEvento L'ID dell'evento a cui iscriversi
+     * @return {@code ResponseEntity<String>} esito dell'iscrizione
+     */
+    @PostMapping("/{idEvento}/iscriviti")
+    public ResponseEntity<String> iscriviUtenteAEvento(@PathVariable Long idEvento) {
+        boolean risultato = eventoService.iscriviUtenteAEvento(idEvento);
+        return risultato
+                ? ResponseEntity.ok("Iscrizione effettuata con successo")
+                : ResponseEntity.badRequest().body("Impossibile effettuare l'iscrizione");
     }
 }
