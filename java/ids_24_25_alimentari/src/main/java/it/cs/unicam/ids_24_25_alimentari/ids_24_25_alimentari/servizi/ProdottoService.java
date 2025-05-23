@@ -78,6 +78,23 @@ public class ProdottoService {
         return salvaPacchetto(builder.getPacchetto());
     }
 
+    public void deletePacchetto(Long id) {
+        this.prodottoSingoloRepository.deleteById(id);
+    }
+
+    public void deleteProdottoSingolo(Long id) {
+        this.pacchettoRepository.deleteById(id);
+    }
+
+    public ProdottoSingolo getProdottoSingoloById(Long id) {
+        return this.prodottoSingoloRepository.getReferenceById(id);
+    }
+
+    public Pacchetto getPacchettoById(Long id){
+        return this.pacchettoRepository.getReferenceById(id);
+    }
+
+
     public List<Prodotto> getAllProdotti(){
         List<Prodotto> prod = new ArrayList<>();
         prod.addAll(prodottoSingoloRepository.findAll());
@@ -94,14 +111,6 @@ public class ProdottoService {
 
     public List<ProdottoSingolo> getProdottiByIdAzienda(Long idAzienda) {
         return this.prodottoSingoloRepository.getProdottiByIdAzienda(idAzienda);
-    }
-
-    public ProdottoSingolo getProdottoSingoloById(Long id) {
-        return this.prodottoSingoloRepository.getReferenceById(id);
-    }
-
-    public Pacchetto getPacchettoById(Long id){
-        return this.pacchettoRepository.getReferenceById(id);
     }
 
     public List<Prodotto> getAllProdottiOrdByNome() {
