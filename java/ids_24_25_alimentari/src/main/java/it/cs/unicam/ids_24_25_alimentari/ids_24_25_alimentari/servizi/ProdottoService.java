@@ -5,6 +5,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.P
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.Pacchetto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.Prodotto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.ProdottoSingolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.TipoProdotto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.PacchettoRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.ProdottoSingoloRepository;
 import org.springframework.stereotype.Service;
@@ -78,22 +79,12 @@ public class ProdottoService {
         return salvaPacchetto(builder.getPacchetto());
     }
 
-    public void deletePacchetto(Long id) {
-        this.prodottoSingoloRepository.deleteById(id);
+    public Optional<? extends Prodotto> getProdottoById(Long id, TipoProdotto tipo) {
+        return switch (tipo) {
+            case PACCHETTO -> this.pacchettoRepository.findById(id);
+            case SINGOLO -> this.prodottoSingoloRepository.findById(id);
+        };
     }
-
-    public void deleteProdottoSingolo(Long id) {
-        this.pacchettoRepository.deleteById(id);
-    }
-
-    public ProdottoSingolo getProdottoSingoloById(Long id) {
-        return this.prodottoSingoloRepository.getReferenceById(id);
-    }
-
-    public Pacchetto getPacchettoById(Long id){
-        return this.pacchettoRepository.getReferenceById(id);
-    }
-
 
     public List<Prodotto> getAllProdotti(){
         List<Prodotto> prod = new ArrayList<>();
@@ -130,5 +121,12 @@ public class ProdottoService {
                 .filter(filtro)
                 .sorted(comparator)
                 .toList();
+    }
+
+    public void deleteProdotto(Long id, TipoProdotto tipo) {
+        switch (tipo) {
+            case PACCHETTO -> this.pacchettoRepository.deleteById(id);
+            case SINGOLO -> this.prodottoSingoloRepository.deleteById(id);
+        }
     }
 }
