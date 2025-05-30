@@ -21,7 +21,7 @@ public class RichiestaBuilder {
     }
 
     public RichiestaBuilder costruisciApprovato(Boolean approvato) {
-        richiesta.setApprovazione(approvato);
+        richiesta.setApprovato(approvato);
         return this;
     }
 

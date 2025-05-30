@@ -3,14 +3,16 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.PacchettoBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.ProdottoBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.Pacchetto;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.Prodotto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.ProdottoSingolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.TipoProdotto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.PacchettoRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.ProdottoSingoloRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Predicate;
 
 @Service
 public class ProdottoService {
@@ -24,7 +26,7 @@ public class ProdottoService {
         this.pacchettoRepository = pacchettoRepository;
     }
 
-    public ProdottoSingolo salvaProdotto(ProdottoSingolo prodotto) {
+    private ProdottoSingolo salvaProdotto(ProdottoSingolo prodotto) {
         return prodottoSingoloRepository.save(prodotto);
     }
 
@@ -77,12 +79,54 @@ public class ProdottoService {
         return salvaPacchetto(builder.getPacchetto());
     }
 
-    public ProdottoSingolo getProdottoByNome(String nome) {
-        return this.prodottoSingoloRepository.getProdottoByNome(nome);
+    public Optional<? extends Prodotto> getProdottoById(Long id, TipoProdotto tipo) {
+        return switch (tipo) {
+            case PACCHETTO -> this.pacchettoRepository.findById(id);
+            case SINGOLO -> this.prodottoSingoloRepository.findById(id);
+        };
+    }
+
+    public List<Prodotto> getAllProdotti(){
+        List<Prodotto> prod = new ArrayList<>();
+        prod.addAll(prodottoSingoloRepository.findAll());
+        prod.addAll(pacchettoRepository.findAll());
+        return prod;
+    }
+
+    public List<Optional<Prodotto>> getProdottoByNome(String nome) {
+        List<Optional<Prodotto>> prod = new ArrayList<>();
+        prod.addAll(prodottoSingoloRepository.getProdottoByNome(nome));
+        prod.addAll(pacchettoRepository.getProdottoByNome(nome));
+        return prod;
     }
 
     public List<ProdottoSingolo> getProdottiByIdAzienda(Long idAzienda) {
         return this.prodottoSingoloRepository.getProdottiByIdAzienda(idAzienda);
     }
 
+    public List<Prodotto> getAllProdottiOrdByNome() {
+        return filtroProdotti(prodotto -> prodotto.getNome() != null, Comparator.comparing(Prodotto::getNome));
+    }
+
+    public List<Prodotto> getAllProdottiOrdByPrezzoCre(){
+        return filtroProdotti(prodotto -> prodotto.getPrezzo() != null, Comparator.comparing(Prodotto::getPrezzo));
+    }
+
+    public List<Prodotto> getAllProdottiOrdByPrezzoDec(){
+        return filtroProdotti(prodotto -> prodotto.getPrezzo() != null, Comparator.comparing(Prodotto::getPrezzo).reversed());
+    }
+
+    private List<Prodotto> filtroProdotti(Predicate<Prodotto> filtro, Comparator<Prodotto> comparator) {
+        return getAllProdotti().stream()
+                .filter(filtro)
+                .sorted(comparator)
+                .toList();
+    }
+
+    public void deleteProdotto(Long id, TipoProdotto tipo) {
+        switch (tipo) {
+            case PACCHETTO -> this.pacchettoRepository.deleteById(id);
+            case SINGOLO -> this.prodottoSingoloRepository.deleteById(id);
+        }
+    }
 }
