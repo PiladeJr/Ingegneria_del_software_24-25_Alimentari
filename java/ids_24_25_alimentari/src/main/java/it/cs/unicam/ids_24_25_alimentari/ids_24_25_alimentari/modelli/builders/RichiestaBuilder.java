@@ -21,7 +21,7 @@ public class RichiestaBuilder {
     }
 
     public RichiestaBuilder costruisciApprovato(Boolean approvato) {
-        richiesta.setApprovazione(approvato);
+        richiesta.setApprovato(approvato);
         return this;
     }
 
@@ -37,6 +37,11 @@ public class RichiestaBuilder {
 
     public RichiestaBuilder costruisciIdCuratore(long idCuratore) {
         richiesta.setIdCuratore(idCuratore);
+        return this;
+    }
+
+    public RichiestaBuilder costruisciTargetId(long targetId) {
+        richiesta.setTargetId(targetId);
         return this;
     }
 

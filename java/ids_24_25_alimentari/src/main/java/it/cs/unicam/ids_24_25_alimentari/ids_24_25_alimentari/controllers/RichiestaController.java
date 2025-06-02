@@ -1,10 +1,14 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.*;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoFieraDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoVisitaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.RichiestaService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.RichiestaService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multipartConverter.ConvertitoreMultipartFileToFile;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -144,7 +149,82 @@ public class RichiestaController {
                             "Errore nella creazione della richiesta "+e.getMessage()));
         }
     }
+    /**
+     * <h2>Crea una nuova richiesta per un evento di tipo fiera.</h2>
+     *
+     * <p>Questo metodo accetta un DTO contenente i dettagli dell'evento e crea una nuova richiesta
+     * utilizzando il servizio RichiestaService. Se si verifica un errore durante la conversione
+     * del file locandina, restituisce un errore interno del server.</p>
+     *
+     * @param dto Il DTO contenente i dettagli dell'evento fiera.
+     *            Deve includere titolo, descrizione, data di inizio e fine, locandina,
+     *            indirizzo e aziende partecipanti.
+     * @return Una ResponseEntity contenente la richiesta creata o un messaggio di errore.
+     *         <ul>
+     *             <li><b>200 OK:</b> Se la richiesta è stata creata con successo.</li>
+     *             <li><b>500 Internal Server Error:</b> Se si verifica un errore durante la creazione della richiesta.</li>
+     *         </ul>
+     */
+    @PostMapping("/fiera/new")
+    public ResponseEntity<?> creaRichiestaFiera(@ModelAttribute @Valid RichiestaEventoFieraDTO dto) {
+        try{
+            File locandina = ConvertitoreMultipartFileToFile.convertiMultipartFileToFile(dto.getLocandina());
 
+            Richiesta richiestaEvento = richiestaService.nuovaRichiestaFiera(
+                dto.getTitolo(),
+                dto.getDescrizione(),
+                dto.getInizio(),
+                dto.getFine(),
+                locandina,
+                dto.getIndirizzo(),
+                dto.getAziendePresenti()
+        );
+
+        return ResponseEntity.ok(richiestaEvento);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error",
+                            "Errore nella creazione della richiesta "+e.getMessage()));
+        }
+    }
+    /**
+     * <h2>Crea una nuova richiesta per un evento di tipo visita.</h2>
+     *
+     * <p>Questo metodo accetta un DTO contenente i dettagli dell'evento e crea una nuova richiesta
+     * utilizzando il servizio <code>RichiestaService</code>. Se si verifica un errore durante la conversione
+     * del file locandina, restituisce un errore interno del server.</p>
+     *
+     * @param dto Il DTO contenente i dettagli dell'evento visita.
+     *            Deve includere titolo, descrizione, data di inizio e fine, locandina,
+     *            indirizzo e azienda di riferimento.
+     * @return Una <code>ResponseEntity</code> contenente la richiesta creata o un messaggio di errore.
+     *         <ul>
+     *             <li><b>200 OK:</b> Se la richiesta è stata creata con successo.</li>
+     *             <li><b>500 Internal Server Error:</b> Se si verifica un errore durante la creazione della richiesta.</li>
+     *         </ul>
+     */
+    @PostMapping("/visita/new")
+    public ResponseEntity<?> creaRichiestaVisita(@ModelAttribute @Valid RichiestaEventoVisitaDTO dto) {
+        try {
+            File locandina = ConvertitoreMultipartFileToFile.convertiMultipartFileToFile(dto.getLocandina());
+
+            Richiesta richiestaEvento = richiestaService.nuovaRichiestaVisita(
+                    dto.getTitolo(),
+                    dto.getDescrizione(),
+                    dto.getInizio(),
+                    dto.getFine(),
+                    locandina,
+                    dto.getIndirizzo(),
+                    dto.getAziendaRiferimento()
+            );
+
+            return ResponseEntity.ok(richiestaEvento);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error",
+                            "Errore nella creazione della richiesta " + e.getMessage()));
+        }
+    }
 
     @PostMapping(value = "/pacchetto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> nuovaRichiestaPacchetto(
