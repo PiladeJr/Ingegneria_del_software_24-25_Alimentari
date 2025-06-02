@@ -46,7 +46,6 @@ public class EventoDirector {
      *
      * @param titolo il titolo dell'evento
      * @param descr la descrizione dell'evento
-     * @param tipo il tipo di evento (fiera o visita)
      * @param inizio la data e ora di inizio evento
      * @param fine la data e ora di fine evento
      * @param file l'immagine della locandina dell'evento
@@ -58,7 +57,6 @@ public class EventoDirector {
             B builder,
             String titolo,
             String descr,
-            TipologiaEvento tipo,
             LocalDateTime inizio,
             LocalDateTime fine,
             File file ,
@@ -68,7 +66,6 @@ public class EventoDirector {
          builder.reset()
                 .costruisciTitolo(titolo)
                 .costruisciDescrizione(descr)
-                .costruisciTipologia(tipo)
                 .costruisciStatus(StatusEvento.PROPOSTO)
                 .costruisciInizio(inizio)
                 .costruisciFine(fine)
@@ -82,7 +79,6 @@ public class EventoDirector {
     (
             String titolo,
             String descr,
-            TipologiaEvento tipo,
             LocalDateTime inizio,
             LocalDateTime fine,
             File file ,
@@ -93,7 +89,7 @@ public class EventoDirector {
         cambiaBuilder(fieraBuilder);
         if (!(builderCorrente instanceof FieraBuilder fieraBuilder))
             throw new IllegalStateException("Builder non compatibile");
-        return creaBase(fieraBuilder,titolo,descr,tipo,inizio,fine,file,luogo,creatore)
+        return creaBase(fieraBuilder,titolo,descr,inizio,fine,file,luogo,creatore)
                 .costruisciAziende(aziende)
                 .build();
       }
@@ -101,7 +97,6 @@ public class EventoDirector {
             (
                     String titolo,
                     String descr,
-                    TipologiaEvento tipo,
                     LocalDateTime inizio,
                     LocalDateTime fine,
                     File file ,
@@ -113,7 +108,7 @@ public class EventoDirector {
         if (!(builderCorrente instanceof VisitaBuilder visitaBuilder))
             throw new IllegalStateException("Builder non compatibile");
 
-        return creaBase(visitaBuilder,titolo,descr,tipo,inizio,fine,file,luogo,creatore)
+        return creaBase(visitaBuilder,titolo,descr,inizio,fine,file,luogo,creatore)
                 .costruisciAzienda(azienda)
                 .costruisciIscritti(null)
                 .build();

@@ -3,7 +3,6 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.Evento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.StatusEvento;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.TipologiaEvento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 
 import java.io.File;
@@ -34,8 +33,6 @@ public abstract class EventoBuilder<T extends Evento , B extends EventoBuilder<T
     public B costruisciTitolo(String titolo) { evento.setTitolo(titolo); return (B) this;}
 
     public B costruisciDescrizione(String descrizione) { evento.setDescrizione(descrizione); return (B) this;}
-
-    public B costruisciTipologia(TipologiaEvento tipologia) { evento.setTipologia(tipologia); return (B) this;}
 
     public B costruisciStatus(StatusEvento status) { evento.setStatus(status); return (B) this;}
 

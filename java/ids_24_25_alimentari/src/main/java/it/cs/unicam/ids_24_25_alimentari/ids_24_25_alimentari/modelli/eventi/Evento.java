@@ -28,9 +28,8 @@ public abstract class Evento {
     private String titolo;
     @Column(name = "descrizione", nullable = false)
     private String descrizione;
-    @Column(name = "tipologia", nullable = false)
-    private TipologiaEvento tipologia;
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private StatusEvento status;
     @Column(name = "inizio", nullable = false)
     private LocalDateTime inizio;

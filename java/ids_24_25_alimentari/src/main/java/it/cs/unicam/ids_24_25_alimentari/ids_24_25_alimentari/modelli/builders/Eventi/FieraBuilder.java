@@ -22,9 +22,16 @@ public class FieraBuilder extends EventoBuilder<EventoFiera, FieraBuilder> {
         return new EventoFiera();
     }
     public FieraBuilder costruisciAziende(List<Azienda> aziende) {
-        evento.setAziendePresenti(new ArrayList<>(aziende));
+        if (aziende == null) {
+            evento.setAziendePresenti(new ArrayList<>());
+        }
+        else {
+            evento.setAziendePresenti(new ArrayList<>(aziende));
+        }
+
         return this;
     }
+    //todo testare per vedere se funziona
     public FieraBuilder aggiungiAzienda(Azienda azienda) {
         evento.getAziendePresenti().add(azienda);
         return this;
