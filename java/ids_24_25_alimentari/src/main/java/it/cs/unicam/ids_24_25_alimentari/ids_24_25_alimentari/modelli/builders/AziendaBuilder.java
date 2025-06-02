@@ -7,9 +7,9 @@ import java.io.File;
 
 /**
  * -- GETTER --
- *  metodo che restituisce l'oggetto utente creato
+ *  design pattern BUILDER che restituisce l'oggetto azienda creato
  *
- * @return l'oggetto utente creato
+ * @return l'oggetto azienda creato
  */
 
 public class AziendaBuilder {

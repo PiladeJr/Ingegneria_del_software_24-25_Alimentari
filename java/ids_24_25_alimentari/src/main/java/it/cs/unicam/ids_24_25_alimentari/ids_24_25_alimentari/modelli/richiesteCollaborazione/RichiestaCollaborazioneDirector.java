@@ -69,7 +69,7 @@ public class RichiestaCollaborazioneDirector {
      * @param telefono        Il numero di telefono dell'animatore.
      * @param email           L'indirizzo email dell'animatore.
      * @param ruolo           indica che si tratta di una richiesta di tipo animatore.
-     * @param aziendaReferente Il nome dell'azienda referente per l'animatore.
+    // * @param aziendaReferente Il nome dell'azienda referente per l'animatore.
      * @param iban            Il codice IBAN dell'animatore per le transazioni bancarie.
      * @param cartaIdentita   Il file contenente la carta d'identità dell'animatore.
      */
@@ -79,7 +79,7 @@ public class RichiestaCollaborazioneDirector {
             String telefono,
             String email,
             Ruolo ruolo,
-            String aziendaReferente,
+//            String aziendaReferente,
             String iban,
             File cartaIdentita) {
         builder.costruisciNome(nome);
@@ -87,7 +87,7 @@ public class RichiestaCollaborazioneDirector {
         builder.costruisciTelefono(telefono);
         builder.costruisciEmail(email);
         builder.costruisciRuolo(ruolo);
-        builder.costruisciReferente(aziendaReferente);
+       // builder.costruisciReferente(aziendaReferente);
         builder.costruisciIban(iban);
         builder.aggiungiCartaIdentita(cartaIdentita);
     }

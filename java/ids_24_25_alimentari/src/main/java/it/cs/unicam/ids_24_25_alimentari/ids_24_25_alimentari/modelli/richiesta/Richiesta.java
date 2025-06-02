@@ -5,17 +5,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Entity
 @Table(name = "richiesta")
-@Getter
-@Setter
 @NoArgsConstructor
+@Setter
+@Getter
 public class Richiesta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Tipologia tipologia;
 
     @Column(nullable = true)
@@ -23,7 +25,16 @@ public class Richiesta {
 
     @Column(nullable = false)
     private long idMittente;
+
     private long idInformazioni;
+
+    @Column(nullable = false)
+    private long targetId;
+
     private long idCuratore;
+
+    public Boolean isApprovato() {
+        return approvato;
+    }
 
 }

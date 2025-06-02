@@ -2,6 +2,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.configurazioni;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +12,9 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.In
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.InformazioniAggiuntiveBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.ProdottoSingolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoFiera;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoVisita;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.StatusEvento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.*;
@@ -49,6 +53,9 @@ public class RepositoryCostructor {
     private ProdottoSingoloRepository prodottoSingoloRepository;
 
     @Autowired
+    private EventoRepository eventoRepository;
+
+    @Autowired
     private AziendaService aziendaService;
 
     @PostConstruct
@@ -61,6 +68,7 @@ public class RepositoryCostructor {
         impostaRichiesteCollaborazione(richiestaCollaborazioneRepository);
         impostaRichieste(richiestaRepository);
         impostaAziendeEsterne(utenteAziendaEsternaRepository);
+        impostaEventi(eventoRepository);
     }
 
     public boolean isIndirizzoRepositorySet = false;
@@ -71,6 +79,9 @@ public class RepositoryCostructor {
     public boolean isUtenteRepositorySet = false;
     public boolean isAziendaRepositorySet = false;
     public boolean isUtenteAziendaEsternaRepositorySet = false;
+    public boolean isEventoRepositorySet = false;
+//    public boolean isFieraRepositorySet = false;
+//    public boolean isVisitaRepositorySet = false;
 
     public Utente
             PRODUTTORE,
@@ -89,7 +100,9 @@ public class RepositoryCostructor {
     public Indirizzo
             INDIRIZZO_PRODUTTORE,
             INDIRIZZO_TRASFORMATORE,
-            INDIRIZZO_DISTRIBUTORE;
+            INDIRIZZO_DISTRIBUTORE,
+            INDIRIZZO_FIERA_AUTUNNO,
+            INDIRIZZO_FIERA_CONTADINA;
 
     public InformazioniAggiuntive
             INFORMAZIONI_AGGIUNTIVE_PRODUTTORE,
@@ -99,6 +112,14 @@ public class RepositoryCostructor {
             PRODOTTO_LATTE,
             PRODOTTO_BURRO,
             PRODOTTO_FORMAGGIO;
+
+    public EventoFiera
+            FIERA_CONTADINA,
+            FIERA_AUTUNNO;
+
+    public EventoVisita
+            VISITA_PRODUTTORE,
+            VISITA_TRASFORMATORE;
 
     public RichiestaCollaborazioneRepository RICHIESTA_PRODUTTORE, RICHIESTA_TRASFORMATORE, RICHIESTA_DISTRIBUTORE,
             RICHIESTA_ANIMATORE, RICHIESTA_CURATORE;
@@ -164,9 +185,11 @@ public class RepositoryCostructor {
         repo.flush();
         isProdottoSingoloRepositorySet = false;
     }
-
-
-
+    public void pulisciEventi(EventoRepository repo){
+        repo.deleteAll();
+        repo.flush();
+        isEventoRepositorySet = false;
+    }
     public void impostaUtenti(UtenteRepository repo) {
         pulisciUtenti(repo);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -218,6 +241,22 @@ public class RepositoryCostructor {
         INDIRIZZO_TRASFORMATORE.setNumeroCivico("5");
         INDIRIZZO_TRASFORMATORE.setProvincia("TO");
         INDIRIZZO_TRASFORMATORE.setCoordinate("45.0703, 7.6869");
+
+        INDIRIZZO_FIERA_AUTUNNO = new Indirizzo();
+        INDIRIZZO_FIERA_AUTUNNO.setCitta("Vercelli");
+        INDIRIZZO_FIERA_AUTUNNO.setCap("13100");
+        INDIRIZZO_FIERA_AUTUNNO.setVia("Corso Italia");
+        INDIRIZZO_FIERA_AUTUNNO.setNumeroCivico("10");
+        INDIRIZZO_FIERA_AUTUNNO.setProvincia("VC");
+        INDIRIZZO_FIERA_AUTUNNO.setCoordinate("45.3203, 8.4222");
+
+        INDIRIZZO_FIERA_CONTADINA = new Indirizzo();
+        INDIRIZZO_FIERA_CONTADINA.setCitta("Treviglio");
+        INDIRIZZO_FIERA_CONTADINA.setCap("24047");
+        INDIRIZZO_FIERA_CONTADINA.setVia("Piazza Garibaldi");
+        INDIRIZZO_FIERA_CONTADINA.setNumeroCivico("2");
+        INDIRIZZO_FIERA_CONTADINA.setProvincia("BG");
+        INDIRIZZO_FIERA_CONTADINA.setCoordinate("45.6042, 9.5911");
 
     }
 
@@ -330,4 +369,68 @@ public class RepositoryCostructor {
         }
     }
 
+    public void impostaEventi(EventoRepository repo){
+        try {
+            File immagine1 = new File(getClass().getClassLoader().getResource("facSimileLocandinaFiera2.jpeg").toURI());
+            File immagine2 = new File(getClass().getClassLoader().getResource("facSimileLocandinaFiera.jpeg").toURI());
+            File immagine3 = new File(getClass().getClassLoader().getResource("visita.jpeg").toURI());
+            File immagine4 = new File(getClass().getClassLoader().getResource("visita2.jpeg").toURI());
+
+            pulisciEventi(repo);
+            FIERA_CONTADINA = new EventoFiera();
+            FIERA_CONTADINA.setTitolo("Fiera Contadina");
+            FIERA_CONTADINA.setDescrizione("Fiera dedicata ai prodotti locali e biologici");
+            FIERA_CONTADINA.setStatus(StatusEvento.PROGRAMMATO);
+            FIERA_CONTADINA.setInizio(LocalDateTime.of(2025, 4, 28, 10, 0));
+            FIERA_CONTADINA.setFine(LocalDateTime.of(2025, 5, 1, 18, 0));
+            FIERA_CONTADINA.setLocandina(immagine1);
+            FIERA_CONTADINA.setIndirizzo(INDIRIZZO_FIERA_CONTADINA);
+            FIERA_CONTADINA.setCreatore(ANIMATORE);
+            FIERA_CONTADINA.setAziendePresenti(new ArrayList<>(Arrays.asList(AZIENDA_PRODUTTORE, AZIENDA_TRASFORMATORE)));
+
+            FIERA_AUTUNNO = new EventoFiera();
+            FIERA_AUTUNNO.setTitolo("Fiera di Autunno");
+            FIERA_AUTUNNO.setDescrizione("Fiera dedicata ai prodotti autunnali e locali");
+            FIERA_AUTUNNO.setStatus(StatusEvento.PROGRAMMATO);
+            FIERA_AUTUNNO.setInizio(LocalDateTime.of(2025, 10, 9, 10, 0));
+            FIERA_AUTUNNO.setFine(LocalDateTime.of(2025, 10, 9, 18, 0));
+            FIERA_AUTUNNO.setLocandina(immagine2);
+            FIERA_AUTUNNO.setIndirizzo(INDIRIZZO_FIERA_AUTUNNO);
+            FIERA_AUTUNNO.setCreatore(ANIMATORE);
+            FIERA_AUTUNNO.setAziendePresenti(new ArrayList<>(Arrays.asList(AZIENDA_PRODUTTORE, AZIENDA_TRASFORMATORE)));
+
+            VISITA_PRODUTTORE = new EventoVisita();
+            VISITA_PRODUTTORE.setTitolo("Visita Aziendale");
+            VISITA_PRODUTTORE.setDescrizione("Visita guidata presso l'azienda agricola");
+            VISITA_PRODUTTORE.setStatus(StatusEvento.PROGRAMMATO);
+            VISITA_PRODUTTORE.setInizio(LocalDateTime.of(2025, 6, 15, 10, 0));
+            VISITA_PRODUTTORE.setFine(LocalDateTime.of(2025, 6, 15, 18, 0));
+            VISITA_PRODUTTORE.setLocandina(immagine3);
+            //VISITA_PRODUTTORE.setIndirizzo(indirizzoRepository.findById(INDIRIZZO_PRODUTTORE.getId()).orElseThrow());
+            //VISITA_PRODUTTORE.setAziendaRiferimento(aziendaRepository.findById(AZIENDA_PRODUTTORE.getId()).orElseThrow());
+            VISITA_PRODUTTORE.setCreatore(ANIMATORE);
+            VISITA_PRODUTTORE.setIscritti(new ArrayList<>());
+
+            VISITA_TRASFORMATORE = new EventoVisita();
+            VISITA_TRASFORMATORE.setTitolo("Visita Aziendale Trasformatore");
+            VISITA_TRASFORMATORE.setDescrizione("Visita guidata presso l'azienda di trasformazione");
+            VISITA_TRASFORMATORE.setStatus(StatusEvento.PROGRAMMATO);
+            VISITA_TRASFORMATORE.setInizio(LocalDateTime.of(2025, 7, 20, 10, 0));
+            VISITA_TRASFORMATORE.setFine(LocalDateTime.of(2025, 7, 20, 18, 0));
+            VISITA_TRASFORMATORE.setLocandina(immagine4);
+            //VISITA_TRASFORMATORE.setIndirizzo(indirizzoRepository.findById(INDIRIZZO_TRASFORMATORE.getId()).orElseThrow());
+            //VISITA_TRASFORMATORE.setAziendaRiferimento(aziendaRepository.findById(AZIENDA_TRASFORMATORE.getId()).orElseThrow());
+            VISITA_TRASFORMATORE.setCreatore(ANIMATORE);
+            VISITA_TRASFORMATORE.setIscritti(new ArrayList<>());
+
+            repo.save(VISITA_PRODUTTORE);
+            repo.save(VISITA_TRASFORMATORE);
+            repo.save(FIERA_CONTADINA);
+            repo.save(FIERA_AUTUNNO);
+
+            isEventoRepositorySet = true;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class ImplementazioneServizioMail implements ServizioEmail{
 
     @Autowired private JavaMailSender javaMailSender;
-    @Value("${spring.mail.username}") private String sender;
+    @Value("$MAIL_USERNAME") private String sender;
 
     @Override
     public String inviaMail(String emailDestinatario, String messaggio, String oggetto) {

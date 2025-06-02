@@ -40,6 +40,11 @@ public class RichiestaBuilder {
         return this;
     }
 
+    public RichiestaBuilder costruisciTargetId(long targetId) {
+        richiesta.setTargetId(targetId);
+        return this;
+    }
+
     public Richiesta build() {
         Richiesta r = this.richiesta;
         reset();

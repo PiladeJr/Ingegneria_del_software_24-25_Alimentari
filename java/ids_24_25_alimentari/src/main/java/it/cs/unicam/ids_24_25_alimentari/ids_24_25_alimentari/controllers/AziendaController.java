@@ -6,7 +6,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.AziendaService;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.RichiestaService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.RichiestaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

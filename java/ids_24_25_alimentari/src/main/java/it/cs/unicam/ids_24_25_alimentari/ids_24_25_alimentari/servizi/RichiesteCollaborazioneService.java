@@ -122,7 +122,7 @@ public class RichiesteCollaborazioneService {
         }
         RichiestaCollaborazioneBuilder builder = new RichiestaCollaborazioneBuilder();
         RichiestaCollaborazioneDirector director = new RichiestaCollaborazioneDirector(builder);
-        director.creaAnimatore(nome, cognome, telefono, email, ruolo, aziendaReferente, iban, cartaIdentita);
+        director.creaAnimatore(nome, cognome, telefono, email, ruolo, iban, cartaIdentita);
         return saveRichiesta(builder.getRichiesta());
     }
 
@@ -260,8 +260,6 @@ public class RichiesteCollaborazioneService {
                             + "Email: " + richiestaCollaborazione.getEmail() + "\n" + "Password: " + password;
                     this.servizioEmail.inviaMail(richiestaCollaborazione.getEmail(), messaggio,
                             "Accettazione Richiesta di Collaborazione");
-                }
-                case ACQUIRENTE -> {
                 }
                 case GESTORE -> {
                 }
