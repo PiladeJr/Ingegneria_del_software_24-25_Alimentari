@@ -1,16 +1,17 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi.EventoPreviewDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.Evento;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoFiera;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoVisita;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.StatusEvento;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.EventoFieraRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.EventoRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.EventoVisitaRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -507,6 +508,81 @@ public class EventoService {
                         evento.getFine()
                 ))
                 .collect(Collectors.toList());
+    }
+    /**
+     * <h2>Salva un evento nel database</h2>
+     * <br>
+     * Questo metodo consente di salvare un evento (di tipo fiera o visita) nel database.
+     *
+     * @param evento L'evento da salvare.
+     * @return {@code Evento} L'evento salvato.
+     */
+    public Evento salvaEvento(Evento evento){
+        return eventoRepository.save(evento);
+    }
+
+    /**
+     * <h2>Crea un nuovo evento di tipo fiera</h2>
+     * <br>
+     * Questo metodo consente di creare un evento di tipo fiera.
+     * Utilizza `EventoDirector` per costruire l'evento con i dettagli forniti.
+     *
+     * @param titolo Il titolo dell'evento.
+     * @param descrizione La descrizione dell'evento.
+     * @param inizio La data e ora di inizio dell'evento.
+     * @param fine La data e ora di fine dell'evento.
+     * @param locandina Il file immagine della locandina dell'evento.
+     * @param indirizzo L'indirizzo in cui si svolgerà l'evento.
+     * @param aziende La lista di aziende partecipanti alla fiera.
+     * @return {@code Long} L'ID dell'evento di tipo fiera creato.
+     */
+    public Long creaFiera(
+            String titolo,
+            String descrizione,
+            LocalDateTime inizio,
+            LocalDateTime fine,
+            File locandina,
+            Indirizzo indirizzo,
+            List<Azienda> aziende
+    ){
+        EventoDirector eventoDirector = new EventoDirector();
+        Utente creatore = utenteService.getUtenteById(utenteService.getIdUtenteAutenticato());
+        Evento evento = eventoDirector.creaFieraCompleta(
+                titolo, descrizione, inizio, fine, locandina, indirizzo, creatore, aziende
+        );
+        return salvaEvento(evento).getId();
+
+    }
+/**
+     * <h2>Crea un nuovo evento di tipo visita</h2>
+     * <br>
+     * Questo metodo consente di creare un evento di tipo visita aziendale.
+     * Utilizza `EventoDirector` per costruire l'evento con i dettagli forniti.
+     *
+     * @param titolo Il titolo dell'evento.
+     * @param descrizione La descrizione dell'evento.
+     * @param inizio La data e ora di inizio dell'evento.
+     * @param fine La data e ora di fine dell'evento.
+     * @param locandina Il file immagine della locandina dell'evento.
+     * @param indirizzo L'indirizzo in cui si svolgerà l'evento.
+     * @param aziendaRiferimento L'azienda di riferimento per la visita.
+     * @return {@code Long} L'ID dell'evento di tipo visita creato.
+     */
+    public Long creaVisita(
+            String titolo,
+            String descrizione,
+            LocalDateTime inizio,
+            LocalDateTime fine,
+            File locandina,
+            Indirizzo indirizzo,
+            Azienda aziendaRiferimento
+    ){
+        EventoDirector eventoDirector = new EventoDirector();
+        Utente creatore = utenteService.getUtenteById(utenteService.getIdUtenteAutenticato());
+        Evento evento = eventoDirector.creaVisitaCompleta(
+                titolo, descrizione, inizio, fine, locandina, indirizzo, creatore, aziendaRiferimento
+        );
+        return salvaEvento(evento).getId();
     }
 
     /**

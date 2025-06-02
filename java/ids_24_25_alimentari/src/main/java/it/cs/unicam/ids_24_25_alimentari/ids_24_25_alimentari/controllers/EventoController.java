@@ -28,7 +28,7 @@ public class EventoController {
      *
      * @return Lista di eventi ordinati per titolo
      */
-    @GetMapping("/ordinati/titolo")
+    @GetMapping("/ordinati-titolo")
     public ResponseEntity<List<Evento>> getAllEventiOrdinatiPerTitolo() {
         return ResponseEntity.ok(eventoService.getAllEventiOrdinatiPerTitolo());
     }
@@ -38,7 +38,7 @@ public class EventoController {
      *
      * @return Lista di eventi ordinati per data inizio discendente
      */
-    @GetMapping("/ordinati/data-inizio")
+    @GetMapping("/ordinati-data-inizio")
     public ResponseEntity<List<Evento>> getAllEventiOrdinatiPerDataInizio() {
         return ResponseEntity.ok(eventoService.getAllEventiOrdinatiPerDataInizio());
     }
@@ -68,7 +68,7 @@ public class EventoController {
      *
      * @return Lista di eventi visita ordinati per data
      */
-    @GetMapping("/visite/ordinati/data-inizio")
+    @GetMapping("/visite/ordinati-data-inizio")
     public ResponseEntity<List<EventoVisita>> getEventiVisitaOrdinatiPerDataInizio() {
         return ResponseEntity.ok(eventoService.getEventiVisitaOrdinatiPerDataInizio());
     }
@@ -78,7 +78,7 @@ public class EventoController {
      *
      * @return Lista di eventi fiera ordinati per data
      */
-    @GetMapping("/fiere/ordinati/data-inizio")
+    @GetMapping("/fiere/ordinati-data-inizio")
     public ResponseEntity<List<EventoFiera>> getEventiFieraOrdinatiPerDataInizio() {
         return ResponseEntity.ok(eventoService.getEventiFieraOrdinatiPerDataInizio());
     }
@@ -172,6 +172,7 @@ public class EventoController {
     public ResponseEntity<List<EventoPreviewDTO>> getAnteprimeVisitePerDataInizio() {
         return ResponseEntity.ok(eventoService.getAnteprimeVisitePerDataInizio());
     }
+
     /**
      * <h2>Iscrive l'utente autenticato a un evento visita</h2>
      * <br>
