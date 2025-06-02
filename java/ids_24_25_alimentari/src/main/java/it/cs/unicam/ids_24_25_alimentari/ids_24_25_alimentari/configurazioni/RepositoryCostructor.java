@@ -15,7 +15,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoFiera;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoVisita;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.StatusEvento;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.TipologiaEvento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.*;
@@ -381,7 +380,6 @@ public class RepositoryCostructor {
             FIERA_CONTADINA = new EventoFiera();
             FIERA_CONTADINA.setTitolo("Fiera Contadina");
             FIERA_CONTADINA.setDescrizione("Fiera dedicata ai prodotti locali e biologici");
-            FIERA_CONTADINA.setTipologia(TipologiaEvento.FIERA);
             FIERA_CONTADINA.setStatus(StatusEvento.PROGRAMMATO);
             FIERA_CONTADINA.setInizio(LocalDateTime.of(2025, 4, 28, 10, 0));
             FIERA_CONTADINA.setFine(LocalDateTime.of(2025, 5, 1, 18, 0));
@@ -393,7 +391,6 @@ public class RepositoryCostructor {
             FIERA_AUTUNNO = new EventoFiera();
             FIERA_AUTUNNO.setTitolo("Fiera di Autunno");
             FIERA_AUTUNNO.setDescrizione("Fiera dedicata ai prodotti autunnali e locali");
-            FIERA_AUTUNNO.setTipologia(TipologiaEvento.FIERA);
             FIERA_AUTUNNO.setStatus(StatusEvento.PROGRAMMATO);
             FIERA_AUTUNNO.setInizio(LocalDateTime.of(2025, 10, 9, 10, 0));
             FIERA_AUTUNNO.setFine(LocalDateTime.of(2025, 10, 9, 18, 0));
@@ -405,7 +402,6 @@ public class RepositoryCostructor {
             VISITA_PRODUTTORE = new EventoVisita();
             VISITA_PRODUTTORE.setTitolo("Visita Aziendale");
             VISITA_PRODUTTORE.setDescrizione("Visita guidata presso l'azienda agricola");
-            VISITA_PRODUTTORE.setTipologia(TipologiaEvento.VISITA);
             VISITA_PRODUTTORE.setStatus(StatusEvento.PROGRAMMATO);
             VISITA_PRODUTTORE.setInizio(LocalDateTime.of(2025, 6, 15, 10, 0));
             VISITA_PRODUTTORE.setFine(LocalDateTime.of(2025, 6, 15, 18, 0));
@@ -418,7 +414,6 @@ public class RepositoryCostructor {
             VISITA_TRASFORMATORE = new EventoVisita();
             VISITA_TRASFORMATORE.setTitolo("Visita Aziendale Trasformatore");
             VISITA_TRASFORMATORE.setDescrizione("Visita guidata presso l'azienda di trasformazione");
-            VISITA_TRASFORMATORE.setTipologia(TipologiaEvento.VISITA);
             VISITA_TRASFORMATORE.setStatus(StatusEvento.PROGRAMMATO);
             VISITA_TRASFORMATORE.setInizio(LocalDateTime.of(2025, 7, 20, 10, 0));
             VISITA_TRASFORMATORE.setFine(LocalDateTime.of(2025, 7, 20, 18, 0));

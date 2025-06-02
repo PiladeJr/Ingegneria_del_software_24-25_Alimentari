@@ -23,7 +23,12 @@ public class VisitaBuilder extends EventoBuilder<EventoVisita, VisitaBuilder> {
     }
 
     public VisitaBuilder costruisciIscritti(List<Utente> utenti) {
-        evento.setIscritti(new ArrayList<>(utenti));
+        if (utenti == null) {
+            evento.setIscritti(new ArrayList<>());
+        }
+        else{
+            evento.setIscritti(new ArrayList<>(utenti));
+        }
         return this;
     }
 
