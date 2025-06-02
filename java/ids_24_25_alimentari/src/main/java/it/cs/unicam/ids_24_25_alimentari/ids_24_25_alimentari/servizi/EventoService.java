@@ -5,15 +5,11 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Az
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.EventoFieraRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.EventoRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.EventoVisitaRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
