@@ -83,44 +83,49 @@ public class ProdottoController {
     }
 
     /**
-     * Restituisce tutti i prodotti presenti nel database.
+     * Restituisce tutti i prodotti, sia singoli che pacchetti, ordinati in base al parametro specificato.
      *
-     * @return Lista di tutti i prodotti.
+     * @param sortBy Il campo per ordinare (default: "nome").
+     * @param order  L'ordine di ordinamento (default: "asc").
+     * @return Lista di prodotti ordinati.
      */
     @GetMapping("/all")
-    public ResponseEntity<List<Prodotto>> getAllProdotto() {
-        return ResponseEntity.ok(prodottoService.getAllProdotti());
+    public ResponseEntity<List<Prodotto>> getAllProdotti(
+            @RequestParam(required = false, defaultValue = "nome") String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String order
+    ) {
+        return ResponseEntity.ok(prodottoService.getAllProdotti(sortBy, order));
     }
 
-    /**
-     * Restituisce tutti i prodotti ordinati alfabeticamente per nome.
-     *
-     * @return Lista ordinata di prodotti per nome crescente.
-     */
-    @GetMapping("/all/nome/asc")
-    public ResponseEntity<List<Prodotto>> getAllProdottiByNomeAsc() {
-        return ResponseEntity.ok(prodottoService.getAllProdottiOrdByNome());
-    }
-
-    /**
-     * Restituisce tutti i prodotti ordinati per prezzo crescente.
-     *
-     * @return Lista ordinata di prodotti per prezzo crescente.
-     */
-    @GetMapping("/all/prezzo/cre")
-    public ResponseEntity<List<Prodotto>> getAllProdottiByPrezzoCre(){
-        return ResponseEntity.ok(prodottoService.getAllProdottiOrdByPrezzoCre());
-    }
-
-    /**
-     * Restituisce tutti i prodotti ordinati per prezzo decrescente.
-     *
-     * @return Lista ordinata di prodotti per prezzo decrescente.
-     */
-    @GetMapping("/all/prezzo/dec")
-    public ResponseEntity<List<Prodotto>> getAllProdottiByPrezzoDec(){
-        return ResponseEntity.ok(prodottoService.getAllProdottiOrdByPrezzoDec());
-    }
+//    /**
+//     * Restituisce tutti i prodotti ordinati alfabeticamente per nome.
+//     *
+//     * @return Lista ordinata di prodotti per nome crescente.
+//     */
+//    @GetMapping("/all/nome/asc")
+//    public ResponseEntity<List<Prodotto>> getAllProdottiByNomeAsc() {
+//        return ResponseEntity.ok(prodottoService.getAllProdottiOrdByNome());
+//    }
+//
+//    /**
+//     * Restituisce tutti i prodotti ordinati per prezzo crescente.
+//     *
+//     * @return Lista ordinata di prodotti per prezzo crescente.
+//     */
+//    @GetMapping("/all/prezzo/cre")
+//    public ResponseEntity<List<Prodotto>> getAllProdottiByPrezzoCre(){
+//        return ResponseEntity.ok(prodottoService.getAllProdottiOrdByPrezzoCre());
+//    }
+//
+//    /**
+//     * Restituisce tutti i prodotti ordinati per prezzo decrescente.
+//     *
+//     * @return Lista ordinata di prodotti per prezzo decrescente.
+//     */
+//    @GetMapping("/all/prezzo/dec")
+//    public ResponseEntity<List<Prodotto>> getAllProdottiByPrezzoDec(){
+//        return ResponseEntity.ok(prodottoService.getAllProdottiOrdByPrezzoDec());
+//    }
 
     /**
      * Elimina un prodotto singolo dato il suo ID.

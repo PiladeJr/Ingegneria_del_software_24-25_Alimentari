@@ -3,6 +3,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.Evento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.InformazioniAggiuntiveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,11 @@ public class StrategyInformazioniAggiuntive implements RichiestaStrategy {
         public InformazioniAggiuntive ottieniRichiesta(Richiesta richiesta) {
         return informazioniRepository.findById(richiesta.getTargetId())
                 .orElseThrow(() -> new IllegalArgumentException("info non trovate con ID: " + richiesta.getTargetId()));
+    }
+
+
+    @Override
+    public Tipologia getTipologia() {
+        return Tipologia.INFO_AZIENDA;
     }
 }

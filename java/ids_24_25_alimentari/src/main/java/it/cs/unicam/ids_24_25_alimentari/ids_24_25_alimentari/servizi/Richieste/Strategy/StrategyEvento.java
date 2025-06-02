@@ -2,6 +2,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.Evento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.EventoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,4 +27,12 @@ public class StrategyEvento implements RichiestaStrategy {
         return eventoRepository.findById(richiesta.getTargetId())
                 .orElseThrow(() -> new IllegalArgumentException("Evento non trovato con ID: " + richiesta.getTargetId()));
     }
+
+
+
+    @Override
+    public Tipologia getTipologia() {
+        return Tipologia.EVENTO;
+    }
+
 }

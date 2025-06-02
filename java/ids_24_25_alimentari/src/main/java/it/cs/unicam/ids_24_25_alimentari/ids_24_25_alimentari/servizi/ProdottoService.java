@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class ProdottoService {
@@ -86,13 +87,6 @@ public class ProdottoService {
         };
     }
 
-    public List<Prodotto> getAllProdotti(){
-        List<Prodotto> prod = new ArrayList<>();
-        prod.addAll(prodottoSingoloRepository.findAll());
-        prod.addAll(pacchettoRepository.findAll());
-        return prod;
-    }
-
     public List<Optional<Prodotto>> getProdottoByNome(String nome) {
         List<Optional<Prodotto>> prod = new ArrayList<>();
         prod.addAll(prodottoSingoloRepository.getProdottoByNome(nome));
@@ -104,23 +98,21 @@ public class ProdottoService {
         return this.prodottoSingoloRepository.getProdottiByIdAzienda(idAzienda);
     }
 
-    public List<Prodotto> getAllProdottiOrdByNome() {
-        return filtroProdotti(prodotto -> prodotto.getNome() != null, Comparator.comparing(Prodotto::getNome));
-    }
+    public List<Prodotto> getAllProdotti(String sortBy, String order) {
+        List<Prodotto> prod = new ArrayList<>();
+        prod.addAll(prodottoSingoloRepository.findAll());
+        prod.addAll(pacchettoRepository.findAll());
 
-    public List<Prodotto> getAllProdottiOrdByPrezzoCre(){
-        return filtroProdotti(prodotto -> prodotto.getPrezzo() != null, Comparator.comparing(Prodotto::getPrezzo));
-    }
+        Comparator<Prodotto> comparator;
 
-    public List<Prodotto> getAllProdottiOrdByPrezzoDec(){
-        return filtroProdotti(prodotto -> prodotto.getPrezzo() != null, Comparator.comparing(Prodotto::getPrezzo).reversed());
-    }
+        switch (sortBy.toLowerCase()) {
+            case "prezzo" -> comparator = Comparator.comparing(Prodotto::getPrezzo);
+            default       -> comparator = Comparator.comparing(Prodotto::getNome, String.CASE_INSENSITIVE_ORDER);
+        }
 
-    private List<Prodotto> filtroProdotti(Predicate<Prodotto> filtro, Comparator<Prodotto> comparator) {
-        return getAllProdotti().stream()
-                .filter(filtro)
-                .sorted(comparator)
-                .toList();
+        return prod.stream()
+                .sorted(Objects.equals(order, "asc") ? comparator : comparator.reversed())
+                .collect(Collectors.toList());
     }
 
     public void deleteProdotto(Long id, TipoProdotto tipo) {

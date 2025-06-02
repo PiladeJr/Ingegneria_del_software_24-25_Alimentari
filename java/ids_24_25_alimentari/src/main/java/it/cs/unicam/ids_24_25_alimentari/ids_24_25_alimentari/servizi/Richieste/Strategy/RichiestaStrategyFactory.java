@@ -16,13 +16,7 @@ public class RichiestaStrategyFactory {
     public RichiestaStrategyFactory(List<RichiestaStrategy> strategies) {
         this.strategiaPerTipologia = new EnumMap<>(Tipologia.class);
         for (RichiestaStrategy strategy : strategies) {
-            if (strategy instanceof StrategyInformazioniAggiuntive) {
-                strategiaPerTipologia.put(Tipologia.INFO_AZIENDA, strategy);
-            } else if (strategy instanceof StrategyProdotto) {
-                strategiaPerTipologia.put(Tipologia.PRODOTTO, strategy);
-            } else if (strategy instanceof StrategyEvento) {
-                strategiaPerTipologia.put(Tipologia.EVENTO, strategy);
-            }
+            strategiaPerTipologia.put(strategy.getTipologia(), strategy);
         }
     }
 

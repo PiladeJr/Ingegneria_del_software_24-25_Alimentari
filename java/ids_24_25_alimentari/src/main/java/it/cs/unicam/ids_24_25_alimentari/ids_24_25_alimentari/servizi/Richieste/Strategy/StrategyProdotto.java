@@ -3,6 +3,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.ProdottoSingolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.Evento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.PacchettoRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.ProdottoSingoloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,11 @@ public class StrategyProdotto implements RichiestaStrategy {
     public ProdottoSingolo ottieniRichiesta(Richiesta richiesta) {
         return prodottoSingoloRepository.findById(richiesta.getTargetId())
                 .orElseThrow(() -> new IllegalArgumentException("Prodotto non trovato con ID: " + richiesta.getTargetId()));
+    }
+
+
+    @Override
+    public Tipologia getTipologia() {
+        return Tipologia.PRODOTTO;
     }
 }
