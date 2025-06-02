@@ -244,7 +244,7 @@ public class RichiestaController {
 
 
     /**
-     * Verifica se la richiesta non è stata ancora valutata e la fa elaborare
+     * <h4>Verifica se la richiesta non è stata ancora valutata e la fa elaborare</h4>
      *
      * <p>Se la richiesta è già stata valutata, restituisce un errore con un messaggio appropriato.
      * Se la richiesta non è stata trovata, restituisce un errore 404.
@@ -259,7 +259,7 @@ public class RichiestaController {
     public ResponseEntity<?> valutaRichiesta(@RequestBody CambiaStatoRichiestaCollaborazioneDTO dto){
         return richiestaService.getRichiestaById(dto.getId())
                 .map(richiesta -> {
-                    if (richiesta.isApprovato() != null) {
+                    if (richiesta.getApprovato() != null) {
                         return ResponseEntity.badRequest()
                                 .body(Collections.singletonMap("message", "La richiesta è già stata elaborata"));
                     }
@@ -283,7 +283,6 @@ public class RichiestaController {
 
 
     }
-
 
     /**
      * Elabora la richiesta in base alla decisione del Curatore, che decide se approvarla o rifiutarla,

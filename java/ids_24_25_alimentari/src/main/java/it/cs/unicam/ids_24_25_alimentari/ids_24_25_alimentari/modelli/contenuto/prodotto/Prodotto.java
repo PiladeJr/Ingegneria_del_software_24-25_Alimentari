@@ -25,5 +25,8 @@ public abstract class Prodotto extends Contenuto {
     @Column(name = "prezzo")
     protected Double prezzo;
 
-    abstract Double getPrezzo();
+    public abstract Double getPrezzo();
+
+    abstract TipoProdotto getTipo();
+
 }

@@ -39,4 +39,11 @@ public class Pacchetto extends Prodotto{
         }
         return totale;
     }
+
+    @Override
+    TipoProdotto getTipo() {
+        return TipoProdotto.PACCHETTO;
+    }
+
+
 }
