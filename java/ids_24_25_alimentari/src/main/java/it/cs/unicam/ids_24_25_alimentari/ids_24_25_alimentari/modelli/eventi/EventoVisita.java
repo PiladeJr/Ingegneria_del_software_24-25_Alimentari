@@ -18,7 +18,8 @@ import static jakarta.persistence.CascadeType.PERSIST;
 @DiscriminatorValue("VISITA")
 @NoArgsConstructor
 public class EventoVisita extends Evento{
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "azienda_riferimento_id", nullable = true)
     private Azienda aziendaRiferimento;
     @ManyToMany(cascade = {PERSIST, MERGE})
     @JoinTable(

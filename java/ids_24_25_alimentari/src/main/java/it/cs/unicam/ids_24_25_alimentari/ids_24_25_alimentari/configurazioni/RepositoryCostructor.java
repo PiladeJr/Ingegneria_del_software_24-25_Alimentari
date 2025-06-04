@@ -80,8 +80,6 @@ public class RepositoryCostructor {
     public boolean isAziendaRepositorySet = false;
     public boolean isUtenteAziendaEsternaRepositorySet = false;
     public boolean isEventoRepositorySet = false;
-//    public boolean isFieraRepositorySet = false;
-//    public boolean isVisitaRepositorySet = false;
 
     public Utente
             PRODUTTORE,
@@ -233,6 +231,7 @@ public class RepositoryCostructor {
         INDIRIZZO_PRODUTTORE.setNumeroCivico("1");
         INDIRIZZO_PRODUTTORE.setProvincia("MI");
         INDIRIZZO_PRODUTTORE.setCoordinate("45.4642, 9.1900");
+        INDIRIZZO_PRODUTTORE = indirizzoRepository.save(INDIRIZZO_PRODUTTORE);
 
         INDIRIZZO_TRASFORMATORE = new Indirizzo();
         INDIRIZZO_TRASFORMATORE.setCitta("Torino");
@@ -241,6 +240,7 @@ public class RepositoryCostructor {
         INDIRIZZO_TRASFORMATORE.setNumeroCivico("5");
         INDIRIZZO_TRASFORMATORE.setProvincia("TO");
         INDIRIZZO_TRASFORMATORE.setCoordinate("45.0703, 7.6869");
+        INDIRIZZO_TRASFORMATORE = indirizzoRepository.save(INDIRIZZO_TRASFORMATORE);
 
         INDIRIZZO_FIERA_AUTUNNO = new Indirizzo();
         INDIRIZZO_FIERA_AUTUNNO.setCitta("Vercelli");
@@ -249,6 +249,7 @@ public class RepositoryCostructor {
         INDIRIZZO_FIERA_AUTUNNO.setNumeroCivico("10");
         INDIRIZZO_FIERA_AUTUNNO.setProvincia("VC");
         INDIRIZZO_FIERA_AUTUNNO.setCoordinate("45.3203, 8.4222");
+        INDIRIZZO_FIERA_AUTUNNO = indirizzoRepository.save(INDIRIZZO_FIERA_AUTUNNO);
 
         INDIRIZZO_FIERA_CONTADINA = new Indirizzo();
         INDIRIZZO_FIERA_CONTADINA.setCitta("Treviglio");
@@ -257,11 +258,18 @@ public class RepositoryCostructor {
         INDIRIZZO_FIERA_CONTADINA.setNumeroCivico("2");
         INDIRIZZO_FIERA_CONTADINA.setProvincia("BG");
         INDIRIZZO_FIERA_CONTADINA.setCoordinate("45.6042, 9.5911");
+        INDIRIZZO_FIERA_CONTADINA = indirizzoRepository.save(INDIRIZZO_FIERA_CONTADINA);
 
+        indirizzoRepository.flush();
     }
 
     public void impostaAziende(AziendaRepository aziendaRepository) {
         pulisciAziende(aziendaRepository);
+
+        INDIRIZZO_PRODUTTORE = indirizzoRepository.findById(INDIRIZZO_PRODUTTORE.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Indirizzo produttore non trovato"));
+        INDIRIZZO_TRASFORMATORE = indirizzoRepository.findById(INDIRIZZO_TRASFORMATORE.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Indirizzo trasformatore non trovato"));
 
         AZIENDA_PRODUTTORE = new Azienda();
         AZIENDA_PRODUTTORE.setDenominazioneSociale("Azienda Agricola Rossi");
@@ -377,6 +385,12 @@ public class RepositoryCostructor {
             File immagine4 = new File(getClass().getClassLoader().getResource("visita2.jpeg").toURI());
 
             pulisciEventi(repo);
+
+            Azienda aziendaProduttore = aziendaRepository.findById(AZIENDA_PRODUTTORE.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Azienda produttore non trovata"));
+            Azienda aziendaTrasformatore = aziendaRepository.findById(AZIENDA_TRASFORMATORE.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Azienda trasformatore non trovata"));
+
             FIERA_CONTADINA = new EventoFiera();
             FIERA_CONTADINA.setTitolo("Fiera Contadina");
             FIERA_CONTADINA.setDescrizione("Fiera dedicata ai prodotti locali e biologici");
@@ -406,8 +420,8 @@ public class RepositoryCostructor {
             VISITA_PRODUTTORE.setInizio(LocalDateTime.of(2025, 6, 15, 10, 0));
             VISITA_PRODUTTORE.setFine(LocalDateTime.of(2025, 6, 15, 18, 0));
             VISITA_PRODUTTORE.setLocandina(immagine3);
-            //VISITA_PRODUTTORE.setIndirizzo(indirizzoRepository.findById(INDIRIZZO_PRODUTTORE.getId()).orElseThrow());
-            //VISITA_PRODUTTORE.setAziendaRiferimento(aziendaRepository.findById(AZIENDA_PRODUTTORE.getId()).orElseThrow());
+            VISITA_PRODUTTORE.setIndirizzo(INDIRIZZO_PRODUTTORE);
+            VISITA_PRODUTTORE.setAziendaRiferimento(aziendaProduttore);
             VISITA_PRODUTTORE.setCreatore(ANIMATORE);
             VISITA_PRODUTTORE.setIscritti(new ArrayList<>());
 
@@ -418,19 +432,21 @@ public class RepositoryCostructor {
             VISITA_TRASFORMATORE.setInizio(LocalDateTime.of(2025, 7, 20, 10, 0));
             VISITA_TRASFORMATORE.setFine(LocalDateTime.of(2025, 7, 20, 18, 0));
             VISITA_TRASFORMATORE.setLocandina(immagine4);
-            //VISITA_TRASFORMATORE.setIndirizzo(indirizzoRepository.findById(INDIRIZZO_TRASFORMATORE.getId()).orElseThrow());
-            //VISITA_TRASFORMATORE.setAziendaRiferimento(aziendaRepository.findById(AZIENDA_TRASFORMATORE.getId()).orElseThrow());
+            VISITA_TRASFORMATORE.setIndirizzo(INDIRIZZO_TRASFORMATORE);
+            VISITA_TRASFORMATORE.setAziendaRiferimento(aziendaTrasformatore);
             VISITA_TRASFORMATORE.setCreatore(ANIMATORE);
             VISITA_TRASFORMATORE.setIscritti(new ArrayList<>());
 
-            repo.save(VISITA_PRODUTTORE);
-            repo.save(VISITA_TRASFORMATORE);
             repo.save(FIERA_CONTADINA);
             repo.save(FIERA_AUTUNNO);
+            repo.save(VISITA_PRODUTTORE);
+            repo.save(VISITA_TRASFORMATORE);
+
+            repo.flush();
 
             isEventoRepositorySet = true;
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Errore durante il caricamento delle risorse per gli eventi", e);
         }
     }
 }

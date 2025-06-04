@@ -26,10 +26,12 @@ public class Azienda {
     @Column(name = "denominazione_sociale", nullable = false)
     private String denominazioneSociale;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "indirizzoSedeLegale_id", nullable = false)
     private Indirizzo sedeLegale;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "indirizzoSedeOperativa_id", nullable = false)
     private Indirizzo sedeOperativa;
 
     @Column(name = "iva", nullable = false)

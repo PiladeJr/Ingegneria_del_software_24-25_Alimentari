@@ -37,7 +37,8 @@ public abstract class Evento {
     private LocalDateTime fine;
     @Column(name = "locandina")
     private File locandina;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "indirizzo_id", nullable = false)
     private Indirizzo indirizzo;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "utente_creatore_id", nullable = false)

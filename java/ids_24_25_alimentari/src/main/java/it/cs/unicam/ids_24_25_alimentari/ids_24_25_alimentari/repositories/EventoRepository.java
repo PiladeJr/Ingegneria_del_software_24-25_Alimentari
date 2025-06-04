@@ -13,15 +13,6 @@ import java.util.List;
 public interface EventoRepository extends JpaRepository<Evento, Long> {
 
     /**
-     * Restituisce tutti gli eventi ordinati alfabeticamente per titolo.
-     */
-    List<Evento> findAllByOrderByTitoloAsc();
-    /**
-     * Restituisce tutti gli eventi ordinati per data di inizio decrescente.
-     */
-    List<Evento> findAllByOrderByInizioDesc();
-
-    /**
      * Restituisce tutti gli eventi di tipo visita.
      */
     @Query("SELECT e FROM Evento e WHERE TYPE(e) = EventoVisita")
@@ -40,28 +31,17 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
     List<Evento> findByCreatoreId(Long idUtente);
 
     /**
-     * Restituisce tutti gli eventi di tipo visita ordinati per data decrescente.
-     */
-    @Query("SELECT e FROM Evento e WHERE TYPE(e) = EventoVisita ORDER BY e.inizio DESC")
-    List<EventoVisita> findAllVisitaOrderByInizioDesc();
-
-    /**
-     * Restituisce tutti gli eventi di tipo fiera ordinati per data decrescente.
-     */
-    @Query("SELECT e FROM Evento e WHERE TYPE(e) = EventoFiera ORDER BY e.inizio DESC")
-    List<EventoFiera> findAllFieraOrderByInizioDesc();
-
-    /**
      * Restituisce tutti gli eventi visibili sulla piattaforma con stato PROGRAMMATO
      */
     @Query("SELECT e FROM Evento e WHERE e.status = 'PROGRAMMATO'")
-    List<Evento> findAllEventiProgrammati();
+    List<Evento> findAllProgrammati();
 
     /**
      * Restituisce tutti gli eventi ordinati per data di inizio decrescente.
      */
     @Query("SELECT e FROM Evento e WHERE e.status = 'PROGRAMMATO' ORDER BY e.inizio DESC")
     List<Evento> findAllEventiProgrammatiByInizio();
+
     /**
      * Restituisce tutti gli eventi di tipo visita visibili sulla piattaforma
      */
@@ -91,11 +71,13 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
      */
     @Query("SELECT e FROM Evento e WHERE LOWER(e.titolo) LIKE LOWER(CONCAT('%', :title, '%'))")
     List<Evento> findByTitleContainingParameter(String title);
+
     /**
      * Restituisce tutti gli eventi programmati il cui titolo contiene una stringa specifica, ignorando il case.
      */
     @Query("SELECT e FROM Evento e WHERE LOWER(e.titolo) LIKE LOWER(CONCAT('%', :title, '%')) AND e.status = 'PROGRAMMATO'")
     List<Evento> findByTitleContainingParameterAndStatus(String title);
+
     /**
      * Restituisce tutti gli eventi il cui titolo contiene una stringa specifica, ignorando il case, e sono stati creati da un utente specifico.
      */
