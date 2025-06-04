@@ -22,6 +22,8 @@ public class StrategyEvento implements RichiestaStrategy {
         var eventi = eventoRepository.findById(richiesta.getTargetId());
         System.out.println("Elaborazione della richiesta per l'evento: " + richiesta.getId());
     }
+
+
     @Override
     public Evento ottieniRichiesta(Richiesta richiesta) {
         return eventoRepository.findById(richiesta.getTargetId())

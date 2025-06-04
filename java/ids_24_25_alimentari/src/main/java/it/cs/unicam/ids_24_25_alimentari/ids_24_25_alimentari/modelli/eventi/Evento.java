@@ -1,6 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -20,10 +21,10 @@ import java.time.LocalDateTime;
         sequenceName = "evento_sequence",
         allocationSize = 1)
 @NoArgsConstructor
-public abstract class Evento {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "evento_seq")
-    private long id;
+public abstract class Evento extends Contenuto {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "evento_seq")
+//    private long id;
     @Column(name = "titolo", nullable = false)
     private String titolo;
     @Column(name = "descrizione", nullable = false)

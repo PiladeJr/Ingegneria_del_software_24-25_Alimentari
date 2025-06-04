@@ -22,6 +22,8 @@ public class StrategyInformazioniAggiuntive implements RichiestaStrategy {
         var info = informazioniRepository.findById(richiesta.getTargetId());
         System.out.println("Elaborazione della richiesta per informazioni aggiuntive: " + richiesta.getId());
     }
+
+
     @Override
         public InformazioniAggiuntive ottieniRichiesta(Richiesta richiesta) {
         return informazioniRepository.findById(richiesta.getTargetId())

@@ -4,6 +4,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.even
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.RichiestaBuilder;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
@@ -101,13 +102,13 @@ public class RichiestaService {
     /**
      * Ottiene una richiesta in base al suo ID e alla sua tipologia.
      *
-     * Visualizzq la richiesta e le sue componenti ottenute tramite
+     * Visualizza la richiesta e le sue componenti ottenute tramite
      * la strategia associata alla tipologia della richiesta.
      *
      * @param idRichiesta L'ID della richiesta da ottenere.
      * @return La richiesta ottenuta, o un'eccezione se non trovata o se la tipologia non è supportata.
      */
-    public Object ottieniRichiesta(long idRichiesta){
+    public Contenuto ottieniRichiesta(long idRichiesta){
         Richiesta richiesta = richiestaRepository.findById(idRichiesta)
                 .orElseThrow(() -> new RuntimeException("Richiesta non trovata"));
 
