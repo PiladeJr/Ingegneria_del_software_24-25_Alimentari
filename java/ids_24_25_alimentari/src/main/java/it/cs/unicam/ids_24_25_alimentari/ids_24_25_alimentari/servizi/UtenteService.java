@@ -50,6 +50,7 @@ public class UtenteService implements UserDetailsService {
 
     /**
      * ottieni l'id dell'utente autenticato estraendolo dal suo token
+     * 
      * @return l'id dell'utente autenticato
      */
     public Long getIdUtenteAutenticato() {
@@ -59,21 +60,6 @@ public class UtenteService implements UserDetailsService {
             return utente.isPresent() ? utente.get().getId() : null;
         }
         throw new RuntimeException("Utente non autenticato");
-    }
-
-    /**
-     * seleziona l'utente dalla lista tramite il suo id
-     *
-     * @param idUtente
-     * @return l'utente se presente nel database
-     */
-    public Optional<Utente> selezionaUtenteById(Long idUtente) {
-        if (idUtente == null)
-            throw new NullPointerException();
-        Optional<Utente> user = utenteRepository.findById(idUtente);
-        if (user.isEmpty())
-            throw new NullPointerException();
-        return user;
     }
 
     /**
@@ -115,7 +101,7 @@ public class UtenteService implements UserDetailsService {
      *
      * @return ruolo se l'utente esiste, null altrimenti
      */
-    public Ruolo getRuoloUtenteById(Long idUtente){
+    public Ruolo getRuoloUtenteById(Long idUtente) {
         Optional<Utente> utente = utenteRepository.findById(idUtente);
         return utente.isPresent() ? utente.get().getRuolo() : null;
     }
