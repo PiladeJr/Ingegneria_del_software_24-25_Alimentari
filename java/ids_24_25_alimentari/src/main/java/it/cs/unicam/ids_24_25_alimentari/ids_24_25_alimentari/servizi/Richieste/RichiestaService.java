@@ -77,6 +77,7 @@ public class RichiestaService {
         return this.richiestaRepository.findById(id);
     }
 
+
     /**
      * <h2>Processa una richiesta in base al suo ID</h2>
      * <br>
@@ -99,6 +100,7 @@ public class RichiestaService {
             throw new IllegalArgumentException("Tipologia non supportata: " + richiesta.getTipologia());
         }
     }
+
     /**
      * Ottiene una richiesta in base al suo ID e alla sua tipologia.
      *
@@ -120,6 +122,7 @@ public class RichiestaService {
         }
     }
 
+
     /**
      * Crea una nuova richiesta di informazioni aggiuntive per un'azienda.
      *
@@ -140,7 +143,7 @@ public class RichiestaService {
             Long[] idAzienda
     ) {
         long id = this.infoAggiuntiveService.nuovaInformazioneAggiuntiva(descrizione, produzione, metodologie, immagini, certificati, idAzienda).getId();
-        Richiesta richiesta = this.nuovaRichiesta(id, Tipologia.INFO_AZIENDA);
+        Richiesta richiesta = this.nuovaRichiesta(id, Tipologia.INFO_AZIENDA, "info_azienda");
         this.notificaNuovaRichiesta();
         return salvaRichiesta(richiesta);
     }
@@ -170,7 +173,7 @@ public class RichiestaService {
             String tecniche
     ) {
         long id = this.prodottoService.nuovoProdotto(nome, descrizione, idAzienda, immagini, prezzo, quantita, allergeni, tecniche).getId();
-        Richiesta richiesta = this.nuovaRichiesta(id, Tipologia.PRODOTTO);
+        Richiesta richiesta = this.nuovaRichiesta(id, Tipologia.PRODOTTO, "singolo");
         this.notificaNuovaRichiesta();
         return salvaRichiesta(richiesta);
     }
@@ -192,77 +195,13 @@ public class RichiestaService {
             Set<Long> prodotti
     ) {
        long id = this.prodottoService.nuovoPacchetto(nome, descrizione, prezzo, prodotti).getId();
-        Richiesta richiesta = this.nuovaRichiesta(id, Tipologia.PRODOTTO);
+        Richiesta richiesta = this.nuovaRichiesta(id, Tipologia.PRODOTTO, "Pacchetto");
         this.notificaNuovaRichiesta();
         return salvaRichiesta(richiesta);
     }
 
-    /**
-     * Crea una nuova richiesta associata a un contenuto specifico.
-     *
-     * @param idContenuto L'ID del contenuto a cui è associata la richiesta.
-     * @return La richiesta creata.
-     * @throws IllegalArgumentException se l'utente autenticato non è trovato.
-     */
-    private Richiesta nuovaRichiesta(Long idContenuto, Tipologia tipologia) {
-        RichiestaBuilder richiesta = new RichiestaBuilder();
-        richiesta.costruisciTipologia(tipologia);
-        richiesta.costruisciIdInformazioni(idContenuto);
 
-        Long idMittente = this.utenteService.getIdUtenteAutenticato();
-        if (idMittente == null)
-            throw new IllegalArgumentException("Utente non trovato");
-        else
-            richiesta.costruisciIdMittente(idMittente);
 
-        return richiesta.build();
-    }
-
-    /**
-     * <h2>Crea una nuova richiesta di tipo evento</h2>
-     * <br>
-     * Questo metodo consente di creare una nuova richiesta per un evento,
-     * che può essere di tipo fiera o visita.
-     *
-     * @param titolo Il titolo dell'evento.
-     * @param descrizione La descrizione dell'evento.
-     * @param inizio La data e ora di inizio dell'evento.
-     * @param fine La data e ora di fine dell'evento.
-     * @param locandina Il file immagine della locandina dell'evento.
-     * @param indirizzo L'indirizzo in cui si svolgerà l'evento.
-     * @param isFiera Indica se l'evento è di tipo fiera ({@code true}) o visita ({@code false}).
-     * @param aziende La lista di aziende partecipanti (solo per fiere).
-     * @param aziendaRiferimento L'azienda di riferimento (solo per visite).
-     * @return {@code Richiesta} La richiesta creata e salvata nel database.
-     */
-    public Richiesta nuovaRichiestaEvento(
-            String titolo,
-            String descrizione,
-            LocalDateTime inizio,
-            LocalDateTime fine,
-            File locandina,
-            Indirizzo indirizzo,
-            boolean isFiera,
-            List<Azienda> aziende,
-            Azienda aziendaRiferimento
-    ) {
-        // Crea l'evento utilizzando EventoService
-        Long idEvento;
-        if (isFiera) {
-            idEvento = eventoService.creaFiera(titolo, descrizione, inizio, fine, locandina, indirizzo, aziende);
-        } else {
-            idEvento = eventoService.creaVisita(titolo, descrizione, inizio, fine, locandina, indirizzo, aziendaRiferimento);
-        }
-
-        // Crea una nuova richiesta di tipo evento
-        Richiesta richiesta = this.nuovaRichiesta(idEvento, Tipologia.EVENTO);
-
-        // Notifica i curatori della nuova richiesta
-        this.notificaNuovaRichiesta();
-
-        // Salva e restituisce la richiesta
-        return salvaRichiesta(richiesta);
-    }
     public Richiesta nuovaRichiestaFiera(
             String titolo,
             String descrizione,
@@ -274,10 +213,10 @@ public class RichiestaService {
     ) {
         // Crea l'evento utilizzando EventoService
         Long idEvento;
-            idEvento = eventoService.creaFiera(titolo, descrizione, inizio, fine, locandina, indirizzo, aziende);
+        idEvento = eventoService.creaFiera(titolo, descrizione, inizio, fine, locandina, indirizzo, aziende);
 
         // Crea una nuova richiesta di tipo evento
-        Richiesta richiesta = this.creaRichiesta(idEvento, Tipologia.EVENTO);
+        Richiesta richiesta = this.nuovaRichiesta(idEvento, Tipologia.EVENTO, "fiera");
 
         // Notifica i curatori della nuova richiesta
         this.notificaNuovaRichiesta();
@@ -285,6 +224,8 @@ public class RichiestaService {
         // Salva e restituisce la richiesta
         return salvaRichiesta(richiesta);
     }
+
+
     public Richiesta nuovaRichiestaVisita(
             String titolo,
             String descrizione,
@@ -294,26 +235,34 @@ public class RichiestaService {
             Indirizzo indirizzo,
             Azienda aziendaRiferimento
     ) {
-            // Crea l'evento utilizzando EventoService
-            Long idEvento;
-            idEvento = eventoService.creaVisita(titolo, descrizione, inizio, fine, locandina, indirizzo, aziendaRiferimento);
+        // Crea l'evento utilizzando EventoService
+        Long idEvento;
+        idEvento = eventoService.creaVisita(titolo, descrizione, inizio, fine, locandina, indirizzo, aziendaRiferimento);
 
-            // Crea una nuova richiesta di tipo evento
-            Richiesta richiesta = this.creaRichiesta(idEvento, Tipologia.EVENTO);
+        // Crea una nuova richiesta di tipo evento
+        Richiesta richiesta = this.nuovaRichiesta(idEvento, Tipologia.EVENTO, "visita");
 
-            // Notifica i curatori della nuova richiesta
-            this.notificaNuovaRichiesta();
+        // Notifica i curatori della nuova richiesta
+        this.notificaNuovaRichiesta();
 
-            // Salva e restituisce la richiesta
-            return salvaRichiesta(richiesta);
-        }
+        // Salva e restituisce la richiesta
+        return salvaRichiesta(richiesta);
+    }
+
 
     //TODO VALUTARE SE SPOSTARE IN UN DIRECTOR O UN FACTORY
-    private Richiesta creaRichiesta(Long id, Tipologia tipologia) {
+    private Richiesta nuovaRichiesta(Long idContenuto, Tipologia tipologia, String tipoContenuto) {
         RichiestaBuilder richiesta = new RichiestaBuilder();
         richiesta.costruisciTipologia(tipologia);
-        richiesta.costruisciIdMittente(utenteService.getIdUtenteAutenticato());
-        richiesta.costruisciTargetId(id);
+        richiesta.costruisciTargetId(idContenuto);
+        richiesta.costruisciTipoContenuto(tipoContenuto);
+
+        Long idMittente = this.utenteService.getIdUtenteAutenticato();
+        if (idMittente == null)
+            throw new IllegalArgumentException("Utente non trovato");
+        else
+            richiesta.costruisciIdMittente(idMittente);
+
         return richiesta.build();
     }
 
@@ -333,10 +282,10 @@ public class RichiestaService {
     }
 
     
-    public Richiesta valutaRichiesta(Richiesta richiesta, Boolean stato) {
-        richiesta.setApprovato(stato);
-        return this.salvaRichiesta(richiesta);
-    }
+//    public Richiesta valutaRichiesta(Richiesta richiesta, Boolean stato) {
+//        richiesta.setApprovato(stato);
+//        return this.salvaRichiesta(richiesta);
+//    }
 
 
 }

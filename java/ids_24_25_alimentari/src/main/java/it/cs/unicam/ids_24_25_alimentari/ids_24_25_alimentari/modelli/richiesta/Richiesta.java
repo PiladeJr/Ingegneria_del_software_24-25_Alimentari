@@ -20,21 +20,17 @@ public class Richiesta {
     @Enumerated(EnumType.STRING)
     private Tipologia tipologia;
 
+    private String tipoContenuto;
+
     @Column(nullable = true)
     private Boolean approvato;
 
     @Column(nullable = false)
     private long idMittente;
 
-    private long idInformazioni;
-
     @Column(nullable = false)
     private long targetId;
 
     private long idCuratore;
-
-    public Boolean isApprovato() {
-        return approvato;
-    }
 
 }

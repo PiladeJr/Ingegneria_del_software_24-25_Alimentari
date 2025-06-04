@@ -20,6 +20,11 @@ public class RichiestaBuilder {
         return this;
     }
 
+    public RichiestaBuilder costruisciTipoContenuto(String tipoContenuto) {
+        richiesta.setTipoContenuto(tipoContenuto);
+        return this;
+    }
+
     public RichiestaBuilder costruisciApprovato(Boolean approvato) {
         richiesta.setApprovato(approvato);
         return this;
@@ -27,11 +32,6 @@ public class RichiestaBuilder {
 
     public RichiestaBuilder costruisciIdMittente(long idMittente) {
         richiesta.setIdMittente(idMittente);
-        return this;
-    }
-
-    public RichiestaBuilder costruisciIdInformazioni(long idInformazioni) {
-        richiesta.setIdInformazioni(idInformazioni);
         return this;
     }
 
