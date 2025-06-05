@@ -1,5 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.indirizzo.IndirizzoDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.Evento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.StatusEvento;
 import lombok.Getter;
@@ -18,7 +19,7 @@ public class EventoEstesoDTO {
     private LocalDateTime inizio;
     private LocalDateTime fine;
     private File locandina;
-    private String indirizzo;
+    private IndirizzoDTO indirizzo;
     private String creatore;
 
     public EventoEstesoDTO(Evento evento) {
@@ -29,7 +30,7 @@ public class EventoEstesoDTO {
         this.inizio = evento.getInizio();
         this.fine = evento.getFine();
         this.locandina = evento.getLocandina();
-        this.indirizzo = evento.getIndirizzo().toString();
+        this.indirizzo = new IndirizzoDTO(evento.getIndirizzo());
         this.creatore = evento.getCreatore().getEmail();
     }
 }

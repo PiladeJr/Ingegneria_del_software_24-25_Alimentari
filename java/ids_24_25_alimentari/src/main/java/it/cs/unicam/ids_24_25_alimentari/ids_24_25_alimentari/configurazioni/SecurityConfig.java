@@ -58,6 +58,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/users").hasAnyAuthority("ROLE_GESTORE")
                         .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
                         .requestMatchers("/api/users/**").hasAnyAuthority("ROLE_GESTORE")
+                        .requestMatchers(HttpMethod.GET, "/api/eventi/gestore/**").hasAnyAuthority("ROLE_GESTORE")
+                        .requestMatchers(HttpMethod.GET, "/api/eventi/miei/**").hasAnyAuthority("ROLE_ANIMATORE")
+                        .requestMatchers(HttpMethod.GET, "/api/eventi/preview/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/eventi/programmati/**").permitAll()
                         .anyRequest().authenticated())
 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
