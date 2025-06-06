@@ -599,9 +599,8 @@ public class EventoService {
     public List<IscrittoDTO> getIscrittiAdEventoCreato(long idVisita){
         Evento evento =  eventoRepository.findById(idVisita)
                 .orElseThrow(() -> new NoSuchElementException("Evento con ID " + idVisita + " non trovato"));
-        if (!(evento instanceof EventoVisita))      //non è una visita
+        if (!(evento instanceof EventoVisita visita))      //non è una visita
             throw new IllegalArgumentException("L'evento non è di tipo visita");
-        EventoVisita visita = (EventoVisita) evento;
         if (!checkCreator(visita)) {
             throw new IllegalArgumentException("Non hai i permessi necessari per visualizzare gli iscritti a questo evento");
         }
@@ -621,11 +620,7 @@ public class EventoService {
                 return true; // Il gestore può sempre visualizzare gli eventi
             }
             default -> {
-                if (evento.getCreatore().getId() == autenticato.getId()) {
-                    return true; // L'utente è il creatore dell'evento
-                } else {
-                    return false;
-                }
+                return evento.getCreatore().getId() == autenticato.getId(); // L'utente è il creatore dell'evento
             }
         }
 
