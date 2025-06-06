@@ -1,6 +1,5 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi;
 
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi.EventoEstesoDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi.EventoPreviewDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi.FieraEstesaDTO;
@@ -11,6 +10,8 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.In
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.EventoRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -123,11 +124,33 @@ public class EventoService {
     public EventoEstesoDTO getEventoById(Long id) {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Evento con ID " + id + " non trovato"));
+        return outputFormatEvento(evento);
+    }
 
+
+    public EventoEstesoDTO getEventoProgrammatoById(Long id) {
+        Evento evento = eventoRepository.findByIdAndProgrammato(id)
+                .orElseThrow(() -> new NoSuchElementException("Evento con ID " + id + " non trovato"));
+        if (evento.getStatus() != StatusEvento.PROGRAMMATO) {
+            throw new IllegalArgumentException("L'evento non è programmato");
+        }
+        return outputFormatEvento(evento);
+    }
+
+    /**
+     * <h2>Formatta l'evento in un DTO esteso</h2>
+     *
+     * Questo metodo converte un evento in un DTO esteso specifico
+     * verificando se si tratta di un'istanza di EventoFiera o EventoVisita
+     * e restituisce il tipo appropriato.
+     * @param evento L'evento da formattare in un DTO esteso.
+     * @return {@code EventoEstesoDTO} il DTO esteso dell'evento in formato FieraEstesaDTO o VisitaEstesaDTO.
+     */
+    private EventoEstesoDTO outputFormatEvento(Evento evento) {
         if (evento instanceof EventoFiera) {
             return new FieraEstesaDTO((EventoFiera) evento);
         } else if (evento instanceof EventoVisita) {
-            return new VisitaEstesaDTO((EventoVisita) evento); // crea VisitaEstesaDTO se non esiste
+            return new VisitaEstesaDTO((EventoVisita) evento);
         } else {
             return new EventoEstesoDTO(evento);
         }
@@ -596,23 +619,40 @@ public class EventoService {
         return salvaEvento(evento).getId();
     }
 
-    public List<IscrittoDTO> getIscrittiAdEventoCreato(long idVisita){
+    public ResponseEntity<List<IscrittoDTO>> getIscrittiEvento(long idVisita){
         Evento evento =  eventoRepository.findById(idVisita)
-                .orElseThrow(() -> new NoSuchElementException("Evento con ID " + idVisita + " non trovato"));
-        if (!(evento instanceof EventoVisita visita))      //non è una visita
-            throw new IllegalArgumentException("L'evento non è di tipo visita");
+                .orElse(null);
+        if (evento == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        }
+        if (!(evento instanceof EventoVisita visita)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(null);
+        }
         if (!checkCreator(visita)) {
-            throw new IllegalArgumentException("Non hai i permessi necessari per visualizzare gli iscritti a questo evento");
+            ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Non hai i permessi necessari per visualizzare gli iscritti a questo evento");
         }
         List<Utente> iscritti = ((EventoVisita) evento).getIscritti();
         if (iscritti == null || iscritti.isEmpty()) {
             iscritti = new ArrayList<>();
         }
-        return iscritti
+        return ResponseEntity.ok(iscritti
                 .stream()
                 .map(IscrittoDTO::new)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
+
+    /**
+     * <h2>Verifica il creatore di un evento di tipo visita</h2>
+     * <br>
+     * Questo metodo controlla se l'utente autenticato ha i permessi per visualizzare un evento di tipo visita.
+     * Se l'utente è un gestore, ha sempre accesso. Altrimenti, verifica se l'utente è il creatore dell'evento.
+     *
+     * @param evento L'evento di tipo visita da verificare.
+     * @return {@code true} se l'utente autenticato ha i permessi per visualizzare l'evento, {@code false} altrimenti.
+     */
     public boolean checkCreator(EventoVisita evento){
         Utente autenticato = utenteService.getUtenteById( utenteService.getIdUtenteAutenticato());
         switch (autenticato.getRuolo()){
@@ -623,37 +663,62 @@ public class EventoService {
                 return evento.getCreatore().getId() == autenticato.getId(); // L'utente è il creatore dell'evento
             }
         }
-
     }
 
     /**
      * <h2>Iscrive un utente a un evento di tipo visita</h2>
      * <br>
      * Questo metodo consente a un utente di iscriversi a un evento di tipo visita.
-     * Controlla se l'utente è già iscritto,
-     * se l'evento è in corso o concluso e se è di tipo visita.
+     * Controlla se l'utente è già iscritto, se l'evento è in corso o concluso, e verifica che sia di tipo visita.
      *
-     * @param idEvento l'ID dell'evento a cui iscrivere l'utente
-     * @return {@code true} se l'iscrizione è avvenuta con successo, {@code false} altrimenti
+     * @param idEvento L'ID dell'evento a cui iscrivere l'utente.
+     * @return {@code ResponseEntity<String>} Messaggio di conferma o errore.
      */
-    public boolean iscriviUtente(Long idEvento) {
+    public ResponseEntity<String> iscriviUtente(Long idEvento) {
         Long idUtente = utenteService.getIdUtenteAutenticato();
         Evento evento = eventoRepository.findById(idEvento)
-                .orElseThrow(() -> new NoSuchElementException("Evento con ID " + idEvento + " non trovato"));
-        if (!(evento instanceof EventoVisita))
-            throw new IllegalArgumentException("L'evento non è di tipo visita");
-        EventoVisita eventoVisita = (EventoVisita) evento;
-        if (eventoVisita.getIscritti().contains(idUtente)) {
-            throw new IllegalArgumentException("L'utente è già iscritto a questo evento");
-        }
-        return switch (evento.getStatus()) {
-            case CONCLUSO -> throw new IllegalArgumentException("L'evento è già terminato");
-            case PROPOSTO -> throw new IllegalArgumentException("L'evento non è ancora programmato");
-            case IN_CORSO -> throw new IllegalArgumentException("L'evento è già in corso");
-            case PROGRAMMATO -> aggiungiIscrizione(eventoVisita, idUtente);
-            default -> throw new IllegalArgumentException("Stato dell'evento non valido");
-        };
+                .orElse(null);
 
+        if (evento == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Evento con ID " + idEvento + " non trovato");
+        }
+
+        if (!(evento instanceof EventoVisita)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("L'evento non è di tipo visita");
+        }
+
+        EventoVisita eventoVisita = (EventoVisita) evento;
+
+        if (eventoVisita.getIscritti().contains(idUtente)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("L'utente è già iscritto a questo evento");
+        }
+
+        switch (evento.getStatus()) {
+            case CONCLUSO:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("L'evento è già terminato");
+            case PROPOSTO:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("L'evento non è ancora programmato");
+            case IN_CORSO:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("L'evento è già in corso");
+            case PROGRAMMATO:
+                boolean success = aggiungiIscrizione(eventoVisita, idUtente);
+                if (success) {
+                    return ResponseEntity.status(HttpStatus.OK)
+                            .body("Iscrizione avvenuta con successo");
+                } else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Errore durante l'iscrizione");
+                }
+            default:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Stato dell'evento non valido");
+        }
     }
 
     /**
@@ -673,7 +738,6 @@ public class EventoService {
         eventoRepository.save(visita);
         return true;
     }
-
 
 
 }

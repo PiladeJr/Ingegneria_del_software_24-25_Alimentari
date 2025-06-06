@@ -406,20 +406,52 @@ public class EventoController {
         return ResponseEntity.ok(eventoService.getAnteprimeEventiProgrammatiByTitle(title));
     }
 
+    /**
+     * <h2>Recupera un evento visibile tramite ID</h2>
+     * <br>
+     * Questo endpoint consente di ottenere un evento programmato specifico utilizzando il suo ID.
+     * Se l'evento non viene trovato, restituisce un errore 404.
+     *
+     * @param id L'ID dell'evento da recuperare.
+     * @return {@code ResponseEntity<EventoEstesoDTO>} L'evento corrispondente o un errore 404 se non trovato.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<EventoEstesoDTO> getEventoVisibileById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(eventoService.getEventoProgrammatoById(id));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     //-------------------------------------------ISCRIZIONI E VISITE------------------------------------------------
 
     /**
      * <h2>Recupera tutti gli iscritti a una visita</h2>
      * <br>
-     * Questo endpoint consente di ottenere la lista di iscritti a un evento di tipo visita
-     * specificato tramite il suo ID.
+     * Questo endpoint permette di ottenere la lista degli iscritti a un evento di tipo visita
+     * specificato tramite il suo ID, verificando prima se il creatore dell'evento corrisponde all'utente autenticato.
      *
      * @param idVisita L'ID della visita di cui recuperare gli iscritti.
-     * @return {@code ResponseEntity<List<IscrittoDTO>>} Lista di iscritti alla visita specificata.
+     * @return {@code ResponseEntity<List<IscrittoDTO>>} Lista degli iscritti alla visita specificata.
      */
     @GetMapping("/miei/visite/{idVisita}/iscritti")
     public ResponseEntity<List<IscrittoDTO>> getIscrittiAdEventoCreato(@PathVariable Long idVisita) {
-        return ResponseEntity.ok(eventoService.getIscrittiAdEventoCreato(idVisita));
+        return eventoService.getIscrittiEvento(idVisita);
+    }
+
+    /**
+     * <h2>Recupera tutti gli iscritti a una visita</h2>
+     * <br>
+     * Questo endpoint permette di ottenere la lista degli iscritti a un evento di tipo visita
+     * specificato tramite il suo ID.
+     *
+     * @param idVisita L'ID della visita di cui recuperare gli iscritti.
+     * @return {@code ResponseEntity<List<IscrittoDTO>>} Lista degli iscritti alla visita specificata.
+     */
+    @GetMapping("/gestore/visite/{idVisita}/iscritti")
+    public ResponseEntity<List<IscrittoDTO>> getIscrittiAdEvento(@PathVariable Long idVisita) {
+        return eventoService.getIscrittiEvento(idVisita);
     }
 
     /**
@@ -433,12 +465,7 @@ public class EventoController {
     @PostMapping("/visite/{idEvento}/iscrizione")
     public ResponseEntity<String> iscriviUtente(@PathVariable Long idEvento) {
         try {
-            boolean successo = eventoService.iscriviUtente(idEvento);
-            if (successo) {
-                return ResponseEntity.ok("Iscrizione avvenuta con successo.");
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Errore durante l'iscrizione.");
-            }
+            return eventoService.iscriviUtente(idEvento);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (NoSuchElementException e) {

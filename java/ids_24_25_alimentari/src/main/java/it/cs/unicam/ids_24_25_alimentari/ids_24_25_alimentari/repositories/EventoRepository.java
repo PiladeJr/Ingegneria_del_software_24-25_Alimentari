@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EventoRepository extends JpaRepository<Evento, Long> {
@@ -93,5 +94,7 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
     @Query("SELECT e FROM Evento e WHERE TYPE(e) = EventoFiera AND e.creatore.id = :id")
     List<EventoFiera>findAllFieraByCreatore(long idCreatore);
 
+    @Query("SELECT e FROM Evento e  WHERE e.id = :id AND e.status = 'PROGRAMMATO'")
+    Optional<Evento> findByIdAndProgrammato(Long id);
 }
 
