@@ -48,7 +48,13 @@ public class RichiestaController {
         this.utenteService = utenteService;
     }
 
-    @GetMapping("/{id}")
+    /**
+     * Restituisce una richiesta di contenuto specifica in base al suo ID.
+     *
+     * @param id L'ID della richiesta da visualizzare.
+     * @return La richiesta di contenuto con l'ID specificato, se esiste.
+     */
+    @GetMapping("/visualizza/{id}")
     public ResponseEntity<?> getRichiestaById(@PathVariable Long id) {
         try {
 
@@ -68,7 +74,7 @@ public class RichiestaController {
      *
      * @return Una lista di richieste di contenuto.
      */
-    @GetMapping
+    @GetMapping("/visualizza/all")
     public ResponseEntity<List<Richiesta>> getAllRichiesteContenuto() {
         List<Richiesta> richiesteContenuto = this.richiestaService.getAllRichiesteContenuto();
         return ResponseEntity.ok(richiesteContenuto);
@@ -80,7 +86,7 @@ public class RichiestaController {
      * @param tipologia La tipologia della richiesta da filtrare.
      * @return Una lista di richieste filtrate per tipologia.
      */
-    @GetMapping("/{tipologia}")
+    @GetMapping("/visualizza/{tipologia}")
     public ResponseEntity<List<Richiesta>> getAllRichiesteByTipo(@PathVariable Tipologia tipologia) {
         List<Richiesta> richiesteByTipo = this.richiestaService.getRichiesteByTipo(tipologia);
         return ResponseEntity.ok(richiesteByTipo);
@@ -125,8 +131,8 @@ public class RichiestaController {
      * @param prodottoDTO Il DTO contenente le informazioni relative al prodotto.
      * @return La richiesta di prodotto creata.
      */
-    @PostMapping(value = "/prodotto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> nuovaRichiestaProdotto(
+    @PostMapping(value = "/prodotto/singolo/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> nuovaRichiestaProdottoSingolo(
             @ModelAttribute @Valid RichiestaProdottoDTO prodottoDTO) {
 
         try {
@@ -149,6 +155,27 @@ public class RichiestaController {
                     .body(Collections.singletonMap("error",
                             "Errore nella creazione della richiesta " + e.getMessage()));
         }
+    }
+
+
+    @PostMapping(value = "/prodotto/pacchetto/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> nuovaRichiestaPacchetto(
+            @ModelAttribute @Valid RichiestaPacchettoDTO pacchettoDTO) {
+
+        try {
+            Richiesta richiestaPacchetto = this.richiestaService.nuovaRichiestaPacchetto(
+                    pacchettoDTO.getNome(),
+                    pacchettoDTO.getDescrizione(),
+                    pacchettoDTO.getPrezzo(),
+                    pacchettoDTO.getProdotti());
+
+            return ResponseEntity.ok(richiestaPacchetto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error",
+                            "Errore nella creazione della richiesta " + e.getMessage()));
+        }
+
     }
 
     /**
@@ -175,7 +202,7 @@ public class RichiestaController {
      *         </ul>
      */
     @PostMapping("/fiera/new")
-    public ResponseEntity<?> creaRichiestaFiera(@ModelAttribute @Valid RichiestaEventoFieraDTO dto) {
+    public ResponseEntity<?> nuovaRichiestaFiera(@ModelAttribute @Valid RichiestaEventoFieraDTO dto) {
         try {
             File locandina = ConvertitoreMultipartFileToFile.convertiMultipartFileToFile(dto.getLocandina());
 
@@ -220,7 +247,7 @@ public class RichiestaController {
      *         </ul>
      */
     @PostMapping("/visita/new")
-    public ResponseEntity<?> creaRichiestaVisita(@ModelAttribute @Valid RichiestaEventoVisitaDTO dto) {
+    public ResponseEntity<?> nuovaRichiestaVisita(@ModelAttribute @Valid RichiestaEventoVisitaDTO dto) {
         try {
             File locandina = ConvertitoreMultipartFileToFile.convertiMultipartFileToFile(dto.getLocandina());
 
@@ -241,20 +268,6 @@ public class RichiestaController {
         }
     }
 
-    @PostMapping(value = "/pacchetto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> nuovaRichiestaPacchetto(
-            @ModelAttribute @Valid RichiestaPacchettoDTO pacchettoDTO) {
-
-        Richiesta richiestaPacchetto = this.richiestaService.nuovaRichiestaPacchetto(
-                pacchettoDTO.getNome(),
-                pacchettoDTO.getDescrizione(),
-                pacchettoDTO.getPrezzo(),
-                pacchettoDTO.getProdotti());
-
-        return ResponseEntity.ok(richiestaPacchetto);
-
-    }
-
     /**
      * <h4>Verifica se la richiesta non è stata ancora valutata e la fa
      * elaborare</h4>
@@ -270,7 +283,7 @@ public class RichiestaController {
      *         - Un errore 400 con messaggio se la richiesta è già stata elaborata;
      *         - Un errore 404 se la richiesta non esiste.
      */
-    @PatchMapping(value = "/stato")
+    @PatchMapping(value = "/valuta")
     public ResponseEntity<?> valutaRichiesta(@RequestBody CambiaStatoRichiestaCollaborazioneDTO dto) {
         return richiestaService.getRichiestaById(dto.getId())
                 .map(richiesta -> {
@@ -282,22 +295,6 @@ public class RichiestaController {
                 })
                 .orElseGet(() -> ResponseEntity.status(404)
                         .body(Collections.singletonMap("error", "Richiesta non trovata")));
-
-        // Optional<Richiesta> richiesta =
-        // richiestaService.getRichiestaById(dto.getId());
-        //
-        // if(richiesta.isPresent()) {
-        // if (richiesta.get().isApprovato() != null) {
-        // return ResponseEntity.badRequest()
-        // .body(Collections.singletonMap("message", "La richiesta è già stata
-        // elaborata"));
-        // } else {
-        // return elaborazioneRichiesta(richiesta.get(), dto);
-        // }
-        // }
-        // return ResponseEntity.status(404).body(Collections.singletonMap("error",
-        // "Richiesta non trovata"));
-
     }
 
     /**
@@ -323,7 +320,7 @@ public class RichiestaController {
             this.servizioEmail.inviaMail(emailUtente, messaggio,
                     "Valutazione Richiesta di " + richiesta.getTipologia().toString());
         }
-        richiestaService.valutaRichiesta(richiesta, dto.getStato());
+        richiestaService.processaRichiesta(richiesta, dto.getStato());
         return ResponseEntity.ok().body(Collections.singletonMap("message",
                 dto.getStato() ? "Richiesta accettata con successo." : "Richiesta correttamente rifiutata."));
     }
