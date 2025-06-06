@@ -10,8 +10,9 @@ public interface RichiestaStrategy {
      * Processa la richiesta specificata.
      *
      * @param richiesta
+     * @param status
      */
-    void processaRichiesta(Richiesta richiesta);
+    void processaRichiesta(Richiesta richiesta, Boolean status);
 
     /**
      * Ottiene il contenuto associato alla richiesta.
@@ -19,7 +20,7 @@ public interface RichiestaStrategy {
      *
      * @return Contenuto associato alla richiesta
      */
-    Contenuto ottieniRichiesta(Richiesta richiesta);
+    Contenuto visualizzaContenutoByRichiesta(Richiesta richiesta);
 
     /**
      * Restituisce la tipologia della richiesta.

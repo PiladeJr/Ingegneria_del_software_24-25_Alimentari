@@ -1,6 +1,5 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoVisitaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.RichiestaBuilder;
@@ -67,61 +66,71 @@ public class RichiestaService {
         return richiestaRepository.save(richiesta);
     }
 
+    /**
+     * Recupera tutte le richieste presenti nel database.
+     *
+     * @return Una lista di tutte le richieste.
+     */
     public List<Richiesta> getAllRichiesteContenuto() {
         return this.richiestaRepository.getAllRichiesteContenuto();
     }
 
+    /**
+     * Recupera tutte le richieste di un tipo specifico.
+     *
+     * @param tipologia di cui si vogliono recuperare le richieste.
+     * @return Una lista di richieste associate alla tipologia specificata.
+     */
     public List<Richiesta> getRichiesteByTipo(Tipologia tipologia) { return this.richiestaRepository.getRichiesteByTipo(tipologia); }
 
+    /**
+     * Recupera una richiesta specifica in base al suo ID.
+     *
+     * @param id L'ID della richiesta da recuperare.
+     * @return Un {@link Optional} contenente la richiesta se trovata, altrimenti vuoto.
+     */
     public Optional<Richiesta> getRichiestaById(Long id) {
         return this.richiestaRepository.findById(id);
     }
 
-
     /**
      * <h2>Processa una richiesta in base al suo ID</h2>
      * <br>
-     * Questo metodo elabora una richiesta identificata dal suo ID utilizzando la strategia
-     * associata alla tipologia della richiesta. Se la tipologia non è supportata, viene
-     * sollevata un'eccezione.
+     * Questo metodo elabora una richiesta utilizzando la strategia associata alla
+     * tipologia della richiesta. Se la tipologia non è supportata, viene sollevata
+     * un'eccezione.
      *
-     * @param idRichiesta L'ID della richiesta da processare.
-     * @throws RuntimeException se la richiesta con l'ID specificato non viene trovata.
+     * @param richiesta La richiesta da processare.
+     * @param stato     Lo stato della richiesta (approvata o rifiutata).
      * @throws IllegalArgumentException se la tipologia della richiesta non è supportata.
      */
-    public void processaRichiesta(long idRichiesta) {
-        Richiesta richiesta = richiestaRepository.findById(idRichiesta)
-                .orElseThrow(() -> new RuntimeException("Richiesta non trovata"));
-
+    public void processaRichiesta(Richiesta richiesta, Boolean stato) {
         RichiestaStrategy strategy = strategyFactory.getStrategy(richiesta.getTipologia());
         if (strategy != null) {
-            strategy.processaRichiesta(richiesta);
+            strategy.processaRichiesta(richiesta, stato);
         } else {
             throw new IllegalArgumentException("Tipologia non supportata: " + richiesta.getTipologia());
         }
     }
 
     /**
-     * Ottiene una richiesta in base al suo ID e alla sua tipologia.
-     *
-     * Visualizza la richiesta e le sue componenti ottenute tramite
-     * la strategia associata alla tipologia della richiesta.
-     *
-     * @param idRichiesta L'ID della richiesta da ottenere.
-     * @return La richiesta ottenuta, o un'eccezione se non trovata o se la tipologia non è supportata.
+     * <h2>Ottiene il contenuto della richiesta tramite il suo ID.</h2>
+     * <br>
+     * @param idRichiesta L'ID della richiesta da cui ottenere il contenuto.
+     * @return Il contenuto della richiesta, o un'eccezione se non trovata o se la tipologia non è supportata.
+     * @throws IllegalArgumentException se la tipologia della richiesta non è supportata.
      */
-    public Contenuto ottieniRichiesta(long idRichiesta){
+    public Contenuto visualizzaContenutoByRichiesta(long idRichiesta){
         Richiesta richiesta = richiestaRepository.findById(idRichiesta)
                 .orElseThrow(() -> new RuntimeException("Richiesta non trovata"));
 
         RichiestaStrategy strategy = strategyFactory.getStrategy(richiesta.getTipologia());
         if (strategy != null) {
-            return strategy.ottieniRichiesta(richiesta);
+            return strategy.visualizzaContenutoByRichiesta(richiesta);
         } else {
             throw new IllegalArgumentException("Tipologia non supportata: " + richiesta.getTipologia());
         }
     }
-
 
     /**
      * Crea una nuova richiesta di informazioni aggiuntive per un'azienda.
@@ -280,12 +289,5 @@ public class RichiestaService {
             mailService.inviaMail(curatore.getEmail(), messaggio, oggetto);
         }
     }
-
-    
-//    public Richiesta valutaRichiesta(Richiesta richiesta, Boolean stato) {
-//        richiesta.setApprovato(stato);
-//        return this.salvaRichiesta(richiesta);
-//    }
-
 
 }

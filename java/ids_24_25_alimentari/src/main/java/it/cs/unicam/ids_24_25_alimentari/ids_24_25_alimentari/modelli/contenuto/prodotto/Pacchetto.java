@@ -41,7 +41,7 @@ public class Pacchetto extends Prodotto{
     }
 
     @Override
-    TipoProdotto getTipo() {
+    public TipoProdotto getTipo() {
         return TipoProdotto.PACCHETTO;
     }
 
