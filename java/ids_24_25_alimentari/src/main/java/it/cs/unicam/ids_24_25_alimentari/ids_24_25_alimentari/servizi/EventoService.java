@@ -1,15 +1,23 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi.EventoEstesoDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi.EventoPreviewDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi.FieraEstesaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi.VisitaEstesaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.utente.IscrittoDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.EventoRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -23,86 +31,84 @@ public class EventoService {
         this.eventoRepository = eventoRepository;
         this.utenteService = utenteService;
     }
-
     /**
-     * <h2>Recupera tutti gli eventi ordinati alfabeticamente</h2>
+     * <h2>Recupera tutti gli eventi ordinati alfabeticamente o in base a un campo specifico</h2>
      * <br>
-     * Questo metodo restituisce una lista completa di eventi presenti sulla piattaforma,
-     * includendo sia le fiere che le visite, ordinati in ordine alfabetico in base al titolo.
+     * Questo metodo restituisce una lista completa di eventi disponibili sulla piattaforma,
+     * inclusi sia fiere che visite, ordinati in base al campo specificato (di default è il titolo).
      *
+     * @param sortBy Il campo su cui effettuare l'ordinamento. Valori supportati: "titolo" (default), "dataInizio".
+     * @param order L'ordine di ordinamento. Valori supportati: "asc" (default), "desc".
      * @return {@code List<Evento>} contenente tutti gli eventi (fiere e visite),
-     *         ordinati alfabeticamente per titolo.
+     *         ordinati in base al campo e all'ordine specificati.
      */
-    public List<Evento> getAllEventiOrdinatiPerTitolo() {
-        return eventoRepository.findAllByOrderByTitoloAsc();
-    }
+    public List<EventoEstesoDTO> getAllEventi(String sortBy, String order) {
+        List<Evento> eventi = new ArrayList<>(eventoRepository.findAll());
 
-    /**
-     * <h2>Recupera tutti gli eventi (fiere e visite) ordinati per data di inizio decrescente</h2>
-     * <br>
-     * Unisce fiere e visite in un'unica lista e le ordina per data di inizio, dalla più recente alla meno recente.
-     *
-     * @return {@code List<Evento>} contenente fiere e visite ordinate per data di inizio decrescente.
-     */
-    public List<Evento> getAllEventiOrdinatiPerDataInizio() {
-        return eventoRepository.findAllByOrderByInizioDesc();
+        Comparator<Evento> comparator = switch (sortBy.toLowerCase()) {
+            case "titolo" -> Comparator.comparing(Evento::getTitolo);
+            case "data inizio" -> Comparator.comparing(Evento::getInizio);
+            default -> Comparator.comparing(Evento::getId);
+        };
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+        return eventi.stream()
+                .sorted(comparator)
+                .map(EventoEstesoDTO::new)
+                .collect(Collectors.toList());
     }
-
     /**
      * <h2>Recupera tutti gli eventi di tipo visita</h2>
      * <br>
-     * Questo metodo restituisce la lista di eventi che rappresentano visite aziendali.
+     * Questo metodo restituisce una lista di eventi che rappresentano visite aziendali,
+     * ordinati in base al campo specificato e all'ordine fornito.
      *
+     * @param sortBy Il campo su cui effettuare l'ordinamento. Valori supportati: "titolo", "dataInizio", "id".
+     * @param order L'ordine di ordinamento. Valori supportati: "asc" (crescente), "desc" (decrescente).
      * @return {@code List<EventoVisita>} contenente tutti gli eventi di tipo visita presenti nel database.
      */
-    public List<EventoVisita> getEventiVisita() {
-        return eventoRepository.findAllVisita();
+    public List<EventoEstesoDTO> getAllVisita(String sortBy, String order) {
+        List<EventoVisita> eventi = new ArrayList<>();
+        eventi.addAll(eventoRepository.findAllVisita());
+        Comparator<EventoVisita> comparator = switch (sortBy.toLowerCase()) {
+            case "titolo" -> Comparator.comparing(EventoVisita::getTitolo);
+            case "dataInizio" -> Comparator.comparing(EventoVisita::getInizio);
+            default -> Comparator.comparing(EventoVisita::getId);
+        };
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+        return eventi.stream()
+                .sorted(comparator)
+                .map(EventoEstesoDTO::new)
+                .collect(Collectors.toList());
     }
     /**
      * <h2>Recupera tutti gli eventi di tipo fiera</h2>
      * <br>
-     * Questo metodo restituisce la lista di eventi che rappresentano fiere territoriali.
+     * Questo metodo restituisce una lista di eventi che rappresentano fiere territoriali,
+     * ordinati in base al campo specificato e all'ordine fornito.
      *
+     * @param sortBy Il campo su cui effettuare l'ordinamento. Valori supportati: "titolo", "dataInizio", "id".
+     * @param order L'ordine di ordinamento. Valori supportati: "asc" (crescente), "desc" (decrescente).
      * @return {@code List<EventoFiera>} contenente tutti gli eventi di tipo fiera presenti nel database.
      */
-    public List<EventoFiera> getEventiFiera() {
-        return eventoRepository.findAllFiera();
-    }
-
-    /**
-     * <h2>Recupera tutte le visite ordinate per data di inizio decrescente</h2>
-     * <br>
-     * Questo metodo restituisce l'elenco delle visite aziendali, ordinate dalla più recente alla meno recente.
-     *
-     * @return {@code List<EventoVisita>} contenente tutte le visite ordinate per data di inizio decrescente.
-     */
-    public List<EventoVisita> getEventiVisitaOrdinatiPerDataInizio() {
-        return eventoRepository.findAllVisitaOrderByInizioDesc();
-    }
-
-    /**
-     * <h2>Recupera tutte le fiere ordinate per data di inizio decrescente</h2>
-     * <br>
-     * Questo metodo restituisce l'elenco delle fiere sulla piattaforma, ordinate dalla più recente alla meno recente.
-     *
-     * @return {@code List<EventoFiera>} contenente tutte le fiere ordinate per data di inizio decrescente.
-     */
-    public List<EventoFiera> getEventiFieraOrdinatiPerDataInizio() {
-        return eventoRepository.findAllFieraOrderByInizioDesc();
-    }
-
-    /**
-     * <h2>Recupera tutti gli eventi creati dall'utente attualmente autenticato</h2>
-     * <br>
-     * Questo metodo utilizza il contesto di sicurezza per identificare l'utente attualmente autenticato
-     * e restituisce la lista di eventi (fiere e visite) da lui creati.
-     *
-     * @return {@code List<Evento>} contenente tutti gli eventi creati dall'utente loggato.
-     * @throws RuntimeException se l'utente non è autenticato o non è presente nel database.
-     */
-    public List<Evento> getEventiCreatiDallUtenteAutenticato() {
-        Long idUtente = utenteService.getIdUtenteAutenticato();
-        return eventoRepository.findByCreatoreId(idUtente);
+    public List<EventoEstesoDTO> getAllFiera(String sortBy, String order) {
+        List<EventoFiera> eventi = new ArrayList<>();
+        eventi.addAll(eventoRepository.findAllFiera());
+        Comparator<EventoFiera> comparator = switch (sortBy.toLowerCase()) {
+            case "titolo" -> Comparator.comparing(EventoFiera::getTitolo);
+            case "dataInizio" -> Comparator.comparing(EventoFiera::getInizio);
+            default -> Comparator.comparing(EventoFiera::getId);
+        };
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+        return eventi.stream()
+                .sorted(comparator)
+                .map(EventoEstesoDTO::new)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -115,15 +121,38 @@ public class EventoService {
      * @return {@code Evento} l'evento corrispondente all'ID fornito.
      * @throws NoSuchElementException se l'evento con l'ID specificato non esiste.
      */
-    public Evento getEventoById(Long id) {
+    public EventoEstesoDTO getEventoById(Long id) {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Evento con ID " + id + " non trovato"));
+        return outputFormatEvento(evento);
+    }
+
+
+    public EventoEstesoDTO getEventoProgrammatoById(Long id) {
+        Evento evento = eventoRepository.findByIdAndProgrammato(id)
+                .orElseThrow(() -> new NoSuchElementException("Evento con ID " + id + " non trovato"));
+        if (evento.getStatus() != StatusEvento.PROGRAMMATO) {
+            throw new IllegalArgumentException("L'evento non è programmato");
+        }
+        return outputFormatEvento(evento);
+    }
+
+    /**
+     * <h2>Formatta l'evento in un DTO esteso</h2>
+     *
+     * Questo metodo converte un evento in un DTO esteso specifico
+     * verificando se si tratta di un'istanza di EventoFiera o EventoVisita
+     * e restituisce il tipo appropriato.
+     * @param evento L'evento da formattare in un DTO esteso.
+     * @return {@code EventoEstesoDTO} il DTO esteso dell'evento in formato FieraEstesaDTO o VisitaEstesaDTO.
+     */
+    private EventoEstesoDTO outputFormatEvento(Evento evento) {
         if (evento instanceof EventoFiera) {
-            return (EventoFiera) evento;
+            return new FieraEstesaDTO((EventoFiera) evento);
         } else if (evento instanceof EventoVisita) {
-            return (EventoVisita) evento;
+            return new VisitaEstesaDTO((EventoVisita) evento);
         } else {
-            return evento;
+            return new EventoEstesoDTO(evento);
         }
     }
 
@@ -136,9 +165,46 @@ public class EventoService {
      * @param title Il titolo da cercare negli eventi.
      * @return {@code List<Evento>} lista di eventi che contengono il titolo specificato.
      */
-    public List<Evento> getEventiByTitle(String title) {
-        return eventoRepository.findByTitleContainingParameter(title);
+    public List<EventoEstesoDTO> getEventiByTitle(String title) {
+        if (title == null || title.isEmpty()) {
+            return getAllEventi("titolo", "asc");
+        }
+        return eventoRepository.findByTitleContainingParameter(title.toLowerCase())
+                .stream()
+                .map(EventoEstesoDTO::new)
+                .collect(Collectors.toList());
     }
+
+    /**
+     * <h2>Recupera tutti gli eventi creati dall'utente autenticato</h2>
+     * <br>
+     * Questo metodo utilizza il contesto di sicurezza per identificare l'utente attualmente autenticato
+     * e restituisce la lista di eventi (fiere e visite) da lui creati, ordinati in base al campo e all'ordine specificati.
+     *
+     * @param sortBy Il campo su cui effettuare l'ordinamento. Valori supportati: "titolo", "dataInizio", "id".
+     * @param order L'ordine di ordinamento. Valori supportati: "asc" (crescente), "desc" (decrescente).
+     * @return {@code List<Evento>} contenente tutti gli eventi creati dall'utente autenticato.
+     * @throws RuntimeException se l'utente non è autenticato o non è presente nel database.
+     */
+    public List<EventoEstesoDTO> getEventiByCreatore(String sortBy, String order) {
+        Long idUtente = utenteService.getIdUtenteAutenticato();
+        List<Evento> eventi = new ArrayList<>();
+        eventi.addAll(eventoRepository.findByCreatoreId(idUtente));
+        Comparator<Evento> comparator = switch (sortBy.toLowerCase()) {
+            case "titolo" -> Comparator.comparing(Evento::getTitolo);
+            case "dataInizio" -> Comparator.comparing(Evento::getInizio);
+            default -> Comparator.comparing(Evento::getId);
+        };
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+        return eventi.stream()
+                .sorted(comparator)
+                .map(EventoEstesoDTO::new)
+                .collect(Collectors.toList());
+    }
+
+
 
     /**
      * <h2>Recupera eventi in base al titolo e all'ID del creatore</h2>
@@ -147,24 +213,77 @@ public class EventoService {
      * e sono stati creati da un utente specifico.
      *
      * @param title Il titolo da cercare negli eventi.
-     * @param idCreatore L'ID del creatore dell'evento.
      * @return {@code List<Evento>} lista di eventi che contengono il titolo specificato
      *         e sono stati creati dall'utente con l'ID fornito.
      */
-    public List<Evento> getEventiByTitleAndCreatore(String title, Long idCreatore) {
-        return eventoRepository.findByTitleContainingParameterAndCreatoreId(title, idCreatore);
+    public List<EventoEstesoDTO> getEventiByCreatoreAndTitle(String title) {
+        long idCreatore = utenteService.getIdUtenteAutenticato();
+        if (title == null || title.isEmpty()) {
+            return getEventiByCreatore("titolo", "asc");
+        }
+        List<Evento> eventi = eventoRepository.findByTitleContainingParameterAndCreatoreId(title, idCreatore);
+        return eventi.stream()
+                .map(EventoEstesoDTO::new)
+                .collect(Collectors.toList());
     }
 
     /**
+     * <h2>Recupera tutti gli eventi di tipo visita creati dall'utente autenticato</h2>
+     * <br>
+     * Questo metodo restituisce una lista di eventi che rappresentano visite aziendali,
+     * ordinati in base al campo specificato e all'ordine fornito.
+     *
+     * @param sortBy Il campo su cui effettuare l'ordinamento. Valori supportati: "titolo", "dataInizio", "id".
+     * @param order L'ordine di ordinamento. Valori supportati: "asc" (crescente), "desc" (decrescente).
+     * @return {@code List<EventoEstesoDTO>} contenente tutti gli eventi di tipo visita creati dall'utente autenticato.
+     */
+    public List<EventoEstesoDTO> getVisiteByCreatore(String sortBy, String order) {
+        long idCreatore = utenteService.getIdUtenteAutenticato();
+        List<EventoVisita> eventi = new ArrayList<>();
+        eventi.addAll(eventoRepository.findAllVisitaByCreatore(idCreatore));
+        Comparator<EventoVisita> comparator = switch (sortBy.toLowerCase()) {
+            case "titolo" -> Comparator.comparing(EventoVisita::getTitolo);
+            case "dataInizio" -> Comparator.comparing(EventoVisita::getInizio);
+            default -> Comparator.comparing(EventoVisita::getId);
+        };
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+        return eventi.stream()
+                .sorted(comparator)
+                .map(EventoEstesoDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<EventoEstesoDTO> getFieraByCreatore(String sortBy, String order) {
+        long idCreatore = utenteService.getIdUtenteAutenticato();
+        List<EventoFiera> eventi = new ArrayList<>();
+        eventi.addAll(eventoRepository.findAllFieraByCreatore(idCreatore));
+        Comparator<EventoFiera> comparator = switch (sortBy.toLowerCase()) {
+            case "titolo" -> Comparator.comparing(EventoFiera::getTitolo);
+            case "dataInizio" -> Comparator.comparing(EventoFiera::getInizio);
+            default -> Comparator.comparing(EventoFiera::getId);
+        };
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+        return eventi.stream()
+                .sorted(comparator)
+                .map(EventoEstesoDTO::new)
+                .collect(Collectors.toList());
+    }
+    /**
      * <h2>Recupera l'anteprima di tutti gli eventi (fiere e visite)</h2>
      * <br>
-     * Restituisce una lista semplificata di tutti gli eventi presenti sulla piattaforma,
-     * con informazioni essenziali: titolo, locandina, data di inizio e data di fine.
+     * Questo metodo restituisce una lista semplificata di tutti gli eventi presenti sulla piattaforma,
+     * inclusi sia fiere che visite, con informazioni essenziali: titolo, locandina, data di inizio e data di fine.
      *
-     * @return {@code List<EventoPreviewDTO>} contenente anteprime di tutti gli eventi.
+     * @param sortBy Il campo su cui effettuare l'ordinamento. Valori supportati: "titolo" (default), "dataInizio".
+     * @param order L'ordine di ordinamento. Valori supportati: "asc" (crescente), "desc" (decrescente).
+     * @return {@code List<EventoPreviewDTO>} contenente le anteprime di tutti gli eventi.
      */
-    public List<EventoPreviewDTO> getAnteprimeEventi() {
-        return eventoRepository.findAll().stream()
+    public List<EventoPreviewDTO> getAnteprimeEventi(String sortBy, String order) {
+        return getAllEventi(sortBy, order).stream()
                 .map(evento -> new EventoPreviewDTO(
                         evento.getId(),
                         evento.getTitolo(),
@@ -175,34 +294,17 @@ public class EventoService {
                 .collect(Collectors.toList());
     }
     /**
-     * <h2>Recupera l'anteprima di tutti gli eventi ordinati per data di inizio (decrescente)</h2>
+     * <h2>Recupera l'anteprima di tutte le fiere territoriali</h2>
      * <br>
-     * Fornisce un elenco semplificato di tutti gli eventi, ordinati dalla data più recente
-     * alla meno recente, utile per visualizzare gli eventi imminenti.
+     * Questo metodo restituisce una lista semplificata di eventi di tipo fiera,
+     * utile per schermate riepilogative o liste.
      *
-     * @return {@code List<EventoPreviewDTO>} anteprime di eventi ordinate per data di inizio.
+     * @param sortBy Il campo su cui effettuare l'ordinamento. Valori supportati: "titolo", "dataInizio", "id".
+     * @param order L'ordine di ordinamento. Valori supportati: "asc" (crescente), "desc" (decrescente).
+     * @return {@code List<EventoPreviewDTO>} contenente le anteprime degli eventi di tipo fiera.
      */
-    public List<EventoPreviewDTO> getAnteprimeEventiInizio() {
-        return eventoRepository.findAllByOrderByInizioDesc().stream()
-                .map(evento -> new EventoPreviewDTO(
-                        evento.getId(),
-                        evento.getTitolo(),
-                        evento.getLocandina(),
-                        evento.getInizio(),
-                        evento.getFine()
-                ))
-                .collect(Collectors.toList());
-    }
-    /**
-     * <h2>Recupera l'anteprima di tutte le fiere</h2>
-     * <br>
-     * Fornisce l'elenco degli eventi di tipo fiera con solo le informazioni rilevanti
-     * per la visualizzazione: titolo, locandina e date.
-     *
-     * @return {@code List<EventoPreviewDTO>} anteprime di eventi fiera.
-     */
-    public List<EventoPreviewDTO> getAnteprimeFiera() {
-        return eventoRepository.findAllFiera().stream()
+    public List<EventoPreviewDTO> getAnteprimeFiera(String sortBy, String order) {
+        return getAllFiera(sortBy, order).stream()
                 .map(evento -> new EventoPreviewDTO(
                         evento.getId(),
                         evento.getTitolo(),
@@ -215,51 +317,15 @@ public class EventoService {
     /**
      * <h2>Recupera l'anteprima di tutte le visite aziendali</h2>
      * <br>
-     * Restituisce una lista semplificata di eventi di tipo visita, utile per schermate
-     * riepilogative o liste.
+     * Questo metodo restituisce una lista semplificata di eventi di tipo visita aziendale,
+     * utile per schermate riepilogative o liste.
      *
-     * @return {@code List<EventoPreviewDTO>} anteprime di eventi visita.
+     * @param sortBy Il campo su cui effettuare l'ordinamento. Valori supportati: "titolo", "dataInizio", "id".
+     * @param order L'ordine di ordinamento. Valori supportati: "asc" (crescente), "desc" (decrescente).
+     * @return {@code List<EventoPreviewDTO>} contenente le anteprime degli eventi di tipo visita.
      */
-    public List<EventoPreviewDTO> getAnteprimeVisite() {
-        return eventoRepository.findAllVisita().stream()
-                .map(evento -> new EventoPreviewDTO(
-                        evento.getId(),
-                        evento.getTitolo(),
-                        evento.getLocandina(),
-                        evento.getInizio(),
-                        evento.getFine()
-                ))
-                .collect(Collectors.toList());
-    }
-    /**
-     * <h2>Recupera l'anteprima delle visite aziendali ordinate per data di inizio</h2>
-     * <br>
-     * Fornisce le anteprime delle visite aziendali, ordinate dalla più recente alla meno recente,
-     * per agevolare la consultazione degli eventi imminenti.
-     *
-     * @return {@code List<EventoPreviewDTO>} anteprime di visite aziendali ordinate per data.
-     */
-    public List<EventoPreviewDTO> getAnteprimeVisitePerDataInizio() {
-        return eventoRepository.findAllVisitaOrderByInizioDesc().stream()
-                .map(evento -> new EventoPreviewDTO(
-                        evento.getId(),
-                        evento.getTitolo(),
-                        evento.getLocandina(),
-                        evento.getInizio(),
-                        evento.getFine()
-                ))
-                .collect(Collectors.toList());
-    }
-    /**
-     * <h2>Recupera l'anteprima delle fiere ordinate per data di inizio</h2>
-     * <br>
-     * Restituisce l'elenco semplificato delle fiere, ordinate dalla più recente
-     * alla meno recente, con i dati essenziali per l'interfaccia utente.
-     *
-     * @return {@code List<EventoPreviewDTO>} anteprime di fiere ordinate per data di inizio.
-     */
-    public List<EventoPreviewDTO> getAnteprimeFieraPerDataInizio() {
-        return eventoRepository.findAllFieraOrderByInizioDesc().stream()
+    public List<EventoPreviewDTO> getAnteprimeVisite(String sortBy, String order) {
+        return getAllVisita(sortBy, order).stream()
                 .map(evento -> new EventoPreviewDTO(
                         evento.getId(),
                         evento.getTitolo(),
@@ -280,6 +346,9 @@ public class EventoService {
      * @return {@code List<EventoPreviewDTO>} anteprime di eventi programmati che contengono il titolo specificato.
      */
     public List<EventoPreviewDTO> getAnteprimaEventiPerTitolo(String titolo){
+        if (titolo == null || titolo.isEmpty()) {
+            return getAnteprimeEventi("titolo", "asc");
+        }
         return eventoRepository.findByTitleContainingParameter(titolo).stream()
                 .map(evento -> new EventoPreviewDTO(
                         evento.getId(),
@@ -298,8 +367,21 @@ public class EventoService {
      *
      * @return {@code List<EventoVisita>} contenente tutti gli eventi di tipo visita programmati.
      */
-    public List<EventoVisita> getEventiVisitaProgrammati() {
-        return eventoRepository.findAllVisitaProgrammati();
+    public List<EventoEstesoDTO> getAllVisitaProgrammati(String sortBy, String order) {
+        List<EventoVisita> eventi = new ArrayList<>();
+        eventi.addAll(eventoRepository.findAllVisitaProgrammati());
+        Comparator<EventoVisita> comparator = switch (sortBy.toLowerCase()) {
+            case "titolo" -> Comparator.comparing(EventoVisita::getTitolo);
+            case "dataInizio" -> Comparator.comparing(EventoVisita::getInizio);
+            default -> Comparator.comparing(EventoVisita::getId);
+        };
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+        return eventi.stream()
+                .sorted(comparator)
+                .map(EventoEstesoDTO::new)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -309,8 +391,21 @@ public class EventoService {
      *
      * @return {@code List<EventoFiera>} contenente tutti gli eventi di tipo fiera programmati.
      */
-    public List<EventoFiera> getEventiFieraProgrammati() {
-        return eventoRepository.findAllFieraProgrammati();
+    public List<EventoEstesoDTO> getAllFieraProgrammati(String sortBy, String order) {
+        List<EventoFiera> eventi = new ArrayList<>();
+        eventi.addAll(eventoRepository.findAllFieraProgrammati());
+        Comparator<EventoFiera> comparator = switch (sortBy.toLowerCase()) {
+            case "titolo" -> Comparator.comparing(EventoFiera::getTitolo);
+            case "dataInizio" -> Comparator.comparing(EventoFiera::getInizio);
+            default -> Comparator.comparing(EventoFiera::getId);
+        };
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+        return eventi.stream()
+                .sorted(comparator)
+                .map(EventoEstesoDTO::new)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -320,41 +415,23 @@ public class EventoService {
      *
      * @return {@code List<Evento>} contenente tutti gli eventi programmati.
      */
-    public List<Evento> getEventiProgrammati() {
-        return eventoRepository.findAllEventiProgrammati();
-    }
+    public List<EventoEstesoDTO> getAllProgrammati(String sortBy, String order) {
+        List<Evento> eventi = new ArrayList<>();
+        eventi.addAll(eventoRepository.findAllProgrammati());
 
-    /**
-     * <h2>Recupera tutti gli eventi programmati ordinati per data di inizio</h2>
-     * <br>
-     * Questo metodo restituisce una lista di eventi programmati, ordinati per data di inizio.
-     *
-     * @return {@code List<Evento>} contenente tutti gli eventi programmati ordinati per data di inizio.
-     */
-    public List<Evento> getEventiProgrammatiOrdinatiPerDataInizio() {
-        return eventoRepository.findAllEventiProgrammatiByInizio();
-    }
+        Comparator<Evento> comparator = switch (sortBy.toLowerCase()) {
+            case "titolo" -> Comparator.comparing(Evento::getTitolo);
+            case "dataInizio" -> Comparator.comparing(Evento::getInizio);
+            default -> Comparator.comparing(Evento::getId);
+        };
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+        return eventi.stream()
+                .sorted(comparator)
+                .map(EventoEstesoDTO::new)
+                .collect(Collectors.toList());
 
-    /**
-     * <h2>Recupera tutti gli eventi programmati di tipo visita ordinati per data di inizio</h2>
-     * <br>
-     * Questo metodo restituisce una lista di eventi programmati di tipo visita, ordinati per data di inizio.
-     *
-     * @return {@code List<EventoVisita>} contenente tutti gli eventi programmati di tipo visita.
-     */
-    public List<EventoVisita> getEventiVisitaProgrammatiOrdinatiPerDataInizio() {
-        return eventoRepository.findAllVisitaProgrammatiByInizio();
-    }
-
-    /**
-     * <h2>Recupera tutti gli eventi programmati di tipo fiera ordinati per data di inizio</h2>
-     * <br>
-     * Questo metodo restituisce una lista di eventi programmati di tipo fiera, ordinati per data di inizio.
-     *
-     * @return {@code List<EventoFiera>} contenente tutti gli eventi programmati di tipo fiera.
-     */
-    public List<EventoFiera> getEventiFieraProgrammatiOrdinatiPerDataInizio() {
-        return eventoRepository.findAllFieraProgrammatiByInizio();
     }
 
     /**
@@ -366,20 +443,28 @@ public class EventoService {
      * @param title Il titolo da cercare negli eventi.
      * @return {@code List<Evento>} lista di eventi programmati che contengono il titolo specificato.
      */
-    public List<Evento> getEventiProgrammatiByTitle(String title){
-        return eventoRepository.findByTitleContainingParameterAndStatus(title);
+    public List<EventoEstesoDTO> getEventiProgrammatiByTitle(String title){
+        if (title == null || title.isEmpty()) {
+            return getAllProgrammati("titolo", "asc");
+        }
+        return eventoRepository.findByTitleContainingParameterAndStatus(title)
+                .stream()
+                .map(EventoEstesoDTO::new)
+                .collect(Collectors.toList());
     }
 
     /**
      * <h2>Recupera l'anteprima di tutti gli eventi programmati</h2>
      * <br>
-     * Restituisce una lista semplificata di eventi programmati con informazioni essenziali
-     * per l'interfaccia utente.
+     * Questo metodo restituisce una lista semplificata di eventi programmati con informazioni essenziali
+     * per l'interfaccia utente, come titolo, locandina, data di inizio e fine.
      *
-     * @return {@code List<EventoPreviewDTO>} anteprime di eventi programmati.
+     * @param sortBy Il campo su cui effettuare l'ordinamento. Valori supportati: "titolo" (default), "dataInizio".
+     * @param order L'ordine di ordinamento. Valori supportati: "asc" (crescente), "desc" (decrescente).
+     * @return {@code List<EventoPreviewDTO>} Lista di anteprime di eventi programmati.
      */
-    public List<EventoPreviewDTO> getAnteprimeEventiProgrammati() {
-        return eventoRepository.findAllEventiProgrammati().stream()
+    public List<EventoPreviewDTO> getAnteprimeEventiProgrammati(String sortBy, String order) {
+        return getAllProgrammati(sortBy, order).stream()
                 .map(evento -> new EventoPreviewDTO(
                         evento.getId(),
                         evento.getTitolo(),
@@ -393,12 +478,15 @@ public class EventoService {
     /**
      * <h2>Recupera l'anteprima di tutte le visite programmate</h2>
      * <br>
-     * Restituisce una lista semplificata di visite programmate con informazioni essenziali.
+     * Questo metodo restituisce una lista semplificata di visite programmate con informazioni essenziali,
+     * come titolo, locandina, data di inizio e data di fine.
      *
-     * @return {@code List<EventoPreviewDTO>} anteprime di visite programmate.
+     * @param sortBy Il campo su cui effettuare l'ordinamento. Valori supportati: "titolo", "dataInizio", "id".
+     * @param order L'ordine di ordinamento. Valori supportati: "asc" (crescente), "desc" (decrescente).
+     * @return {@code List<EventoPreviewDTO>} Lista di anteprime di visite programmate.
      */
-    public List<EventoPreviewDTO> getAnteprimeVisiteProgrammate() {
-        return eventoRepository.findAllVisitaProgrammati().stream()
+    public List<EventoPreviewDTO> getAnteprimeVisiteProgrammate(String sortBy, String order) {
+        return getAllVisitaProgrammati(sortBy,order).stream()
                 .map(evento -> new EventoPreviewDTO(
                         evento.getId(),
                         evento.getTitolo(),
@@ -412,12 +500,15 @@ public class EventoService {
     /**
      * <h2>Recupera l'anteprima di tutte le fiere programmate</h2>
      * <br>
-     * Restituisce una lista semplificata di fiere programmate con informazioni essenziali.
+     * Questo metodo restituisce una lista semplificata di fiere programmate con informazioni essenziali,
+     * come titolo, locandina, data di inizio e data di fine.
      *
-     * @return {@code List<EventoPreviewDTO>} anteprime di fiere programmate.
+     * @param sortBy Il campo su cui effettuare l'ordinamento. Valori supportati: "titolo", "dataInizio", "id".
+     * @param order L'ordine di ordinamento. Valori supportati: "asc" (crescente), "desc" (decrescente).
+     * @return {@code List<EventoPreviewDTO>} Lista di anteprime di fiere programmate.
      */
-    public List<EventoPreviewDTO> getAnteprimeFiereProgrammate() {
-        return eventoRepository.findAllFieraProgrammati().stream()
+    public List<EventoPreviewDTO> getAnteprimeFiereProgrammate(String sortBy, String order) {
+        return getAllFieraProgrammati(sortBy,order).stream()
                 .map(evento -> new EventoPreviewDTO(
                         evento.getId(),
                         evento.getTitolo(),
@@ -429,72 +520,18 @@ public class EventoService {
     }
 
     /**
-     * <h2>Recupera l'anteprima di tutti gli eventi programmati ordinati per data di inizio</h2>
+     * <h2>Recupera l'anteprima degli eventi programmati in base al titolo</h2>
      * <br>
-     * Questo metodo restituisce una lista di anteprime di eventi programmati, ordinati per data di inizio.
-     *
-     * @return {@code List<EventoPreviewDTO>} contenente le anteprime di tutti gli eventi programmati ordinati per data di inizio.
-     */
-    public List<EventoPreviewDTO> getAnteprimeEventiProgrammatiOrdinatiPerDataInizio() {
-        return eventoRepository.findAllEventiProgrammatiByInizio().stream()
-                .map(evento -> new EventoPreviewDTO(
-                        evento.getId(),
-                        evento.getTitolo(),
-                        evento.getLocandina(),
-                        evento.getInizio(),
-                        evento.getFine()
-                ))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * <h2>Recupera l'anteprima di tutti gli eventi programmati di tipo visita ordinati per data di inizio</h2>
-     * <br>
-     * Questo metodo restituisce una lista di anteprime di eventi programmati di tipo visita, ordinati per data di inizio.
-     *
-     * @return {@code List<EventoPreviewDTO>} contenente le anteprime di tutti gli eventi programmati di tipo visita.
-     */
-    public List<EventoPreviewDTO> getAnteprimeEventiVisitaProgrammatiOrdinatiPerDataInizio() {
-        return eventoRepository.findAllVisitaProgrammatiByInizio().stream()
-                .map(evento -> new EventoPreviewDTO(
-                        evento.getId(),
-                        evento.getTitolo(),
-                        evento.getLocandina(),
-                        evento.getInizio(),
-                        evento.getFine()
-                ))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * <h2>Recupera l'anteprima di tutti gli eventi programmati di tipo fiera ordinati per data di inizio</h2>
-     * <br>
-     * Questo metodo restituisce una lista di anteprime di eventi programmati di tipo fiera, ordinati per data di inizio.
-     *
-     * @return {@code List<EventoPreviewDTO>} contenente le anteprime di tutti gli eventi programmati di tipo fiera.
-     */
-    public List<EventoPreviewDTO> getAnteprimeEventiFieraProgrammatiOrdinatiPerDataInizio() {
-        return eventoRepository.findAllFieraProgrammatiByInizio().stream()
-                .map(evento -> new EventoPreviewDTO(
-                        evento.getId(),
-                        evento.getTitolo(),
-                        evento.getLocandina(),
-                        evento.getInizio(),
-                        evento.getFine()
-                ))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * <h2>Recupera l'anteprima di eventi programmati in base al titolo</h2>
-     * <br>
-     * Questo metodo restituisce una lista di anteprime di eventi programmati che contengono
-     * il parametro specificato.
+     * Questo metodo restituisce una lista di anteprime degli eventi programmati che contengono
+     * il titolo specificato.
      *
      * @param title Il titolo da cercare negli eventi.
-     * @return {@code List<EventoPreviewDTO>} lista di anteprime di eventi programmati che contengono il titolo specificato.
+     * @return {@code List<EventoPreviewDTO>} Lista di anteprime degli eventi programmati che contengono il titolo specificato.
      */
     public List<EventoPreviewDTO> getAnteprimeEventiProgrammatiByTitle(String title) {
+        if (title == null || title.isEmpty()) {
+            return getAnteprimeEventiProgrammati("titolo", "asc");
+        }
         return eventoRepository.findByTitleContainingParameterAndStatus(title).stream()
                 .map(evento -> new EventoPreviewDTO(
                         evento.getId(),
@@ -505,6 +542,7 @@ public class EventoService {
                 ))
                 .collect(Collectors.toList());
     }
+
     /**
      * <h2>Salva un evento nel database</h2>
      * <br>
@@ -549,7 +587,7 @@ public class EventoService {
         return salvaEvento(evento).getId();
 
     }
-/**
+    /**
      * <h2>Crea un nuovo evento di tipo visita</h2>
      * <br>
      * Questo metodo consente di creare un evento di tipo visita aziendale.
@@ -581,38 +619,106 @@ public class EventoService {
         return salvaEvento(evento).getId();
     }
 
+    public ResponseEntity<List<IscrittoDTO>> getIscrittiEvento(long idVisita){
+        Evento evento =  eventoRepository.findById(idVisita)
+                .orElse(null);
+        if (evento == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        }
+        if (!(evento instanceof EventoVisita visita)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(null);
+        }
+        if (!checkCreator(visita)) {
+            ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Non hai i permessi necessari per visualizzare gli iscritti a questo evento");
+        }
+        List<Utente> iscritti = ((EventoVisita) evento).getIscritti();
+        if (iscritti == null || iscritti.isEmpty()) {
+            iscritti = new ArrayList<>();
+        }
+        return ResponseEntity.ok(iscritti
+                .stream()
+                .map(IscrittoDTO::new)
+                .collect(Collectors.toList()));
+    }
+
+    /**
+     * <h2>Verifica il creatore di un evento di tipo visita</h2>
+     * <br>
+     * Questo metodo controlla se l'utente autenticato ha i permessi per visualizzare un evento di tipo visita.
+     * Se l'utente è un gestore, ha sempre accesso. Altrimenti, verifica se l'utente è il creatore dell'evento.
+     *
+     * @param evento L'evento di tipo visita da verificare.
+     * @return {@code true} se l'utente autenticato ha i permessi per visualizzare l'evento, {@code false} altrimenti.
+     */
+    public boolean checkCreator(EventoVisita evento){
+        Utente autenticato = utenteService.getUtenteById( utenteService.getIdUtenteAutenticato());
+        switch (autenticato.getRuolo()){
+            case GESTORE -> {
+                return true; // Il gestore può sempre visualizzare gli eventi
+            }
+            default -> {
+                return evento.getCreatore().getId() == autenticato.getId(); // L'utente è il creatore dell'evento
+            }
+        }
+    }
+
     /**
      * <h2>Iscrive un utente a un evento di tipo visita</h2>
      * <br>
      * Questo metodo consente a un utente di iscriversi a un evento di tipo visita.
-     * Controlla se l'utente è già iscritto,
-     * se l'evento è in corso o concluso e se è di tipo visita.
+     * Controlla se l'utente è già iscritto, se l'evento è in corso o concluso, e verifica che sia di tipo visita.
      *
-     * @param idEvento l'ID dell'evento a cui iscrivere l'utente
-     * @return {@code true} se l'iscrizione è avvenuta con successo, {@code false} altrimenti
+     * @param idEvento L'ID dell'evento a cui iscrivere l'utente.
+     * @return {@code ResponseEntity<String>} Messaggio di conferma o errore.
      */
-    public boolean iscriviUtenteAEvento(Long idEvento) {
+    public ResponseEntity<String> iscriviUtente(Long idEvento) {
         Long idUtente = utenteService.getIdUtenteAutenticato();
         Evento evento = eventoRepository.findById(idEvento)
-                .orElseThrow(() -> new NoSuchElementException("Evento con ID " + idEvento + " non trovato"));
-        if (!(evento instanceof EventoVisita))
-            throw new IllegalArgumentException("L'evento non è di tipo visita");
-        EventoVisita eventoVisita = (EventoVisita) evento;
-        if (eventoVisita.getIscritti().contains(idUtente)) {
-            throw new IllegalArgumentException("L'utente è già iscritto a questo evento");
+                .orElse(null);
+
+        if (evento == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Evento con ID " + idEvento + " non trovato");
         }
+
+        if (!(evento instanceof EventoVisita)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("L'evento non è di tipo visita");
+        }
+
+        EventoVisita eventoVisita = (EventoVisita) evento;
+
+        if (eventoVisita.getIscritti().contains(idUtente)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("L'utente è già iscritto a questo evento");
+        }
+
         switch (evento.getStatus()) {
             case CONCLUSO:
-                throw new IllegalArgumentException("L'evento è già terminato");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("L'evento è già terminato");
             case PROPOSTO:
-                throw new IllegalArgumentException("L'evento non è ancora programmato");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("L'evento non è ancora programmato");
             case IN_CORSO:
-                throw new IllegalArgumentException("L'evento è già in corso");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("L'evento è già in corso");
+            case PROGRAMMATO:
+                boolean success = aggiungiIscrizione(eventoVisita, idUtente);
+                if (success) {
+                    return ResponseEntity.status(HttpStatus.OK)
+                            .body("Iscrizione avvenuta con successo");
+                } else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Errore durante l'iscrizione");
+                }
             default:
-                break;
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Stato dell'evento non valido");
         }
-        return aggiungiIscrizione(eventoVisita,idUtente);
-
     }
 
     /**

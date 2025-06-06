@@ -20,7 +20,7 @@ public class StrategyEvento implements RichiestaStrategy {
     @Override
     public void processaRichiesta(Richiesta richiesta, Boolean status) {
         var eventi = eventoRepository.findById(richiesta.getTargetId());
-        System.out.println("Elaborazione della richiesta per l'evento: " + richiesta.getId());
+
     }
 
 
