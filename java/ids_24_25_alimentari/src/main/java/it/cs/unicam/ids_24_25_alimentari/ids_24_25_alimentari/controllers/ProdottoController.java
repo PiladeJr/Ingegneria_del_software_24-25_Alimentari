@@ -26,30 +26,21 @@ public class ProdottoController {
     }
 
     /**
-     * Restituisce un prodotto singolo dato il suo ID.
+     * Restituisce un prodotto specifico in base al tipo e all'ID.
      *
-     * @param id L'ID del prodotto.
-     * @return Il prodotto corrispondente.
+     * @param tipo Il tipo di prodotto.
+     * @param id   L'ID del prodotto.
+     * @return Il prodotto richiesto.
+     * @throws IllegalArgumentException Se il tipo di prodotto non è valido.
      */
-    @GetMapping("/singolo/{id}")
-    public ResponseEntity<?> getProdottoSingoloById(@PathVariable Long id) {
-        return this.getProdottoById(id, TipoProdotto.SINGOLO);
-    }
-
-    /**
-     * Restituisce un pacchetto dato il suo ID.
-     *
-     * @param id L'ID del pacchetto.
-     * @return Il pacchetto corrispondente.
-     */
-    @GetMapping("/pacchetto/{id}")
-    public ResponseEntity<?> getPacchettoById(@PathVariable Long id) {
-        return this.getProdottoById(id, TipoProdotto.PACCHETTO);
-    }
-
-    private ResponseEntity<?> getProdottoById(Long id, TipoProdotto tipo) {
+    @GetMapping()
+    public ResponseEntity<?> getProdottoByID(
+            @RequestParam String tipo,
+            @RequestParam Long id
+    ) {
         try {
-            return prodottoService.getProdottoById(id, tipo)
+            TipoProdotto tipoProdotto = TipoProdotto.valueOf(tipo.toUpperCase());
+            return prodottoService.getProdottoById(id, tipoProdotto)
                     .map(ResponseEntity::<Object>ok)
                     .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
                             .body(Collections.singletonMap("error", "Prodotto non trovato")));
@@ -71,6 +62,7 @@ public class ProdottoController {
         return prodottoService.getProdottiByIdAzienda(idAzienda);
     }
 
+
     /**
      * Restituisce tutti i prodotti con un nome specifico.
      *
@@ -81,6 +73,7 @@ public class ProdottoController {
     public List<Optional<Prodotto>> getProdottoByNome(@PathVariable String nome) {
         return prodottoService.getProdottoByNome(nome);
     }
+
 
     /**
      * Restituisce tutti i prodotti, sia singoli che pacchetti, ordinati in base al parametro specificato.
@@ -97,35 +90,6 @@ public class ProdottoController {
         return ResponseEntity.ok(prodottoService.getAllProdotti(sortBy, order));
     }
 
-//    /**
-//     * Restituisce tutti i prodotti ordinati alfabeticamente per nome.
-//     *
-//     * @return Lista ordinata di prodotti per nome crescente.
-//     */
-//    @GetMapping("/all/nome/asc")
-//    public ResponseEntity<List<Prodotto>> getAllProdottiByNomeAsc() {
-//        return ResponseEntity.ok(prodottoService.getAllProdottiOrdByNome());
-//    }
-//
-//    /**
-//     * Restituisce tutti i prodotti ordinati per prezzo crescente.
-//     *
-//     * @return Lista ordinata di prodotti per prezzo crescente.
-//     */
-//    @GetMapping("/all/prezzo/cre")
-//    public ResponseEntity<List<Prodotto>> getAllProdottiByPrezzoCre(){
-//        return ResponseEntity.ok(prodottoService.getAllProdottiOrdByPrezzoCre());
-//    }
-//
-//    /**
-//     * Restituisce tutti i prodotti ordinati per prezzo decrescente.
-//     *
-//     * @return Lista ordinata di prodotti per prezzo decrescente.
-//     */
-//    @GetMapping("/all/prezzo/dec")
-//    public ResponseEntity<List<Prodotto>> getAllProdottiByPrezzoDec(){
-//        return ResponseEntity.ok(prodottoService.getAllProdottiOrdByPrezzoDec());
-//    }
 
     /**
      * Elimina un prodotto singolo dato il suo ID.
@@ -137,6 +101,7 @@ public class ProdottoController {
     public ResponseEntity<?> deleteProdottoSingoloById(@PathVariable Long id) {
         return this.deleteProdottoById(id, TipoProdotto.SINGOLO);
     }
+
 
     /**
      * Elimina un pacchetto dato il suo ID.

@@ -1,7 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Strategy;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.Evento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.InformazioniAggiuntiveRepository;
@@ -18,12 +17,14 @@ public class StrategyInformazioniAggiuntive implements RichiestaStrategy {
     }
 
     @Override
-    public void processaRichiesta(Richiesta richiesta) {
+    public void processaRichiesta(Richiesta richiesta, Boolean status) {
         var info = informazioniRepository.findById(richiesta.getTargetId());
         System.out.println("Elaborazione della richiesta per informazioni aggiuntive: " + richiesta.getId());
     }
+
+
     @Override
-        public InformazioniAggiuntive ottieniRichiesta(Richiesta richiesta) {
+        public InformazioniAggiuntive visualizzaContenutoByRichiesta(Richiesta richiesta) {
         return informazioniRepository.findById(richiesta.getTargetId())
                 .orElseThrow(() -> new IllegalArgumentException("info non trovate con ID: " + richiesta.getTargetId()));
     }

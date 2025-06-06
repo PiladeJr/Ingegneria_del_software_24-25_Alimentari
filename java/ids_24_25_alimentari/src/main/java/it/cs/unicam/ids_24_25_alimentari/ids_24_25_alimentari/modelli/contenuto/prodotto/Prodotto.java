@@ -27,6 +27,6 @@ public abstract class Prodotto extends Contenuto {
 
     public abstract Double getPrezzo();
 
-    abstract TipoProdotto getTipo();
+    public abstract TipoProdotto getTipo();
 
 }

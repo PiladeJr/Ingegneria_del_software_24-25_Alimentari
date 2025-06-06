@@ -21,7 +21,7 @@ public class InformazioniAggiuntive extends Contenuto {
     private String descrizioneMetodi;
 
     @ElementCollection
-    @CollectionTable(name = "immagini_info-aggiuntive", joinColumns = @JoinColumn(name = "contenuto_id"))
+    @CollectionTable(name = "immagini_info_aggiuntive", joinColumns = @JoinColumn(name = "contenuto_id"))
     @Column(name = "immagine")
     private List<File> immagini;
     @ElementCollection

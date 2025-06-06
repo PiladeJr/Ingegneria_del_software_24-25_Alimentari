@@ -1,9 +1,9 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoVisitaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.RichiestaBuilder;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
@@ -66,12 +66,29 @@ public class RichiestaService {
         return richiestaRepository.save(richiesta);
     }
 
+    /**
+     * Recupera tutte le richieste presenti nel database.
+     *
+     * @return Una lista di tutte le richieste.
+     */
     public List<Richiesta> getAllRichiesteContenuto() {
         return this.richiestaRepository.getAllRichiesteContenuto();
     }
 
+    /**
+     * Recupera tutte le richieste di un tipo specifico.
+     *
+     * @param tipologia di cui si vogliono recuperare le richieste.
+     * @return Una lista di richieste associate alla tipologia specificata.
+     */
     public List<Richiesta> getRichiesteByTipo(Tipologia tipologia) { return this.richiestaRepository.getRichiesteByTipo(tipologia); }
 
+    /**
+     * Recupera una richiesta specifica in base al suo ID.
+     *
+     * @param id L'ID della richiesta da recuperare.
+     * @return Un {@link Optional} contenente la richiesta se trovata, altrimenti vuoto.
+     */
     public Optional<Richiesta> getRichiestaById(Long id) {
         return this.richiestaRepository.findById(id);
     }
@@ -79,41 +96,37 @@ public class RichiestaService {
     /**
      * <h2>Processa una richiesta in base al suo ID</h2>
      * <br>
-     * Questo metodo elabora una richiesta identificata dal suo ID utilizzando la strategia
-     * associata alla tipologia della richiesta. Se la tipologia non è supportata, viene
-     * sollevata un'eccezione.
+     * Questo metodo elabora una richiesta utilizzando la strategia associata alla
+     * tipologia della richiesta. Se la tipologia non è supportata, viene sollevata
+     * un'eccezione.
      *
-     * @param idRichiesta L'ID della richiesta da processare.
-     * @throws RuntimeException se la richiesta con l'ID specificato non viene trovata.
+     * @param richiesta La richiesta da processare.
+     * @param stato     Lo stato della richiesta (approvata o rifiutata).
      * @throws IllegalArgumentException se la tipologia della richiesta non è supportata.
      */
-    public void processaRichiesta(long idRichiesta) {
-        Richiesta richiesta = richiestaRepository.findById(idRichiesta)
-                .orElseThrow(() -> new RuntimeException("Richiesta non trovata"));
-
+    public void processaRichiesta(Richiesta richiesta, Boolean stato) {
         RichiestaStrategy strategy = strategyFactory.getStrategy(richiesta.getTipologia());
         if (strategy != null) {
-            strategy.processaRichiesta(richiesta);
+            strategy.processaRichiesta(richiesta, stato);
         } else {
             throw new IllegalArgumentException("Tipologia non supportata: " + richiesta.getTipologia());
         }
     }
+
     /**
-     * Ottiene una richiesta in base al suo ID e alla sua tipologia.
-     *
-     * Visualizzq la richiesta e le sue componenti ottenute tramite
-     * la strategia associata alla tipologia della richiesta.
-     *
-     * @param idRichiesta L'ID della richiesta da ottenere.
-     * @return La richiesta ottenuta, o un'eccezione se non trovata o se la tipologia non è supportata.
+     * <h2>Ottiene il contenuto della richiesta tramite il suo ID.</h2>
+     * <br>
+     * @param idRichiesta L'ID della richiesta da cui ottenere il contenuto.
+     * @return Il contenuto della richiesta, o un'eccezione se non trovata o se la tipologia non è supportata.
+     * @throws IllegalArgumentException se la tipologia della richiesta non è supportata.
      */
-    public Object ottieniRichiesta(long idRichiesta){
+    public Contenuto visualizzaContenutoByRichiesta(long idRichiesta){
         Richiesta richiesta = richiestaRepository.findById(idRichiesta)
                 .orElseThrow(() -> new RuntimeException("Richiesta non trovata"));
 
         RichiestaStrategy strategy = strategyFactory.getStrategy(richiesta.getTipologia());
         if (strategy != null) {
-            return strategy.ottieniRichiesta(richiesta);
+            return strategy.visualizzaContenutoByRichiesta(richiesta);
         } else {
             throw new IllegalArgumentException("Tipologia non supportata: " + richiesta.getTipologia());
         }
@@ -139,7 +152,7 @@ public class RichiestaService {
             Long[] idAzienda
     ) {
         long id = this.infoAggiuntiveService.nuovaInformazioneAggiuntiva(descrizione, produzione, metodologie, immagini, certificati, idAzienda).getId();
-        Richiesta richiesta = this.nuovaRichiesta(id, Tipologia.INFO_AZIENDA);
+        Richiesta richiesta = this.nuovaRichiesta(id, Tipologia.INFO_AZIENDA, "info_azienda");
         this.notificaNuovaRichiesta();
         return salvaRichiesta(richiesta);
     }
@@ -169,7 +182,7 @@ public class RichiestaService {
             String tecniche
     ) {
         long id = this.prodottoService.nuovoProdotto(nome, descrizione, idAzienda, immagini, prezzo, quantita, allergeni, tecniche).getId();
-        Richiesta richiesta = this.nuovaRichiesta(id, Tipologia.PRODOTTO);
+        Richiesta richiesta = this.nuovaRichiesta(id, Tipologia.PRODOTTO, "singolo");
         this.notificaNuovaRichiesta();
         return salvaRichiesta(richiesta);
     }
@@ -191,77 +204,13 @@ public class RichiestaService {
             Set<Long> prodotti
     ) {
        long id = this.prodottoService.nuovoPacchetto(nome, descrizione, prezzo, prodotti).getId();
-        Richiesta richiesta = this.nuovaRichiesta(id, Tipologia.PRODOTTO);
+        Richiesta richiesta = this.nuovaRichiesta(id, Tipologia.PRODOTTO, "Pacchetto");
         this.notificaNuovaRichiesta();
         return salvaRichiesta(richiesta);
     }
 
-    /**
-     * Crea una nuova richiesta associata a un contenuto specifico.
-     *
-     * @param idContenuto L'ID del contenuto a cui è associata la richiesta.
-     * @return La richiesta creata.
-     * @throws IllegalArgumentException se l'utente autenticato non è trovato.
-     */
-    private Richiesta nuovaRichiesta(Long idContenuto, Tipologia tipologia) {
-        RichiestaBuilder richiesta = new RichiestaBuilder();
-        richiesta.costruisciTipologia(tipologia);
-        richiesta.costruisciIdInformazioni(idContenuto);
 
-        Long idMittente = this.utenteService.getIdUtenteAutenticato();
-        if (idMittente == null)
-            throw new IllegalArgumentException("Utente non trovato");
-        else
-            richiesta.costruisciIdMittente(idMittente);
 
-        return richiesta.build();
-    }
-
-    /**
-     * <h2>Crea una nuova richiesta di tipo evento</h2>
-     * <br>
-     * Questo metodo consente di creare una nuova richiesta per un evento,
-     * che può essere di tipo fiera o visita.
-     *
-     * @param titolo Il titolo dell'evento.
-     * @param descrizione La descrizione dell'evento.
-     * @param inizio La data e ora di inizio dell'evento.
-     * @param fine La data e ora di fine dell'evento.
-     * @param locandina Il file immagine della locandina dell'evento.
-     * @param indirizzo L'indirizzo in cui si svolgerà l'evento.
-     * @param isFiera Indica se l'evento è di tipo fiera ({@code true}) o visita ({@code false}).
-     * @param aziende La lista di aziende partecipanti (solo per fiere).
-     * @param aziendaRiferimento L'azienda di riferimento (solo per visite).
-     * @return {@code Richiesta} La richiesta creata e salvata nel database.
-     */
-    public Richiesta nuovaRichiestaEvento(
-            String titolo,
-            String descrizione,
-            LocalDateTime inizio,
-            LocalDateTime fine,
-            File locandina,
-            Indirizzo indirizzo,
-            boolean isFiera,
-            List<Azienda> aziende,
-            Azienda aziendaRiferimento
-    ) {
-        // Crea l'evento utilizzando EventoService
-        Long idEvento;
-        if (isFiera) {
-            idEvento = eventoService.creaFiera(titolo, descrizione, inizio, fine, locandina, indirizzo, aziende);
-        } else {
-            idEvento = eventoService.creaVisita(titolo, descrizione, inizio, fine, locandina, indirizzo, aziendaRiferimento);
-        }
-
-        // Crea una nuova richiesta di tipo evento
-        Richiesta richiesta = this.nuovaRichiesta(idEvento, Tipologia.EVENTO);
-
-        // Notifica i curatori della nuova richiesta
-        this.notificaNuovaRichiesta();
-
-        // Salva e restituisce la richiesta
-        return salvaRichiesta(richiesta);
-    }
     public Richiesta nuovaRichiestaFiera(
             String titolo,
             String descrizione,
@@ -273,10 +222,10 @@ public class RichiestaService {
     ) {
         // Crea l'evento utilizzando EventoService
         Long idEvento;
-            idEvento = eventoService.creaFiera(titolo, descrizione, inizio, fine, locandina, indirizzo, aziende);
+        idEvento = eventoService.creaFiera(titolo, descrizione, inizio, fine, locandina, indirizzo, aziende);
 
         // Crea una nuova richiesta di tipo evento
-        Richiesta richiesta = this.creaRichiesta(idEvento, Tipologia.EVENTO);
+        Richiesta richiesta = this.nuovaRichiesta(idEvento, Tipologia.EVENTO, "fiera");
 
         // Notifica i curatori della nuova richiesta
         this.notificaNuovaRichiesta();
@@ -284,6 +233,8 @@ public class RichiestaService {
         // Salva e restituisce la richiesta
         return salvaRichiesta(richiesta);
     }
+
+
     public Richiesta nuovaRichiestaVisita(
             String titolo,
             String descrizione,
@@ -293,26 +244,34 @@ public class RichiestaService {
             Indirizzo indirizzo,
             Azienda aziendaRiferimento
     ) {
-            // Crea l'evento utilizzando EventoService
-            Long idEvento;
-            idEvento = eventoService.creaVisita(titolo, descrizione, inizio, fine, locandina, indirizzo, aziendaRiferimento);
+        // Crea l'evento utilizzando EventoService
+        Long idEvento;
+        idEvento = eventoService.creaVisita(titolo, descrizione, inizio, fine, locandina, indirizzo, aziendaRiferimento);
 
-            // Crea una nuova richiesta di tipo evento
-            Richiesta richiesta = this.creaRichiesta(idEvento, Tipologia.EVENTO);
+        // Crea una nuova richiesta di tipo evento
+        Richiesta richiesta = this.nuovaRichiesta(idEvento, Tipologia.EVENTO, "visita");
 
-            // Notifica i curatori della nuova richiesta
-            this.notificaNuovaRichiesta();
+        // Notifica i curatori della nuova richiesta
+        this.notificaNuovaRichiesta();
 
-            // Salva e restituisce la richiesta
-            return salvaRichiesta(richiesta);
-        }
+        // Salva e restituisce la richiesta
+        return salvaRichiesta(richiesta);
+    }
+
 
     //TODO VALUTARE SE SPOSTARE IN UN DIRECTOR O UN FACTORY
-    private Richiesta creaRichiesta(Long id, Tipologia tipologia) {
+    private Richiesta nuovaRichiesta(Long idContenuto, Tipologia tipologia, String tipoContenuto) {
         RichiestaBuilder richiesta = new RichiestaBuilder();
         richiesta.costruisciTipologia(tipologia);
-        richiesta.costruisciIdMittente(utenteService.getIdUtenteAutenticato());
-        richiesta.costruisciTargetId(id);
+        richiesta.costruisciTargetId(idContenuto);
+        richiesta.costruisciTipoContenuto(tipoContenuto);
+
+        Long idMittente = this.utenteService.getIdUtenteAutenticato();
+        if (idMittente == null)
+            throw new IllegalArgumentException("Utente non trovato");
+        else
+            richiesta.costruisciIdMittente(idMittente);
+
         return richiesta.build();
     }
 
@@ -330,12 +289,5 @@ public class RichiestaService {
             mailService.inviaMail(curatore.getEmail(), messaggio, oggetto);
         }
     }
-
-    
-    public Richiesta valutaRichiesta(Richiesta richiesta, Boolean stato) {
-        richiesta.setApprovato(stato);
-        return this.salvaRichiesta(richiesta);
-    }
-
 
 }
