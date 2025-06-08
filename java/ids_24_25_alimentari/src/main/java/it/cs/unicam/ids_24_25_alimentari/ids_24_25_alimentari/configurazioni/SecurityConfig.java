@@ -47,53 +47,13 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/api/auth/**").permitAll()
-//                        .requestMatchers("/h2-console/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/api/richieste-collaborazione/azienda").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/api/richieste-collaborazione/animatore").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/api/richieste-collaborazione/curatore").permitAll()
-//                        .requestMatchers(HttpMethod.PATCH, "/api/richieste-collaborazione/stato")
-//                        .hasAnyAuthority("ROLE_GESTORE")
-//                        .requestMatchers("/api/richieste-collaborazione/**").hasAnyAuthority("ROLE_GESTORE")
-//                        .requestMatchers(HttpMethod.GET, "/api/azienda/{id}")
-//                        .hasAnyAuthority("ROLE_GESTORE", "ROLE_CURATORE")
-//                        .requestMatchers("/api/azienda/roles/**")
-//                        .hasAnyAuthority("ROLE_GESTORE", "ROLE_CURATORE", "ROLE_TRASFORMATORE")
-//                        .requestMatchers(HttpMethod.DELETE, "/api/azienda/{id}").hasAuthority("ROLE_GESTORE")
-//                        .requestMatchers("/api/azienda/informazioni/new")
-//                        .hasAnyAuthority("ROLE_PRODUTTORE", "ROLE_TRASFORMATORE",
-//                                "ROLE_GESTORE", "ROLE_CURATORE")
-//                        .requestMatchers("/api/azienda/informazioni/new")
-//                        .hasAnyAuthority("ROLE_PRODUTTORE", "ROLE_TRASFORMATORE")
-//                        .requestMatchers("/api/azienda/**").hasAnyAuthority("ROLE_GESTORE", "ROLE_CURATORE")
-//                        .requestMatchers("/api/users").hasAnyAuthority("ROLE_GESTORE")
-//                        .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
-//                        .requestMatchers("/api/users/**").hasAnyAuthority("ROLE_GESTORE")
-//                        .requestMatchers(HttpMethod.GET, "/api/eventi/gestore/**").hasAnyAuthority("ROLE_GESTORE")
-//                        .requestMatchers(HttpMethod.GET, "/api/eventi/miei/**").hasAnyAuthority("ROLE_ANIMATORE")
-//                        .requestMatchers(HttpMethod.GET, "/api/eventi/preview/**").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/eventi/programmati/**").permitAll()
-//                        .anyRequest().authenticated())
-//
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .exceptionHandling(exception -> exception
-//                        .authenticationEntryPoint((request, response, authException) -> {
-//                            sendErrorResponse(response, HttpServletResponse.SC_FORBIDDEN,
-//                                    "Accesso negato: autenticazione richiesta");
-//                        }));
-//
-//        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
-//
-//        return http.build();
-//    }
 
-
+    /**
+     * Configura l’intera catena di filtri di sicurezza per la piattaforma, basata su JWT, personalizzando eccezioni e autorizzazioni.
+     *
+     * @param http l'oggetto HttpSecurity da configurare
+     * @return il SecurityFilterChain configurato
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
