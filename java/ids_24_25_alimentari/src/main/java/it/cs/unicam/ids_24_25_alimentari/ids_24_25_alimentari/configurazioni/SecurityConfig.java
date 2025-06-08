@@ -11,6 +11,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,55 +30,174 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    public static final String ROLE_GESTORE = "ROLE_GESTORE";
+    public static final String ROLE_CURATORE = "ROLE_CURATORE";
+    public static final String ROLE_PRODUTTORE = "ROLE_PRODUTTORE";
+    public static final String ROLE_TRASFORMATORE = "ROLE_TRASFORMATORE";
+    public static final String ROLE_ANIMATORE = "ROLE_ANIMATORE";
+
+    public static final String[] ENDPOINT_AUTH = { "/api/auth/**", "/h2-console/**" };
+    public static final String[] ENDPOINT_ACCESSO_LIBERO = {
+            "/api/richieste-collaborazione/azienda",
+            "/api/richieste-collaborazione/animatore",
+            "/api/richieste-collaborazione/curatore"
+    };
+
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .requestMatchers("/api/auth/**").permitAll()
+//                        .requestMatchers("/h2-console/**").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/richieste-collaborazione/azienda").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/richieste-collaborazione/animatore").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/richieste-collaborazione/curatore").permitAll()
+//                        .requestMatchers(HttpMethod.PATCH, "/api/richieste-collaborazione/stato")
+//                        .hasAnyAuthority("ROLE_GESTORE")
+//                        .requestMatchers("/api/richieste-collaborazione/**").hasAnyAuthority("ROLE_GESTORE")
+//                        .requestMatchers(HttpMethod.GET, "/api/azienda/{id}")
+//                        .hasAnyAuthority("ROLE_GESTORE", "ROLE_CURATORE")
+//                        .requestMatchers("/api/azienda/roles/**")
+//                        .hasAnyAuthority("ROLE_GESTORE", "ROLE_CURATORE", "ROLE_TRASFORMATORE")
+//                        .requestMatchers(HttpMethod.DELETE, "/api/azienda/{id}").hasAuthority("ROLE_GESTORE")
+//                        .requestMatchers("/api/azienda/informazioni/new")
+//                        .hasAnyAuthority("ROLE_PRODUTTORE", "ROLE_TRASFORMATORE",
+//                                "ROLE_GESTORE", "ROLE_CURATORE")
+//                        .requestMatchers("/api/azienda/informazioni/new")
+//                        .hasAnyAuthority("ROLE_PRODUTTORE", "ROLE_TRASFORMATORE")
+//                        .requestMatchers("/api/azienda/**").hasAnyAuthority("ROLE_GESTORE", "ROLE_CURATORE")
+//                        .requestMatchers("/api/users").hasAnyAuthority("ROLE_GESTORE")
+//                        .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
+//                        .requestMatchers("/api/users/**").hasAnyAuthority("ROLE_GESTORE")
+//                        .requestMatchers(HttpMethod.GET, "/api/eventi/gestore/**").hasAnyAuthority("ROLE_GESTORE")
+//                        .requestMatchers(HttpMethod.GET, "/api/eventi/miei/**").hasAnyAuthority("ROLE_ANIMATORE")
+//                        .requestMatchers(HttpMethod.GET, "/api/eventi/preview/**").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/eventi/programmati/**").permitAll()
+//                        .anyRequest().authenticated())
+//
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .exceptionHandling(exception -> exception
+//                        .authenticationEntryPoint((request, response, authException) -> {
+//                            sendErrorResponse(response, HttpServletResponse.SC_FORBIDDEN,
+//                                    "Accesso negato: autenticazione richiesta");
+//                        }));
+//
+//        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
+//
+//        return http.build();
+//    }
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/richieste-collaborazione/azienda").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/richieste-collaborazione/animatore").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/richieste-collaborazione/curatore").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/api/richieste-collaborazione/stato")
-                        .hasAnyAuthority("ROLE_GESTORE")
-                        .requestMatchers("/api/richieste-collaborazione/**").hasAnyAuthority("ROLE_GESTORE")
-                        .requestMatchers(HttpMethod.GET, "/api/azienda/{id}")
-                        .hasAnyAuthority("ROLE_GESTORE", "ROLE_CURATORE")
-                        .requestMatchers("/api/azienda/roles/**")
-                        .hasAnyAuthority("ROLE_GESTORE", "ROLE_CURATORE", "ROLE_TRASFORMATORE")
-                        .requestMatchers(HttpMethod.DELETE, "/api/azienda/{id}").hasAuthority("ROLE_GESTORE")
-                        .requestMatchers("/api/azienda/informazioni/new")
-                        .hasAnyAuthority("ROLE_PRODUTTORE", "ROLE_TRASFORMATORE",
-                                "ROLE_GESTORE", "ROLE_CURATORE")
-                        .requestMatchers("/api/azienda/informazioni/new")
-                        .hasAnyAuthority("ROLE_PRODUTTORE", "ROLE_TRASFORMATORE")
-                        .requestMatchers("/api/azienda/**").hasAnyAuthority("ROLE_GESTORE", "ROLE_CURATORE")
-                        .requestMatchers("/api/users").hasAnyAuthority("ROLE_GESTORE")
-                        .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
-                        .requestMatchers("/api/users/**").hasAnyAuthority("ROLE_GESTORE")
-                        .requestMatchers(HttpMethod.GET, "/api/eventi/gestore/**").hasAnyAuthority("ROLE_GESTORE")
-                        .requestMatchers(HttpMethod.GET, "/api/eventi/miei/**").hasAnyAuthority("ROLE_ANIMATORE")
-                        .requestMatchers(HttpMethod.GET, "/api/eventi/preview/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/eventi/programmati/**").permitAll()
-                        .anyRequest().authenticated())
-
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             sendErrorResponse(response, HttpServletResponse.SC_FORBIDDEN,
                                     "Accesso negato: autenticazione richiesta");
-                        }));
-
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
+                        })).authorizeHttpRequests(this::configureAuthorization)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
 
         return http.build();
     }
+
+
+    private void configureAuthorization(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
+        auth
+                // Accesso libero
+                .requestMatchers(SecurityConfig.ENDPOINT_AUTH).permitAll()
+                .requestMatchers(HttpMethod.POST, SecurityConfig.ENDPOINT_ACCESSO_LIBERO).permitAll();
+
+                collaborazioniAuth(auth);
+                aziendaAuth(auth);
+                utenteAuth(auth);
+                eventiAuth(auth);
+                prodottoAuth(auth);
+                richiestaContenutoAuth(auth);
+
+                // Tutto il resto: autenticazione richiesta
+                auth.anyRequest().authenticated();
+    }
+
+
+    private void collaborazioniAuth(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
+        auth
+                .requestMatchers(HttpMethod.PATCH, "/api/richieste-collaborazione/stato")
+                .hasAuthority(SecurityConfig.ROLE_GESTORE)
+                .requestMatchers("/api/richieste-collaborazione/**")
+                .hasAuthority(SecurityConfig.ROLE_GESTORE);
+    }
+
+
+    private void aziendaAuth(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
+        auth
+                .requestMatchers(HttpMethod.GET, "/api/azienda/{id}")
+                .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE)
+                .requestMatchers("/api/azienda/roles/**")
+                .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE, SecurityConfig.ROLE_TRASFORMATORE)
+                .requestMatchers(HttpMethod.DELETE, "/api/azienda/{id}")
+                .hasAuthority(SecurityConfig.ROLE_GESTORE)
+                .requestMatchers("/api/azienda/informazioni/new")
+                .hasAnyAuthority(SecurityConfig.ROLE_PRODUTTORE, SecurityConfig.ROLE_TRASFORMATORE)
+                .requestMatchers("/api/azienda/**")
+                .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE);
+    }
+
+
+    private void utenteAuth(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
+        auth
+                .requestMatchers("/api/users").hasAuthority(SecurityConfig.ROLE_GESTORE)
+                .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
+                .requestMatchers("/api/users/**").hasAuthority(SecurityConfig.ROLE_GESTORE);
+    }
+
+
+    private void eventiAuth(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
+        auth
+                .requestMatchers(HttpMethod.GET, "/api/eventi/gestore/**")
+                .hasAuthority(SecurityConfig.ROLE_GESTORE)
+                .requestMatchers(HttpMethod.GET, "/api/eventi/miei/**")
+                .hasAuthority(SecurityConfig.ROLE_ANIMATORE)
+                .requestMatchers(HttpMethod.GET,
+                        "/api/eventi/preview/**",
+                        "/api/eventi/programmati/**")
+                .permitAll();
+    }
+
+
+    private void prodottoAuth(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
+        auth
+                .requestMatchers(HttpMethod.GET, "/api/prodotto/visualizza/**")
+                .permitAll();
+    }
+
+
+    private void richiestaContenutoAuth(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
+        auth
+                .requestMatchers(HttpMethod.GET,
+                        "/api/richieste-contenuto/visualizza/**",
+                        "/api/richieste-contenuto/valuta")
+                .hasAnyAuthority(SecurityConfig.ROLE_CURATORE)
+                .requestMatchers(HttpMethod.POST,
+                        "/api/richieste-contenuto/informazioni-aggiuntive/new",
+                        "/api/richieste-contenuto/prodotto/singolo/new",
+                        "/api/richieste-contenuto/prodotto/pacchetto/new")
+                .hasAnyAuthority(SecurityConfig.ROLE_PRODUTTORE, SecurityConfig.ROLE_TRASFORMATORE)
+                .requestMatchers(HttpMethod.POST,
+                        "/api/richieste-contenuto/eventi/new",
+                        "/api/richieste-contenuto/visita/new")
+                .hasAnyAuthority(SecurityConfig.ROLE_ANIMATORE);
+    }
+
 
     // Metodo per inviare errori JSON
     private void sendErrorResponse(HttpServletResponse response, int status, String message) throws IOException {

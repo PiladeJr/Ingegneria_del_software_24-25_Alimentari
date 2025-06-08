@@ -33,7 +33,7 @@ public class ProdottoController {
      * @return Il prodotto richiesto.
      * @throws IllegalArgumentException Se il tipo di prodotto non è valido.
      */
-    @GetMapping()
+    @GetMapping("/visualizza")
     public ResponseEntity<?> getProdottoByID(
             @RequestParam String tipo,
             @RequestParam Long id
@@ -57,7 +57,7 @@ public class ProdottoController {
      * @param idAzienda L'ID dell'azienda.
      * @return Lista di prodotti singoli dell'azienda.
      */
-    @GetMapping("/id-azienda/{idAzienda}")
+    @GetMapping("/visualizza/id-azienda/{idAzienda}")
     public List<ProdottoSingolo> getProdottiSingoliByIdAzienda(@PathVariable Long idAzienda) {
         return prodottoService.getProdottiByIdAzienda(idAzienda);
     }
@@ -69,7 +69,7 @@ public class ProdottoController {
      * @param nome Il nome del prodotto.
      * @return Lista di prodotti che corrispondono al nome.
      */
-    @GetMapping("/nome/{nome}")
+    @GetMapping("/visualizza/nome/{nome}")
     public List<Optional<Prodotto>> getProdottoByNome(@PathVariable String nome) {
         return prodottoService.getProdottoByNome(nome);
     }
@@ -82,7 +82,7 @@ public class ProdottoController {
      * @param order  L'ordine di ordinamento (default: "asc").
      * @return Lista di prodotti ordinati.
      */
-    @GetMapping("/all")
+    @GetMapping("/visualizza/all")
     public ResponseEntity<List<Prodotto>> getAllProdotti(
             @RequestParam(required = false, defaultValue = "nome") String sortBy,
             @RequestParam(required = false, defaultValue = "asc") String order
@@ -97,7 +97,7 @@ public class ProdottoController {
      * @param id L'ID del prodotto da eliminare.
      * @return Esito dell'operazione di eliminazione.
      */
-    @GetMapping("/delete/singolo/{id}")
+    @DeleteMapping("/delete/singolo/{id}")
     public ResponseEntity<?> deleteProdottoSingoloById(@PathVariable Long id) {
         return this.deleteProdottoById(id, TipoProdotto.SINGOLO);
     }
@@ -109,7 +109,7 @@ public class ProdottoController {
      * @param id L'ID del pacchetto da eliminare.
      * @return Esito dell'operazione di eliminazione.
      */
-    @GetMapping("/delete/pacchetto/{id}")
+    @DeleteMapping("/delete/pacchetto/{id}")
     public ResponseEntity<?> deletePacchettoById(@PathVariable Long id) {
         return this.deleteProdottoById(id, TipoProdotto.PACCHETTO);
     }
