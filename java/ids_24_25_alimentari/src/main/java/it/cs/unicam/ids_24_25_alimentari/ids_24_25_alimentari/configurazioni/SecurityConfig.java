@@ -177,14 +177,18 @@ public class SecurityConfig {
     private void prodottoAuth(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
         auth
                 .requestMatchers(HttpMethod.GET, "/api/prodotto/visualizza/**")
-                .permitAll();
+                .permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/prodotto/delete/**")
+                .hasAnyAuthority(SecurityConfig.ROLE_CURATORE);
     }
 
 
     private void richiestaContenutoAuth(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
         auth
                 .requestMatchers(HttpMethod.GET,
-                        "/api/richieste-contenuto/visualizza/**",
+                        "/api/richieste-contenuto/visualizza/**")
+                .hasAnyAuthority(SecurityConfig.ROLE_CURATORE)
+                .requestMatchers(HttpMethod.PATCH,
                         "/api/richieste-contenuto/valuta")
                 .hasAnyAuthority(SecurityConfig.ROLE_CURATORE)
                 .requestMatchers(HttpMethod.POST,
