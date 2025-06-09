@@ -3,8 +3,6 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoFieraDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoVisitaDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
@@ -13,7 +11,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteServ
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multipartConverter.ConvertitoreMultipartFileToFile;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -100,9 +96,8 @@ public class RichiestaController {
      */
     @PostMapping(value = "/informazioni-aggiuntive/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> nuovaRichiestaInformazioniAggiuntive(
-            @ModelAttribute @Valid RichiestaInformazioniAggiuntiveAziendaDTO infoAggiuntiveDTO) {
+            @ModelAttribute @Valid RichiestaInformazioniAggiuntiveAziendaDTO infoAggiuntiveDTO) throws IOException {
 
-        try {
             File[] immagini = ConvertitoreMultipartFileToFile
                     .convertMultipartFileArrayToFileArray(infoAggiuntiveDTO.getImmagini());
             File[] certificati = ConvertitoreMultipartFileToFile
@@ -117,12 +112,6 @@ public class RichiestaController {
                     infoAggiuntiveDTO.getAziendeCollegate());
 
             return ResponseEntity.ok(richiestaInfoAggiuntive);
-
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.singletonMap("error",
-                            "Errore nella creazione della richiesta " + e.getMessage()));
-        }
     }
 
     /**
@@ -133,9 +122,8 @@ public class RichiestaController {
      */
     @PostMapping(value = "/prodotto/singolo/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> nuovaRichiestaProdottoSingolo(
-            @ModelAttribute @Valid RichiestaProdottoDTO prodottoDTO) {
+            @ModelAttribute @Valid RichiestaProdottoDTO prodottoDTO) throws IOException{
 
-        try {
             File[] immagini = ConvertitoreMultipartFileToFile
                     .convertMultipartFileArrayToFileArray(prodottoDTO.getImmagini());
 
@@ -150,11 +138,6 @@ public class RichiestaController {
                     prodottoDTO.getTecniche());
 
             return ResponseEntity.ok(richiestaProdotto);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.singletonMap("error",
-                            "Errore nella creazione della richiesta " + e.getMessage()));
-        }
     }
 
 
@@ -162,7 +145,6 @@ public class RichiestaController {
     public ResponseEntity<?> nuovaRichiestaPacchetto(
             @ModelAttribute @Valid RichiestaPacchettoDTO pacchettoDTO) {
 
-        try {
             Richiesta richiestaPacchetto = this.richiestaService.nuovaRichiestaPacchetto(
                     pacchettoDTO.getNome(),
                     pacchettoDTO.getDescrizione(),
@@ -170,11 +152,6 @@ public class RichiestaController {
                     pacchettoDTO.getProdotti());
 
             return ResponseEntity.ok(richiestaPacchetto);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.singletonMap("error",
-                            "Errore nella creazione della richiesta " + e.getMessage()));
-        }
 
     }
 
@@ -202,8 +179,8 @@ public class RichiestaController {
      *         </ul>
      */
     @PostMapping("/fiera/new")
-    public ResponseEntity<?> nuovaRichiestaFiera(@ModelAttribute @Valid RichiestaEventoFieraDTO dto) {
-        try {
+    public ResponseEntity<?> nuovaRichiestaFiera(@ModelAttribute @Valid RichiestaEventoFieraDTO dto) throws IOException{
+
             File locandina = ConvertitoreMultipartFileToFile.convertiMultipartFileToFile(dto.getLocandina());
 
             Richiesta richiestaEvento = richiestaService.nuovaRichiestaFiera(
@@ -216,11 +193,6 @@ public class RichiestaController {
                     dto.getAziendePresenti());
 
             return ResponseEntity.ok(richiestaEvento);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.singletonMap("error",
-                            "Errore nella creazione della richiesta " + e.getMessage()));
-        }
     }
 
     /**
@@ -247,8 +219,8 @@ public class RichiestaController {
      *         </ul>
      */
     @PostMapping("/visita/new")
-    public ResponseEntity<?> nuovaRichiestaVisita(@ModelAttribute @Valid RichiestaEventoVisitaDTO dto) {
-        try {
+    public ResponseEntity<?> nuovaRichiestaVisita(@ModelAttribute @Valid RichiestaEventoVisitaDTO dto) throws IOException{
+
             File locandina = ConvertitoreMultipartFileToFile.convertiMultipartFileToFile(dto.getLocandina());
 
             Richiesta richiestaEvento = richiestaService.nuovaRichiestaVisita(
@@ -261,11 +233,6 @@ public class RichiestaController {
                     dto.getAziendaRiferimento());
 
             return ResponseEntity.ok(richiestaEvento);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.singletonMap("error",
-                            "Errore nella creazione della richiesta " + e.getMessage()));
-        }
     }
 
     /**
