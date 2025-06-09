@@ -1,9 +1,11 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi.EventoEstesoDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.RichiestaBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoFiera;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
@@ -23,9 +25,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Servizio responsabile della creazione, del salvataggio e della notifica delle nuove richieste ({@link Richiesta}).
@@ -71,17 +72,18 @@ public class RichiestaService {
      *
      * @return Una lista di tutte le richieste.
      */
-    public List<Richiesta> getAllRichiesteContenuto() {
-        return this.richiestaRepository.getAllRichiesteContenuto();
+    public List<Richiesta> getAllRichiesteContenuto(String sortBy) {
+        List<Richiesta> richieste = new ArrayList<>(richiestaRepository.getAllRichiesteContenuto());
+        Comparator<Richiesta> comparator = switch (sortBy.toLowerCase()) {
+            case "tipologia" -> Comparator.comparing(Richiesta::getTipologia);
+            case "stato" -> Comparator.comparing(Richiesta::getApprovato);
+            default -> Comparator.comparingLong(Richiesta::getId);
+        };
+        return richieste.stream()
+                .sorted(comparator)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Recupera tutte le richieste di un tipo specifico.
-     *
-     * @param tipologia di cui si vogliono recuperare le richieste.
-     * @return Una lista di richieste associate alla tipologia specificata.
-     */
-    public List<Richiesta> getRichiesteByTipo(Tipologia tipologia) { return this.richiestaRepository.getRichiesteByTipo(tipologia); }
 
     /**
      * Recupera una richiesta specifica in base al suo ID.

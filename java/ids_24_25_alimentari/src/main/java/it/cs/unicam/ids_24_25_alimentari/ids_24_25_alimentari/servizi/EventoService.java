@@ -95,8 +95,7 @@ public class EventoService {
      * @return {@code List<EventoFiera>} contenente tutti gli eventi di tipo fiera presenti nel database.
      */
     public List<EventoEstesoDTO> getAllFiera(String sortBy, String order) {
-        List<EventoFiera> eventi = new ArrayList<>();
-        eventi.addAll(eventoRepository.findAllFiera());
+        List<EventoFiera> eventi = new ArrayList<>(eventoRepository.findAllFiera());
         Comparator<EventoFiera> comparator = switch (sortBy.toLowerCase()) {
             case "titolo" -> Comparator.comparing(EventoFiera::getTitolo);
             case "dataInizio" -> Comparator.comparing(EventoFiera::getInizio);

@@ -3,10 +3,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoFieraDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoVisitaDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.RichiestaService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -75,21 +71,9 @@ public class RichiestaController {
      * @return Una lista di richieste di contenuto.
      */
     @GetMapping("/visualizza/all")
-    public ResponseEntity<List<Richiesta>> getAllRichiesteContenuto() {
-        List<Richiesta> richiesteContenuto = this.richiestaService.getAllRichiesteContenuto();
+    public ResponseEntity<List<Richiesta>> getAllRichiesteContenuto(@RequestParam (required = false) String ordine) {
+        List<Richiesta> richiesteContenuto = this.richiestaService.getAllRichiesteContenuto(ordine);
         return ResponseEntity.ok(richiesteContenuto);
-    }
-
-    /**
-     * Restituisce tutte le richieste filtrate per tipologia.
-     *
-     * @param tipologia La tipologia della richiesta da filtrare.
-     * @return Una lista di richieste filtrate per tipologia.
-     */
-    @GetMapping("/visualizza/{tipologia}")
-    public ResponseEntity<List<Richiesta>> getAllRichiesteByTipo(@PathVariable Tipologia tipologia) {
-        List<Richiesta> richiesteByTipo = this.richiestaService.getRichiesteByTipo(tipologia);
-        return ResponseEntity.ok(richiesteByTipo);
     }
 
     /**
@@ -324,5 +308,4 @@ public class RichiestaController {
         return ResponseEntity.ok().body(Collections.singletonMap("message",
                 dto.getStato() ? "Richiesta accettata con successo." : "Richiesta correttamente rifiutata."));
     }
-
 }
