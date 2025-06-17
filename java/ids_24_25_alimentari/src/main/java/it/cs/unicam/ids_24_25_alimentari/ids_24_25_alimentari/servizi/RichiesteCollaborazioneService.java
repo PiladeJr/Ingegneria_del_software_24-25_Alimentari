@@ -7,13 +7,14 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesteC
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesteCollaborazione.RichiestaCollaborazioneDirector;
 import org.apache.commons.lang3.RandomStringUtils;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.RichiestaCollaborazioneRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.RichiestaCollaborazioneBuilder;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
+
 import java.io.File;
 
 @Service

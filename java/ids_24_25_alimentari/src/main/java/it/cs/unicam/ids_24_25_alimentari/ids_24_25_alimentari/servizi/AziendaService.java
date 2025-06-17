@@ -1,8 +1,8 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.AziendaBuilder;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.UtenteAziendaEsterna;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.AziendaRepository;
@@ -19,7 +19,8 @@ public class AziendaService {
     private final AziendaRepository aziendaRepository;
     private final UtenteAziendaEsternaRepository utenteAziendaEsternaRepository;
 
-    public AziendaService(AziendaRepository aziendaRepository, UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
+    public AziendaService(AziendaRepository aziendaRepository,
+            UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
         this.aziendaRepository = aziendaRepository;
         this.utenteAziendaEsternaRepository = utenteAziendaEsternaRepository;
     }
@@ -28,7 +29,9 @@ public class AziendaService {
         return aziendaRepository.findAll();
     }
 
-    public List<Azienda> getAziendeByRuolo(Ruolo ruolo) { return aziendaRepository.findAziendeByRuolo(ruolo); }
+    public List<Azienda> getAziendeByRuolo(Ruolo ruolo) {
+        return aziendaRepository.findAziendeByRuolo(ruolo);
+    }
 
     public Optional<Azienda> getAziendaById(long id) {
         return aziendaRepository.findById(id);
@@ -64,7 +67,7 @@ public class AziendaService {
      *
      * @param idUtente             ID dell'utente con ruolo di trasformatore.
      * @param idAziendaProduttrice ID dell'azienda produttrice da collegare.
-     * @return l'associazione salvata  nel database.
+     * @return l'associazione salvata nel database.
      */
     public UtenteAziendaEsterna CollegaAzienda(Long idUtente, Long idAziendaProduttrice) {
         UtenteAziendaEsterna collegamento = new UtenteAziendaEsterna();

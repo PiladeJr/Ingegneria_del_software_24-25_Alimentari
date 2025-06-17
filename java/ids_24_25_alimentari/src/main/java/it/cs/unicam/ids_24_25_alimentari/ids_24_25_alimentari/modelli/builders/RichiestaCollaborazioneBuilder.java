@@ -1,6 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesteCollaborazione.RichiestaCollaborazione;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 
@@ -8,7 +8,7 @@ import java.io.File;
 
 /**
  * -- GETTER --
- *  metodo che restituisce l'oggetto utente creato
+ * metodo che restituisce l'oggetto utente creato
  *
  * @return l'oggetto RichiestaCollaborazione creato
  */
@@ -71,7 +71,8 @@ public class RichiestaCollaborazioneBuilder {
         collaborazione.setCertificato(certificato);
     }
 
-   // public void costruisciReferente(String referente) { collaborazione.setAziendaReferente(referente); }
+    // public void costruisciReferente(String referente) {
+    // collaborazione.setAziendaReferente(referente); }
 
     public RichiestaCollaborazione getRichiesta() {
         RichiestaCollaborazione r = this.collaborazione;
@@ -79,7 +80,7 @@ public class RichiestaCollaborazioneBuilder {
         return r;
     }
 
-    public void reset(){
+    public void reset() {
         this.collaborazione = new RichiestaCollaborazione();
     }
 

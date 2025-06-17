@@ -1,6 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.ProdottoSingolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -103,7 +104,9 @@ public class Azienda {
         return certificato;
     }
 
-    public void setCertificato(File certificato) { this.certificato = certificato; }
+    public void setCertificato(File certificato) {
+        this.certificato = certificato;
+    }
 
     @Nullable
     public InformazioniAggiuntive getInformazioniAggiuntive() {

@@ -2,7 +2,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste
 
 import java.io.File;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
@@ -43,7 +43,7 @@ public class RichiestaCollaborazione {
     @Column(name = "certificato")
     private File certificato;
 
-   // private String aziendaReferente;
+    // private String aziendaReferente;
     private Boolean stato;
 
     public long getId() {
@@ -154,13 +154,15 @@ public class RichiestaCollaborazione {
         this.certificato = certificato;
     }
 
-   /* public String getAziendaReferente() {
-        return aziendaReferente;
-    }
-
-    public void setAziendaReferente(String aziendaReferente) {
-        this.aziendaReferente = aziendaReferente;
-    }*/
+    /*
+     * public String getAziendaReferente() {
+     * return aziendaReferente;
+     * }
+     * 
+     * public void setAziendaReferente(String aziendaReferente) {
+     * this.aziendaReferente = aziendaReferente;
+     * }
+     */
 
     public Boolean getStato() {
         return stato;

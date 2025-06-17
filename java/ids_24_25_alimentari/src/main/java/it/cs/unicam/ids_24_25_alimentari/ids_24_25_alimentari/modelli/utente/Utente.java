@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -41,6 +43,12 @@ public class Utente implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "ruolo", nullable = false)
     private Ruolo ruolo;
+    @ManyToOne()
+    @JoinColumn(name = "indirizzo_fatturazione_id")
+    private Indirizzo indirizzoFatturazione;
+    @ManyToOne()
+    @JoinColumn(name = "indirizzo_spedizione_id")
+    private Indirizzo IndirizzoSpedizione;
     @Column(name = "iban")
     @Size(min = 15, max = 34, message = "L'IBAN deve avere una lunghezza compresa tra 15 e 34 caratteri")
     @NotEmpty(message = "L'IBAN è obbligatorio")
@@ -86,11 +94,14 @@ public class Utente implements UserDetails {
     /**
      * Restituisce l'elenco delle autorità (ruoli) assegnate all'utente.
      * <p>
-     * Questo metodo implementa l'interfaccia {@code GrantedAuthority} di Spring Security,
-     * restituendo una lista contenente il ruolo dell'utente con il prefisso "ROLE_".
+     * Questo metodo implementa l'interfaccia {@code GrantedAuthority} di Spring
+     * Security,
+     * restituendo una lista contenente il ruolo dell'utente con il prefisso
+     * "ROLE_".
      * </p>
      *
-     * @return Una collezione di {@code GrantedAuthority} contenente il ruolo dell'utente.
+     * @return Una collezione di {@code GrantedAuthority} contenente il ruolo
+     *         dell'utente.
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -170,6 +181,22 @@ public class Utente implements UserDetails {
 
     public void setIdAzienda(long idAzienda) {
         this.idAzienda = idAzienda;
+    }
+
+    public Indirizzo getIndirizzoFatturazione() {
+        return indirizzoFatturazione;
+    }
+
+    public void setIndirizzoFatturazione(Indirizzo indirizzoFatturazione) {
+        this.indirizzoFatturazione = indirizzoFatturazione;
+    }
+
+    public Indirizzo getIndirizzoSpedizione() {
+        return IndirizzoSpedizione;
+    }
+
+    public void setIndirizzoSpedizione(Indirizzo indirizzoSpedizione) {
+        IndirizzoSpedizione = indirizzoSpedizione;
     }
 
     public Utente(String nome, String cognome, String email, String password, String telefono) {

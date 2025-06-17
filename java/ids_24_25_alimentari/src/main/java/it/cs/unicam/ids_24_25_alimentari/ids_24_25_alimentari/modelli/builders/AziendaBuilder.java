@@ -1,13 +1,13 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 
 import java.io.File;
 
 /**
  * -- GETTER --
- *  design pattern BUILDER che restituisce l'oggetto azienda creato
+ * design pattern BUILDER che restituisce l'oggetto azienda creato
  *
  * @return l'oggetto azienda creato
  */
@@ -19,17 +19,29 @@ public class AziendaBuilder {
         reset();
     }
 
-    public void costruisciDenSociale(String denSociale){ this.azienda.setDenominazioneSociale(denSociale); }
+    public void costruisciDenSociale(String denSociale) {
+        this.azienda.setDenominazioneSociale(denSociale);
+    }
 
-    public void costruisciSedeLegale(Indirizzo sedeLegale){ this.azienda.setSedeLegale(sedeLegale);}
+    public void costruisciSedeLegale(Indirizzo sedeLegale) {
+        this.azienda.setSedeLegale(sedeLegale);
+    }
 
-    public void costruisciSedeOperativa(Indirizzo sedeOperativa){ this.azienda.setSedeOperativa(sedeOperativa);}
+    public void costruisciSedeOperativa(Indirizzo sedeOperativa) {
+        this.azienda.setSedeOperativa(sedeOperativa);
+    }
 
-    public void costruisciIva(String iva){ this.azienda.setIva(iva); }
+    public void costruisciIva(String iva) {
+        this.azienda.setIva(iva);
+    }
 
-    public void costruisciIban(String iban){ this.azienda.setIban(iban); }
+    public void costruisciIban(String iban) {
+        this.azienda.setIban(iban);
+    }
 
-    public void aggiungiCertificato(File certificato){ this.azienda.setCertificato(certificato); }
+    public void aggiungiCertificato(File certificato) {
+        this.azienda.setCertificato(certificato);
+    }
 
     public Azienda getAzienda() {
         Azienda a = this.azienda;
@@ -37,7 +49,7 @@ public class AziendaBuilder {
         return a;
     }
 
-    public void reset(){
+    public void reset() {
         this.azienda = new Azienda();
     }
 
