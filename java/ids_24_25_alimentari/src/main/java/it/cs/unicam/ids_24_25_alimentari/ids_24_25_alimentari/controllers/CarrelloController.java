@@ -1,7 +1,8 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.carrello.CreaCarrelloDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.contenutoCarrello.ContenutoCarrelloDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.carrello.Carrello;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.carrello.ContenutoCarrello;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.CarrelloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,8 @@ public class CarrelloController {
     }
 
     @PostMapping
-    public Carrello creaCarrello(@RequestBody Carrello carrello) {
-        return carrelloService.salvaCarrello(carrello);
+    public Carrello creaCarrello(@RequestBody CreaCarrelloDTO carrello) {
+        return carrelloService.creaCarrello(carrello);
     }
 
     @DeleteMapping("/{id}")
@@ -41,7 +42,7 @@ public class CarrelloController {
 
     @PostMapping("/{id}/contenuto")
     public ResponseEntity<Carrello> aggiungiContenuto(@PathVariable Long id,
-            @RequestBody ContenutoCarrello contenutoCarrello) {
+            @RequestBody ContenutoCarrelloDTO contenutoCarrello) {
         try {
             Carrello carrelloAggiornato = carrelloService.aggiungiContenutoAlCarrello(id, contenutoCarrello);
             return ResponseEntity.ok(carrelloAggiornato);

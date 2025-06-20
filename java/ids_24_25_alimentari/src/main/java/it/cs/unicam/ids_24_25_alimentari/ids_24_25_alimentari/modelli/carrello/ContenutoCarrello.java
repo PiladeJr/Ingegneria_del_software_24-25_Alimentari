@@ -2,6 +2,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.carrello;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.*;
 
@@ -9,6 +10,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.
 @Getter
 @Setter
 @Table(name = "contenuto_carrello")
+@NoArgsConstructor
 public class ContenutoCarrello {
 
     @Id
@@ -29,6 +31,6 @@ public class ContenutoCarrello {
     public ContenutoCarrello(Prodotto prodotto, int quantita) {
         this.prodotto = prodotto;
         this.quantita = quantita;
-        this.totale = prodotto.getPrezzo();
+        this.totale = prodotto.getPrezzo() * quantita;
     }
 }

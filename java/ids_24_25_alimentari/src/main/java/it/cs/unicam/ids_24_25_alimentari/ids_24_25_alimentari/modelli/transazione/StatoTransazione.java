@@ -4,7 +4,8 @@ public enum StatoTransazione {
 
     IN_ATTESA("In attesa"),
     COMPLETATA("Completata"),
-    ANNULLATA("Annullata");
+    ANNULLATA("Annullata"),
+    FALLITA("Fallita");
 
     private final String descrizione;
 

@@ -2,7 +2,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.ordine;
 
 public enum StatoOrdine {
 
-    IN_ATTESA("In attesa"),
+    IN_ATTESA("In attesa di pagamento"),
     IN_PREPARAZIONE("In preparazione"),
     PRONTO("Pronto"),
     CONSEGNATO("Consegnato"),

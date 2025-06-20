@@ -30,7 +30,9 @@ public class ProdottoService {
         return prodottoSingoloRepository.save(prodotto);
     }
 
-    private Pacchetto salvaPacchetto(Pacchetto pacchetto) { return pacchettoRepository.save(pacchetto); }
+    private Pacchetto salvaPacchetto(Pacchetto pacchetto) {
+        return pacchettoRepository.save(pacchetto);
+    }
 
     public ProdottoSingolo nuovoProdotto(
             String nome,
@@ -40,14 +42,13 @@ public class ProdottoService {
             double prezzo,
             int quantita,
             String allergeni,
-            String tecniche
-    ) {
+            String tecniche) {
         ProdottoBuilder builder = new ProdottoBuilder();
         builder.costruisciNome(nome);
         builder.costruisciDescrizione(descrizione);
         builder.costruisciIdAzienda(idAzienda);
-        if(immagini != null) {
-            for(File immagine : immagini) {
+        if (immagini != null) {
+            for (File immagine : immagini) {
                 builder.aggiungiImmagine(immagine);
             }
         }
@@ -63,14 +64,13 @@ public class ProdottoService {
             String nome,
             String descrizione,
             Double prezzo,
-            Set<Long> prodotti
-    ) {
+            Set<Long> prodotti) {
         PacchettoBuilder builder = new PacchettoBuilder();
         builder.costruisciNome(nome);
         builder.costruisciDescrizione(descrizione);
         builder.costruisciPrezzo(prezzo);
-        if(prodotti != null) {
-            for(Long prodottoId : prodotti) {
+        if (prodotti != null) {
+            for (Long prodottoId : prodotti) {
                 ProdottoSingolo prod = this.prodottoSingoloRepository.getReferenceById(prodottoId);
                 builder.aggiungiProdotto(prod);
             }
@@ -84,6 +84,14 @@ public class ProdottoService {
             case PACCHETTO -> this.pacchettoRepository.findById(id);
             case SINGOLO -> this.prodottoSingoloRepository.findById(id);
         };
+    }
+
+    public Optional<? extends Prodotto> getProdottoByIdWithoutType(Long id) {
+        Optional<? extends Prodotto> prodotto = this.pacchettoRepository.findById(id);
+        if (prodotto.isEmpty()) {
+            prodotto = this.prodottoSingoloRepository.findById(id);
+        }
+        return prodotto;
     }
 
     public List<Optional<Prodotto>> getProdottoByNome(String nome) {
@@ -106,7 +114,7 @@ public class ProdottoService {
 
         switch (sortBy.toLowerCase()) {
             case "prezzo" -> comparator = Comparator.comparing(Prodotto::getPrezzo);
-            default       -> comparator = Comparator.comparing(Prodotto::getNome, String.CASE_INSENSITIVE_ORDER);
+            default -> comparator = Comparator.comparing(Prodotto::getNome, String.CASE_INSENSITIVE_ORDER);
         }
 
         return prod.stream()

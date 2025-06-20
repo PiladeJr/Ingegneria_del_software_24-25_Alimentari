@@ -1,7 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.transazione;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.ordine.Ordine;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,17 +16,13 @@ public class Transazione {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "ordine_id", nullable = false)
-    private Ordine Ordine;
-    @OneToOne
-    @JoinColumn(name = "utente_id", nullable = false)
-    private Utente Utente;
     @Column(name = "importo", nullable = false)
     private double importo;
     @Column(name = "data_transazione", nullable = false)
-    private String metodoPagamento;
+    private LocalDateTime dataTransazione;
     @Column(name = "stato_transazione", nullable = false)
     private StatoTransazione statoTransazione;
+    @Column(name = "metodo_pagamento", nullable = false)
+    private MetodiPagamentoTransazione metodoPagamento;
 
 }

@@ -3,8 +3,8 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.ordine;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.transazione.Transazione;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.carrello.Carrello;
 
-import java.security.Timestamp;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
@@ -32,6 +32,10 @@ public class Ordine {
     @Column(name = "stato", nullable = false)
     private StatoOrdine stato;
 
+    @OneToOne(optional = false)
+    @JoinColumn(name = "carrello_id", nullable = false)
+    private Carrello carrello;
+
     @ManyToOne
     @JoinColumn(name = "indirizzo_consegna_id", nullable = false)
     private Indirizzo indirizzoConsegna;
@@ -41,12 +45,12 @@ public class Ordine {
     private Indirizzo indirizzoFatturazione;
 
     @Column(name = "data_ordine", nullable = false)
-    private Timestamp dataOrdine;
+    private LocalDateTime dataOrdine;
 
     @Column(name = "data_consegna", nullable = true)
     private LocalDateTime dataConsegna;
 
-    @OneToOne(optional = false)
+    @OneToOne(optional = true)
     @JoinColumn(name = "transazione_id", nullable = true)
     private Transazione transazione;
 

@@ -1,5 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.ordine.OrdineDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.ordine.Ordine;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.ordine.StatoOrdine;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.OrdineService;
@@ -29,7 +30,7 @@ public class OrdineController {
     }
 
     @PostMapping
-    public Ordine creaOrdine(@RequestBody Ordine ordine) {
+    public Ordine creaOrdine(@RequestBody OrdineDTO ordine) {
         return ordineService.salvaOrdine(ordine);
     }
 

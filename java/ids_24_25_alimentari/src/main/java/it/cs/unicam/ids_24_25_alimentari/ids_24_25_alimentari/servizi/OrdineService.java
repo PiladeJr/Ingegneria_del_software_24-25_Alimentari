@@ -1,7 +1,10 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.ordine.OrdineDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.transazione.TransazioneDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.ordine.Ordine;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.ordine.StatoOrdine;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.transazione.StatoTransazione;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.OrdineRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,15 @@ public class OrdineService {
     @Autowired
     private OrdineRepository ordineRepository;
 
+    @Autowired
+    private IndirizzoService indirizzoService;
+
+    @Autowired
+    private CarrelloService carrelloService;
+
+    @Autowired
+    private TransazioneService transazioneService;
+
     public List<Ordine> getAllOrdini() {
         return ordineRepository.findAll();
     }
@@ -24,8 +36,44 @@ public class OrdineService {
         return ordineRepository.findById(id);
     }
 
-    public Ordine salvaOrdine(Ordine ordine) {
-        return ordineRepository.save(ordine);
+    public Ordine salvaOrdine(OrdineDTO ordine) {
+
+        // Recupera gli indirizzi di spedizione e fatturazione
+        var indirizzoSpedizione = indirizzoService.findById(ordine.getIndirizzo_consegna_id());
+        var indirizzoFatturazione = indirizzoService.findById(ordine.getIndirizzo_fatturazione_id());
+        var carrello = carrelloService.getCarrelloById(ordine.getIdCarrello())
+                .orElseThrow(() -> new RuntimeException("Carrello non trovato"));
+
+        // Crea l'oggetto Ordine dal DTO
+        Ordine nuovoOrdine = new Ordine();
+        nuovoOrdine.setIndirizzoConsegna(
+                indirizzoSpedizione.orElseThrow(() -> new RuntimeException("Indirizzo di spedizione non trovato")));
+        nuovoOrdine.setIndirizzoFatturazione(
+                indirizzoFatturazione.orElseThrow(() -> new RuntimeException("Indirizzo di fatturazione non trovato")));
+
+        nuovoOrdine.setStato(StatoOrdine.IN_ATTESA);
+        nuovoOrdine.setCarrello(carrello);
+        nuovoOrdine.setUtente(carrello.getUtente());
+        nuovoOrdine.setDataOrdine(java.time.LocalDateTime.now());
+        nuovoOrdine.setTotale(carrello.getContenutoCarrello().stream()
+                .mapToDouble(prodotto -> prodotto.getQuantita() * prodotto.getProdotto().getPrezzo())
+                .sum());
+
+        // Crea la transazione in attesa
+        TransazioneDTO transazioneDTO = new TransazioneDTO();
+        transazioneDTO.setImporto(nuovoOrdine.getTotale());
+        transazioneDTO.setMetodoPagamento(ordine.getMetodoPagamento());
+        transazioneDTO.setStatoTransazione(StatoTransazione.IN_ATTESA);
+        var transazione = transazioneService.createTransazione(transazioneDTO);
+
+        nuovoOrdine.setTransazione(transazioneService.getTransazioneById(
+                transazione.getId())
+                .orElseThrow(() -> new RuntimeException("Transazione non trovata")));
+
+        Ordine ordineSalvato = ordineRepository.save(nuovoOrdine);
+
+        return ordineSalvato;
+
     }
 
     public Ordine aggiornaStatoOrdine(Long id, StatoOrdine nuovoStato) {

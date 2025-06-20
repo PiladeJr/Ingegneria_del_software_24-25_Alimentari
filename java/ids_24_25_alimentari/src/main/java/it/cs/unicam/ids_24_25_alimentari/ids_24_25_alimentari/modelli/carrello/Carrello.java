@@ -2,10 +2,9 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.carrello;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 
-import java.security.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
-
+import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,14 +21,14 @@ public class Carrello {
     private Long id;
 
     @Column(name = "data_creazione", nullable = false)
-    private Timestamp data_creazione;
+    private LocalDateTime data_creazione;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "utente_id", nullable = false)
     private Utente utente;
 
     @ManyToMany
-    @JoinTable(name = "carrelo_contenuto_carrello", joinColumns = @JoinColumn(name = "carrello_id"), inverseJoinColumns = @JoinColumn(name = "contenuto_carrello_id"))
+    @JoinTable(name = "carrello_contenuto_carrello", joinColumns = @JoinColumn(name = "carrello_id"), inverseJoinColumns = @JoinColumn(name = "contenuto_carrello_id"))
     private Set<ContenutoCarrello> contenutoCarrello = new HashSet<>();
 
 }
