@@ -37,12 +37,11 @@ public class OrdineService {
     }
 
     public Ordine salvaOrdine(OrdineDTO ordine) {
-
-        // Recupera gli indirizzi di spedizione e fatturazione
-        var indirizzoSpedizione = indirizzoService.findById(ordine.getIndirizzo_consegna_id());
-        var indirizzoFatturazione = indirizzoService.findById(ordine.getIndirizzo_fatturazione_id());
         var carrello = carrelloService.getCarrelloById(ordine.getIdCarrello())
                 .orElseThrow(() -> new RuntimeException("Carrello non trovato"));
+        // Recupera gli indirizzi di spedizione e fatturazione
+        var indirizzoSpedizione = indirizzoService.findById(carrello.getUtente().getIndirizzoSpedizione().getId());
+        var indirizzoFatturazione = indirizzoService.findById(carrello.getUtente().getIndirizzoFatturazione().getId());
 
         // Crea l'oggetto Ordine dal DTO
         Ordine nuovoOrdine = new Ordine();
