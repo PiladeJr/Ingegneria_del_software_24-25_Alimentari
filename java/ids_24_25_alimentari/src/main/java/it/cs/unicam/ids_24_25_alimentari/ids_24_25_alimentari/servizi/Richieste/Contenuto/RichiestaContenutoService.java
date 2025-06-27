@@ -1,7 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.Richieste.RichiestaContenutoBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
@@ -29,7 +29,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Servizio responsabile della creazione, del salvataggio e della notifica delle nuove richieste ({@link RichiestaContenuto}).
+ * Servizio responsabile della creazione, del salvataggio e della notifica delle
+ * nuove richieste ({@link RichiestaContenuto}).
  */
 @Service
 public class RichiestaContenutoService extends RichiestaService {
@@ -39,9 +40,11 @@ public class RichiestaContenutoService extends RichiestaService {
     private final EventoService eventoService;
     private RichiestaStrategyFactory strategyFactory;
 
-
-    public RichiestaContenutoService(RichiestaContenutoRepository richiestaContenutoRepository, InfoAggiuntiveService infoAggiuntiveService, ProdottoService prodottoService, EventoService eventoService, UtenteService utenteService, ImplementazioneServizioMail mailService, RichiestaStrategyFactory strategyFactory) {
-        super(mailService,utenteService);
+    public RichiestaContenutoService(RichiestaContenutoRepository richiestaContenutoRepository,
+            InfoAggiuntiveService infoAggiuntiveService, ProdottoService prodottoService, EventoService eventoService,
+            UtenteService utenteService, ImplementazioneServizioMail mailService,
+            RichiestaStrategyFactory strategyFactory) {
+        super(mailService, utenteService);
         this.richiestaContenutoRepository = richiestaContenutoRepository;
         this.infoAggiuntiveService = infoAggiuntiveService;
         this.prodottoService = prodottoService;
@@ -76,12 +79,12 @@ public class RichiestaContenutoService extends RichiestaService {
                 .collect(Collectors.toList());
     }
 
-
     /**
      * Recupera una richiesta specifica in base al suo ID.
      *
      * @param id L'ID della richiesta da recuperare.
-     * @return Un {@link Optional} contenente la richiesta se trovata, altrimenti vuoto.
+     * @return Un {@link Optional} contenente la richiesta se trovata, altrimenti
+     *         vuoto.
      */
     public Optional<RichiestaContenuto> getRichiestaById(Long id) {
         return this.richiestaContenutoRepository.findById(id);
@@ -96,7 +99,8 @@ public class RichiestaContenutoService extends RichiestaService {
      *
      * @param richiesta La richiesta da processare.
      * @param stato     Lo stato della richiesta (approvata o rifiutata).
-     * @throws IllegalArgumentException se la tipologia della richiesta non è supportata.
+     * @throws IllegalArgumentException se la tipologia della richiesta non è
+     *                                  supportata.
      */
     public void processaRichiesta(RichiestaContenuto richiesta, Boolean stato) {
         RichiestaContenutoStrategy strategy = strategyFactory.getStrategy(richiesta.getTipologia());
@@ -110,11 +114,14 @@ public class RichiestaContenutoService extends RichiestaService {
     /**
      * <h2>Ottiene il contenuto della richiesta tramite il suo ID.</h2>
      * <br>
+     * 
      * @param idRichiesta L'ID della richiesta da cui ottenere il contenuto.
-     * @return Il contenuto della richiesta, o un'eccezione se non trovata o se la tipologia non è supportata.
-     * @throws IllegalArgumentException se la tipologia della richiesta non è supportata.
+     * @return Il contenuto della richiesta, o un'eccezione se non trovata o se la
+     *         tipologia non è supportata.
+     * @throws IllegalArgumentException se la tipologia della richiesta non è
+     *                                  supportata.
      */
-    public Contenuto visualizzaContenutoByRichiesta(long idRichiesta){
+    public Contenuto visualizzaContenutoByRichiesta(long idRichiesta) {
         RichiestaContenuto richiesta = richiestaContenutoRepository.findById(idRichiesta)
                 .orElseThrow(() -> new RuntimeException("Richiesta non trovata"));
 
@@ -129,13 +136,15 @@ public class RichiestaContenutoService extends RichiestaService {
     /**
      * Crea una nuova richiesta di informazioni aggiuntive per un'azienda.
      *
-     * @param descrizione  Descrizione aggiuntiva dell'azienda.
-     * @param produzione   Informazioni sulla produzione dell'azienda.
-     * @param metodologie  Metodologie di produzione utilizzate dall'azienda.
-     * @param immagini     File contenenti immagini relative alle informazioni aggiuntive.
-     * @param certificati  File contenenti eventuali certificazioni dell'azienda.
-     * @param idAzienda    Identificativi dell'azienda coinvolta.
-     * @return La richiesta di informazioni aggiuntive creata e salvata nel database.
+     * @param descrizione Descrizione aggiuntiva dell'azienda.
+     * @param produzione  Informazioni sulla produzione dell'azienda.
+     * @param metodologie Metodologie di produzione utilizzate dall'azienda.
+     * @param immagini    File contenenti immagini relative alle informazioni
+     *                    aggiuntive.
+     * @param certificati File contenenti eventuali certificazioni dell'azienda.
+     * @param idAzienda   Identificativi dell'azienda coinvolta.
+     * @return La richiesta di informazioni aggiuntive creata e salvata nel
+     *         database.
      */
     public RichiestaContenuto nuovaRichiestaInformazioniAggiuntive(
             String descrizione,
@@ -143,26 +152,26 @@ public class RichiestaContenutoService extends RichiestaService {
             String metodologie,
             File[] immagini,
             File[] certificati,
-            Long[] idAzienda
-    ) {
-        long id = this.infoAggiuntiveService.nuovaInformazioneAggiuntiva(descrizione, produzione, metodologie, immagini, certificati, idAzienda).getId();
+            Long[] idAzienda) {
+        long id = this.infoAggiuntiveService
+                .nuovaInformazioneAggiuntiva(descrizione, produzione, metodologie, immagini, certificati, idAzienda)
+                .getId();
         RichiestaContenuto richiesta = this.nuovaRichiesta(id, Tipologia.INFO_AZIENDA, "info_azienda");
         this.notificaNuovaRichiesta(Ruolo.CURATORE);
         return salvaRichiesta(richiesta);
     }
 
-
     /**
      * Crea una nuova richiesta per un nuovo prodotto per un'azienda
      *
-     * @param nome          Nome del prodotto
-     * @param descrizione   Descrizione del prodotto
-     * @param idAzienda     Identificativo dell'azienda produttrice
-     * @param immagini      File contenenti immagini relative al prodotto
-     * @param prezzo        Prezzo del prodotto
-     * @param quantita      Quantita del prodotto
-     * @param allergeni     Allergeni relativi al prodotto
-     * @param tecniche      Tecniche adottate per la realizzazione del prodotto
+     * @param nome        Nome del prodotto
+     * @param descrizione Descrizione del prodotto
+     * @param idAzienda   Identificativo dell'azienda produttrice
+     * @param immagini    File contenenti immagini relative al prodotto
+     * @param prezzo      Prezzo del prodotto
+     * @param quantita    Quantita del prodotto
+     * @param allergeni   Allergeni relativi al prodotto
+     * @param tecniche    Tecniche adottate per la realizzazione del prodotto
      * @return la richiesta di prodotto creata e salvata nel database
      */
     public RichiestaContenuto nuovaRichiestaProdotto(
@@ -173,37 +182,33 @@ public class RichiestaContenutoService extends RichiestaService {
             double prezzo,
             int quantita,
             String allergeni,
-            String tecniche
-    ) {
-        long id = this.prodottoService.nuovoProdotto(nome, descrizione, idAzienda, immagini, prezzo, quantita, allergeni, tecniche).getId();
+            String tecniche) {
+        long id = this.prodottoService
+                .nuovoProdotto(nome, descrizione, idAzienda, immagini, prezzo, quantita, allergeni, tecniche).getId();
         RichiestaContenuto richiesta = this.nuovaRichiesta(id, Tipologia.PRODOTTO, "singolo");
         this.notificaNuovaRichiesta(Ruolo.CURATORE);
         return salvaRichiesta(richiesta);
     }
 
-
     /**
      * Crea richiesta per un pacchetto di prodotti
      *
-     * @param nome          Nome del pacchetto
-     * @param descrizione   Descrizione del pacchetto
-     * @param prezzo        Prezzo del pacchetto
-     * @param prodotti      Prodotti contenuti nel pacchetto
+     * @param nome        Nome del pacchetto
+     * @param descrizione Descrizione del pacchetto
+     * @param prezzo      Prezzo del pacchetto
+     * @param prodotti    Prodotti contenuti nel pacchetto
      * @return la richiesta di pacchetto creata e salvata nel database
      */
     public RichiestaContenuto nuovaRichiestaPacchetto(
             String nome,
             String descrizione,
             Double prezzo,
-            Set<Long> prodotti
-    ) {
-       long id = this.prodottoService.nuovoPacchetto(nome, descrizione, prezzo, prodotti).getId();
+            Set<Long> prodotti) {
+        long id = this.prodottoService.nuovoPacchetto(nome, descrizione, prezzo, prodotti).getId();
         RichiestaContenuto richiesta = this.nuovaRichiesta(id, Tipologia.PRODOTTO, "Pacchetto");
         this.notificaNuovaRichiesta(Ruolo.CURATORE);
         return salvaRichiesta(richiesta);
     }
-
-
 
     public RichiestaContenuto nuovaRichiestaFiera(
             String titolo,
@@ -212,8 +217,7 @@ public class RichiestaContenutoService extends RichiestaService {
             LocalDateTime fine,
             File locandina,
             Indirizzo indirizzo,
-            List<Azienda> aziende
-    ) {
+            List<Azienda> aziende) {
         // Crea l'evento utilizzando EventoService
         Long idEvento;
         idEvento = eventoService.creaFiera(titolo, descrizione, inizio, fine, locandina, indirizzo, aziende);
@@ -228,7 +232,6 @@ public class RichiestaContenutoService extends RichiestaService {
         return salvaRichiesta(richiesta);
     }
 
-
     public RichiestaContenuto nuovaRichiestaVisita(
             String titolo,
             String descrizione,
@@ -236,11 +239,11 @@ public class RichiestaContenutoService extends RichiestaService {
             LocalDateTime fine,
             File locandina,
             Indirizzo indirizzo,
-            Azienda aziendaRiferimento
-    ) {
+            Azienda aziendaRiferimento) {
         // Crea l'evento utilizzando EventoService
         Long idEvento;
-        idEvento = eventoService.creaVisita(titolo, descrizione, inizio, fine, locandina, indirizzo, aziendaRiferimento);
+        idEvento = eventoService.creaVisita(titolo, descrizione, inizio, fine, locandina, indirizzo,
+                aziendaRiferimento);
 
         // Crea una nuova richiesta di tipo evento
         RichiestaContenuto richiesta = this.nuovaRichiesta(idEvento, Tipologia.EVENTO, "visita");

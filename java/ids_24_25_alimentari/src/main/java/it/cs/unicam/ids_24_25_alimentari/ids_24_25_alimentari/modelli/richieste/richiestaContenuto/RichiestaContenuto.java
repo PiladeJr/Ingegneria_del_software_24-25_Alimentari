@@ -1,15 +1,13 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.Richiesta;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.Tipologia;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Entity
-@Table(name = "richiesta")
+@DiscriminatorValue("CONTENUTO")
 @NoArgsConstructor
 @Setter
 @Getter

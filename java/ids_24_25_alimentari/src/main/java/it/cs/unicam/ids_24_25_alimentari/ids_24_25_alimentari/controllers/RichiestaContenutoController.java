@@ -2,11 +2,15 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoFieraDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoVisitaDTO;import t.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoVisitaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;import t.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multipartConverter.ConvertitoreMultipartFileToFile;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.RichiestaContenutoService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multipartConverter.ConvertitoreMultipartFileToFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -43,96 +47,106 @@ public class RichiestaContenutoController {
     /**
      * Restituisce una richiesta di contenuto specifica in base al suo ID.
      *
-     
+     * @param id L'ID della richiesta da visualizzare.
+     * @return La richiesta di contenuto con l'ID specificato, se esiste.
+     */
+    @GetMapping("/visualizza/{id}")
+    public ResponseEntity<?> getRichiestaById(@PathVariable Long id) {
+        try {
 
-         */
-         GetMapping("/visualizza/{id}")
-         u
-            try {
-         
-           
-                return richiesta.isPres
-                        : ResponseEntity.status(404)
-                     
+            Optional<RichiestaContenuto> richiesta = richiestaContenutoService.getRichiestaById(id);
+            return richiesta.isPresent() ? ResponseEntity.ok(richiesta.get())
+                    : ResponseEntity.status(404)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body("{\"error\": \"Richiesta non trovata\"}");
 
-                        
-                        tch (Exception e) {
-                                        esponseEntity.status(500).bo
-                                                        
-                                                        
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Errore interno del server: " + e.getMessage());
+        }
+    }
 
-                
-                        tuisce tutte le richieste di contenuto.
-                
-         
+    /**
+     * Restituisce tutte le richieste di contenuto.
+     *
+     * @return Una lista di richieste di contenuto.
+     */
+    @GetMapping("/visualizza/all")
+    public ResponseEntity<List<RichiestaContenuto>> getAllRichiesteContenuto(@RequestParam (required = false) String ordine) {
+        List<RichiestaContenuto> richiesteContenuto = this.richiestaContenutoService.getAllRichiesteContenuto(ordine);
+        return ResponseEntity.ok(richiesteContenuto);
+    }
 
-        @Ge
-         ublic ResponseEntity<List<RichiestaContenuto>>
-          
-            return ResponseEntity.ok(richiesteContenuto
-         
-        
-        /**
-                        
-                rea una nuova richiesta di informazioni aggiuntive per un'azienda.
-                                
-                
-         
+    /**
+     * Crea una nuova richiesta di informazioni aggiuntive per un'azienda.
+     *
+     * @param infoAggiuntiveDTO Il DTO contenente le informazioni aggiuntive.
+     * @return La richiesta creata.
+     */
+    @PostMapping(value = "/informazioni-aggiuntive/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> nuovaRichiestaInformazioniAggiuntive(
+            @ModelAttribute @Valid RichiestaInformazioniAggiuntiveAziendaDTO infoAggiuntiveDTO) {
 
-         */
-         PostMapping(value = "/informazioni-aggiuntive/new", consumes = MediaT
-         u
-                @ModelAttribute @Valid RichiestaInformazioniAggiuntiveAziendaDTO 
-         
-           
-                        .convertMultipartFileArrayToFileArray(infoAggiuntiveDTO.getImmagini());
-                File[] certificati = ConvertitoreMultipartFileToFile
-                                .convertMultipartFileArrayToFileArray(infoAggiuntiveDTO.getCertificati());
-                        
+        try {
+            File[] immagini = ConvertitoreMultipartFileToFile
+                    .convertMultipartFileArrayToFileArray(infoAggiuntiveDTO.getImmagini());
+            File[] certificati = ConvertitoreMultipartFileToFile
+                    .convertMultipartFileArrayToFileArray(infoAggiuntiveDTO.getCertificati());
 
-                RichiestaContenuto richiestaInfoAggiuntive = this
-                                infoAggiuntiveDTO.getDescrizione(),
-                        infoAggiuntiveDTO.getProduzione(),
-                                infoAggiuntiveDTO.getMetodologie(),
+            RichiestaContenuto richiestaInfoAggiuntive = this.richiestaContenutoService.nuovaRichiestaInformazioniAggiuntive(
+                    infoAggiuntiveDTO.getDescrizione(),
+                    infoAggiuntiveDTO.getProduzione(),
+                    infoAggiuntiveDTO.getMetodologie(),
+                    immagini,
+                    certificati,
+                    infoAggiuntiveDTO.getAziendeCollegate());
 
-                        certificati,
-                                
-                                                infoAggiuntiveDTO.getAziendeCollega
-                                                
-                                                esponseEntity.ok(richiestaInfoAggiu
-                                                
-                                                
-                                                
+            return ResponseEntity.ok(richiestaInfoAggiuntive);
 
-                
-         
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error",
+                            "Errore nella creazione della richiesta " + e.getMessage()));
+        }
+    }
 
-         */
-         PostMapping(value = "/prodotto/singolo/
-         u
-                @ModelAttribute @Valid RichiestaProdottoDTO prodottoDTO) throws IOExc
-         
-           
-                        .convertMultipartFileArrayToFileArray(prodottoDTO.getImmagini());
-        
-                        RichiestaContenuto richiestaProdotto = this.richiestaContenutoService.nuova R
+    /**
+     * Crea una nuova richiesta di prodotto.
+     *
+     * @param prodottoDTO Il DTO contenente le informazioni relative al prodotto.
+     * @return La richiesta di prodotto creata.
+     */
+    @PostMapping(value = "/prodotto/singolo/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> nuovaRichiestaProdottoSingolo(
+            @ModelAttribute @Valid RichiestaProdottoDTO prodottoDTO) {
 
-                        prodottoDTO.getDescrizione(),
-                                prodottoDTO.getIdAzienda(),
+        try {
+            File[] immagini = ConvertitoreMultipartFileToFile
+                    .convertMultipartFileArrayToFileArray(prodottoDTO.getImmagini());
 
-                        prodottoDTO.getPrezzo(),
-                                prodottoDTO.getQuantit
-                                prodottoDTO.getAllergeni(),
-                                prodottoDTO.getTecniche());
-                                
-                                esponseEntity.ok(richies
-                                
-                                
-                                
+            RichiestaContenuto richiestaProdotto = this.richiestaContenutoService.nuovaRichiestaProdotto(
+                    prodottoDTO.getNome(),
+                    prodottoDTO.getDescrizione(),
+                    prodottoDTO.getIdAzienda(),
+                    immagini,
+                    prodottoDTO.getPrezzo(),
+                    prodottoDTO.getQuantita(),
+                    prodottoDTO.getAllergeni(),
+                    prodottoDTO.getTecniche());
 
-                esponseEntity<?> nuovaRichiestaPacchetto(
-         
+            return ResponseEntity.ok(richiestaProdotto);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error",
+                            "Errore nella creazione della richiesta " + e.getMessage()));
+        }
+    }
 
+
+    @PostMapping(value = "/prodotto/pacchetto/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> nuovaRichiestaPacchetto(
+            @ModelAttribute @Valid RichiestaPacchettoDTO pacchettoDTO) {
+
+        try {
             RichiestaContenuto richiestaPacchetto = this.richiestaContenutoService.nuovaRichiestaPacchetto(
                     pacchettoDTO.getNome(),
                     pacchettoDTO.getDescrizione(),
@@ -140,6 +154,11 @@ public class RichiestaContenutoController {
                     pacchettoDTO.getProdotti());
 
             return ResponseEntity.ok(richiestaPacchetto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error",
+                            "Errore nella creazione della richiesta " + e.getMessage()));
+        }
 
     }
 
@@ -150,147 +169,143 @@ public class RichiestaContenutoController {
      * Questo metodo accetta un DTO contenente i dettagli dell'evento e crea una
      * nuova richiesta
      * utilizzando il servizio RichiestaService. Se si verifica un errore durante la
-     
+     * conversione
+     * del file locandina, restituisce un errore interno del server.
+     * </p>
+     *
+     * @param dto Il DTO contenente i dettagli dell'evento fiera.
+     *            Deve includere titolo, descrizione, data di inizio e fine,
+     *            locandina,
+     *            indirizzo e aziende partecipanti.
+     * @return Una ResponseEntity contenente la richiesta creata o un messaggio di
+     *         errore.
+     *         <ul>
+     *         <li><b>200 OK:</b> Se la richiesta è stata creata con successo.</li>
+     *         <li><b>500 Internal Server Error:</b> Se si verifica un errore
+     *         durante la creazione della richiesta.</li>
+     *         </ul>
+     */
+    @PostMapping("/fiera/new")
+    public ResponseEntity<?> nuovaRichiestaFiera(@ModelAttribute @Valid RichiestaEventoFieraDTO dto) {
+        try {
+            File locandina = ConvertitoreMultipartFileToFile.convertiMultipartFileToFile(dto.getLocandina());
 
-         * 
-         *
-         *
-         *    
-         *            locandina,
-         *            indi
-         * @return Una ResponseEntity contenente la richiesta creata o un messaggio di
-         *         err
-         *         <ul>
-         *     
-         *
-         *         durante la creazione della richiesta.</li>
-         *         </ul>
-         */
-         PostMapping("/fiera/new")
-         ublic ResponseEntity<?> nuovaRichiestaFiera(@ModelAttribute @Valid RichiestaE
-         
-                File lo
-         
-                RichiestaContenuto richiestaEvento = richiestaContenutoService.nu
-                        dto.getTitolo(),
-                        
-           
-                        dto.getFin
-                        locandina,
-                         
+            RichiestaContenuto richiestaEvento = richiestaContenutoService.nuovaRichiestaFiera(
+                    dto.getTitolo(),
+                    dto.getDescrizione(),
+                    dto.getInizio(),
+                    dto.getFine(),
+                    locandina,
+                    dto.getIndirizzo(),
+                    dto.getAziendePresenti());
 
-                        dto.getAziendePresenti());
+            return ResponseEntity.ok(richiestaEvento);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error",
+                            "Errore nella creazione della richiesta " + e.getMessage()));
+        }
+    }
 
-                return ResponseEntity.ok(richiestaEvento);
-                                
-                                
-                                
-                                nuova richiest
-                                
-                                
-                                 accetta un DTO contenente
+    /**
+     * <h2>Crea una nuova richiesta per un evento di tipo visita.</h2>
+     *
+     * <p>
+     * Questo metodo accetta un DTO contenente i dettagli dell'evento e crea una
+     * nuova richiesta
+     * utilizzando il servizio <code>RichiestaService</code>. Se si verifica un
+     * errore durante la conversione
+     * del file locandina, restituisce un errore interno del server.
+     * </p>
+     *
+     * @param dto Il DTO contenente i dettagli dell'evento visita.
+     *            Deve includere titolo, descrizione, data di inizio e fine,
+     *            locandina,
+     *            indirizzo e azienda di riferimento.
+     * @return Una <code>ResponseEntity</code> contenente la richiesta creata o un
+     *         messaggio di errore.
+     *         <ul>
+     *         <li><b>200 OK:</b> Se la richiesta è stata creata con successo.</li>
+     *         <li><b>500 Internal Server Error:</b> Se si verifica un errore
+     *         durante la creazione della richiesta.</li>
+     *         </ul>
+     */
+    @PostMapping("/visita/new")
+    public ResponseEntity<?> nuovaRichiestaVisita(@ModelAttribute @Valid RichiestaEventoVisitaDTO dto) {
+        try {
+            File locandina = ConvertitoreMultipartFileToFile.convertiMultipartFileToFile(dto.getLocandina());
 
-                zzando il servizio <code>RichiestaService<
-         
+            RichiestaContenuto richiestaEvento = richiestaContenutoService.nuovaRichiestaVisita(
+                    dto.getTitolo(),
+                    dto.getDescrizione(),
+                    dto.getInizio(),
+                    dto.getFine(),
+                    locandina,
+                    dto.getIndirizzo(),
+                    dto.getAziendaRiferimento());
 
-         * 
-         *
-         *
-         *    
-         *            locandina,
-         *            indi
-         * @return Una <code>ResponseEntity</code> contenente la richiesta creata o
-         *         messaggio di errore.
-         *         <ul>
-         *     
-         *
-         *         durante la creazione della richiesta.</li>
-         *         </ul>
-         */
-         PostMapping("/visita/new")
-         ublic ResponseEntity<?> nuovaRichiestaVisita(@ModelAttribute @Valid Richiesta
-         
-                File lo
-         
-                RichiestaContenuto richiestaEvento = richiestaContenutoService.nu
-                        dto.getTitolo(),
-                        
-           
-                        dto.getFine
-                        locandina,
-                         
+            return ResponseEntity.ok(richiestaEvento);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error",
+                            "Errore nella creazione della richiesta " + e.getMessage()));
+        }
+    }
 
-                        dto.getAziendaRiferimento());
+    /**
+     * <h4>Verifica se la richiesta non è stata ancora valutata e la fa
+     * elaborare</h4>
+     *
+     * <p>
+     * Se la richiesta è già stata valutata, restituisce un errore con un messaggio
+     * appropriato.
+     * Se la richiesta non è stata trovata, restituisce un errore 404.
+     *
+     * @param dto il DTO contenente lo stato della richiesta da valutare
+     * @return una ResponseEntity contenente:
+     *         - La richiesta elaborata se non è stata ancora valutata;
+     *         - Un errore 400 con messaggio se la richiesta è già stata elaborata;
+     *         - Un errore 404 se la richiesta non esiste.
+     */
+    @PatchMapping(value = "/valuta")
+    public ResponseEntity<?> valutaRichiesta(@RequestBody CambiaStatoRichiestaCollaborazioneDTO dto) {
+        return richiestaContenutoService.getRichiestaById(dto.getId())
+                .map(richiesta -> {
+                    if (richiesta.getApprovato() != null) {
+                        return ResponseEntity.badRequest()
+                                .body(Collections.singletonMap("message", "La richiesta è già stata elaborata"));
+                    }
+                    return elaborazioneRichiesta(richiesta, dto);
+                })
+                .orElseGet(() -> ResponseEntity.status(404)
+                        .body(Collections.singletonMap("error", "Richiesta non trovata")));
+    }
 
-                return ResponseEntity.ok(richiestaEvento);
-                                
-                                
-                                
-                                se la richiest
-                                >
-                                
-                                
-
-                priato.
-         
-
-         * 
-         * @return una ResponseEntity contenente:
-         *         - La r
-         *
-         *    
-         */
-         PatchMapping(v
-         ublic ResponseEntity<?> valutaRichiesta(@RequestBody CambiaStatoR
-          
-                    .map(richiesta -> {
-                        if (richiesta.getApprovat
-                            return ResponseEntity.badRequest()
-                                    .body(Collections.singletonMap("message", "La richi
-                        }
-           
-                    })
-                    .orElseGet(() -> ResponseEntity.status(404)
-                                .body(Collections.singletonMap("error", "Richi
-                                
-                                        
-                                                
-                                                                ase alla decisione del Curatore, che deci
-                                                                                e se
-                                        r
-                                        mail all'utente che ha effettuato tale richie
-                                is
-                                
-                                                da elaborare da parte del Curatore
-         
-
-         */
-         rivate ResponseEntity<?> elaborazioneRichiesta(RichiestaContenuto richies
-            if (!dto.getStato()) {
-                if (dto.getMessaggioAggiuntivo() == null) {
-                    return 
-          
-                }
-                String messaggio = "La sua richiesta di collaborazione è stata rifiutata
-                  
-           
-                String emailUtente = utente.getEmail();
-                        
-                    this.servizioEmail
-                                "Valutazione Richiesta di " + richi
-                                
-                                                toService.processaRichiesta(richiesta, dt
-                                                                .getStato());
-                        r
-                            dto.getStato() ? "Richiesta accettata con successo." : "Richiesta correttamente rifiutata."));
-                                        
-                        
-                        
-                        
-                                        
-                
-                
-                
-                                
-                                                
-        
+    /**
+     * Elabora la richiesta in base alla decisione del Curatore, che decide se
+     * approvarla o rifiutarla,
+     * inviando una mail all'utente che ha effettuato tale richiesta con l'esito
+     * della decisione.
+     *
+     * @param richiesta da elaborare da parte del Curatore
+     * @param dto       dell'esito della verifica della richiesta parte del Curatore
+     * @return
+     */
+    private ResponseEntity<?> elaborazioneRichiesta(RichiestaContenuto richiesta, CambiaStatoRichiestaCollaborazioneDTO dto) {
+        if (!dto.getStato()) {
+            if (dto.getMessaggioAggiuntivo() == null) {
+                return ResponseEntity.badRequest()
+                        .body(Collections.singletonMap("message", "Inserire un messaggio di rifiuto"));
+            }
+            String messaggio = "La sua richiesta di collaborazione è stata rifiutata per la seguente motivazione: "
+                    + dto.getMessaggioAggiuntivo();
+            Utente utente = utenteService.getUtenteById(richiesta.getIdMittente());
+            String emailUtente = utente.getEmail();
+            this.servizioEmail.inviaMail(emailUtente, messaggio,
+                    "Valutazione Richiesta di " + richiesta.getTipologia().toString());
+        }
+        richiestaContenutoService.processaRichiesta(richiesta, dto.getStato());
+        return ResponseEntity.ok().body(Collections.singletonMap("message",
+                dto.getStato() ? "Richiesta accettata con successo." : "Richiesta correttamente rifiutata."));
+    }
+}
