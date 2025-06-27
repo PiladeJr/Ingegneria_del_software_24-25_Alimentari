@@ -38,9 +38,6 @@ public class Azienda {
     @Column(name = "iva", nullable = false)
     private String iva;
 
-    @Column(name = "iban", nullable = false)
-    private String iban;
-
     @Column(name = "certificato")
     private File certificato;
 
@@ -92,13 +89,6 @@ public class Azienda {
         this.iva = iva;
     }
 
-    public String getIban() {
-        return iban;
-    }
-
-    public void setIban(String iban) {
-        this.iban = iban;
-    }
 
     public File getCertificato() {
         return certificato;
