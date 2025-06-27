@@ -2,7 +2,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste
 
 import java.io.File;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import jakarta.persistence.*;
@@ -33,7 +33,7 @@ public class Collaborazione extends Contenuto {
     @Column(name = "cartaIdentita")
     private File cartaIdentita;
 
-    //---------------------campi azienda---------------------
+    // ---------------------campi azienda---------------------
 
     private String denominazioneSociale;
 
@@ -51,7 +51,7 @@ public class Collaborazione extends Contenuto {
     @Column(name = "certificato")
     private File certificato;
 
-    //---------------------campi curatore---------------------
+    // ---------------------campi curatore---------------------
 
     @Column(name = "curriculum")
     private File cv;
