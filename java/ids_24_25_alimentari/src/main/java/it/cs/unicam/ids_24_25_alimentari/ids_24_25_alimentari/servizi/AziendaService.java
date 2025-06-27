@@ -47,14 +47,12 @@ public class AziendaService {
             Indirizzo sedeLegale,
             Indirizzo sedeOperativa,
             String iva,
-            String iban,
             File certificato) {
         AziendaBuilder builder = new AziendaBuilder();
         builder.costruisciDenSociale(denSociale);
         builder.costruisciSedeLegale(sedeLegale);
         builder.costruisciSedeOperativa(sedeOperativa);
         builder.costruisciIva(iva);
-        builder.costruisciIban(iban);
         builder.aggiungiCertificato(certificato);
         return saveAzienda(builder.getAzienda());
     }

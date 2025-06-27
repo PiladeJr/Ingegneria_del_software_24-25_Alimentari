@@ -35,13 +35,13 @@ public class RepositoryCostructor {
     private IndirizzoRepository indirizzoRepository;
 
     @Autowired
-    private RichiestaRepository richiestaRepository;
+    private RichiestaContenutoRepository richiestaContenutoRepository;
 
     @Autowired
     private InformazioniAggiuntiveRepository informazioniAggiuntiveRepository;
 
     @Autowired
-    private RichiestaCollaborazioneRepository richiestaCollaborazioneRepository;
+    private CollaborazioneRepository collaborazioneRepository;
 
     @Autowired
     private UtenteRepository utenteRepository;
@@ -65,8 +65,8 @@ public class RepositoryCostructor {
         impostaAziende(aziendaRepository);
         impostaInfoAggiuntive(informazioniAggiuntiveRepository);
         impostaProdottiSingoli(prodottoSingoloRepository);
-        impostaRichiesteCollaborazione(richiestaCollaborazioneRepository);
-        impostaRichieste(richiestaRepository);
+        impostaRichiesteCollaborazione(collaborazioneRepository);
+        impostaRichieste(richiestaContenutoRepository);
         impostaAziendeEsterne(utenteAziendaEsternaRepository);
         impostaEventi(eventoRepository);
     }
@@ -119,30 +119,30 @@ public class RepositoryCostructor {
             VISITA_PRODUTTORE,
             VISITA_TRASFORMATORE;
 
-    public RichiestaCollaborazioneRepository RICHIESTA_PRODUTTORE, RICHIESTA_TRASFORMATORE, RICHIESTA_DISTRIBUTORE,
+    public CollaborazioneRepository RICHIESTA_PRODUTTORE, RICHIESTA_TRASFORMATORE, RICHIESTA_DISTRIBUTORE,
             RICHIESTA_ANIMATORE, RICHIESTA_CURATORE;
 
-    public RichiestaRepository RICHIESTA_TIPO_INFORMAZIONI_AGGIUNTIVE;
+    public RichiestaContenutoRepository RICHIESTA_TIPO_INFORMAZIONI_AGGIUNTIVE;
     public UtenteAziendaEsternaRepository UTENTE_TRASFORMATORE_PRODUTTORE;
 
-    public void pulisciRichieste(RichiestaRepository richiestaRepository) {
-        richiestaRepository.deleteAll();
-        richiestaRepository.flush();
+    public void pulisciRichieste(RichiestaContenutoRepository richiestaContenutoRepository) {
+        richiestaContenutoRepository.deleteAll();
+        richiestaContenutoRepository.flush();
         isRichiestaRepositorySet = false;
     }
 
-    public void impostaRichieste(RichiestaRepository richiestaRepository) {
-        pulisciRichieste(richiestaRepository);
+    public void impostaRichieste(RichiestaContenutoRepository richiestaContenutoRepository) {
+        pulisciRichieste(richiestaContenutoRepository);
     }
 
-    public void pulisciRichiesteCollaborazione(RichiestaCollaborazioneRepository richiestaCollaborazioneRepository) {
-        richiestaCollaborazioneRepository.deleteAll();
-        richiestaCollaborazioneRepository.flush();
+    public void pulisciRichiesteCollaborazione(CollaborazioneRepository collaborazioneRepository) {
+        collaborazioneRepository.deleteAll();
+        collaborazioneRepository.flush();
         isRichiestaCollaborazioneRepositorySet = false;
     }
 
-    public void impostaRichiesteCollaborazione(RichiestaCollaborazioneRepository richiestaCollaborazioneRepository) {
-        pulisciRichiesteCollaborazione(richiestaCollaborazioneRepository);
+    public void impostaRichiesteCollaborazione(CollaborazioneRepository collaborazioneRepository) {
+        pulisciRichiesteCollaborazione(collaborazioneRepository);
 
     }
 
@@ -274,14 +274,12 @@ public class RepositoryCostructor {
         AZIENDA_PRODUTTORE = new Azienda();
         AZIENDA_PRODUTTORE.setDenominazioneSociale("Azienda Agricola Rossi");
         AZIENDA_PRODUTTORE.setIva("IT12345678901");
-        AZIENDA_PRODUTTORE.setIban("IT60X0542811101000000123456");
         AZIENDA_PRODUTTORE.setSedeLegale(INDIRIZZO_PRODUTTORE);
         AZIENDA_PRODUTTORE.setSedeOperativa(INDIRIZZO_PRODUTTORE);
 
         AZIENDA_TRASFORMATORE = new Azienda();
         AZIENDA_TRASFORMATORE.setDenominazioneSociale("Industria Alimentare Bianchi");
         AZIENDA_TRASFORMATORE.setIva("IT09876543210");
-        AZIENDA_TRASFORMATORE.setIban("IT20Z0300203280000400167890");
         AZIENDA_TRASFORMATORE.setSedeLegale(INDIRIZZO_TRASFORMATORE);
         AZIENDA_TRASFORMATORE.setSedeOperativa(INDIRIZZO_TRASFORMATORE);
 

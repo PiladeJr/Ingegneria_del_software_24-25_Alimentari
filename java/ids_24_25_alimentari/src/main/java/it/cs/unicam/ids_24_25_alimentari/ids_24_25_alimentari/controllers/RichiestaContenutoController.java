@@ -3,9 +3,9 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoFieraDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoVisitaDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.RichiestaService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.RichiestaContenutoService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multipartConverter.ConvertitoreMultipartFileToFile;
@@ -28,18 +28,18 @@ import java.util.Optional;
  */
 @Controller
 @RequestMapping("/api/richieste-contenuto")
-public class RichiestaController {
+public class RichiestaContenutoController {
 
     @Autowired
-    private final RichiestaService richiestaService;
+    private final RichiestaContenutoService richiestaContenutoService;
     @Autowired
     private final ServizioEmail servizioEmail;
     @Autowired
     private final UtenteService utenteService;
 
-    public RichiestaController(RichiestaService richiestaService, ServizioEmail servizioEmail,
-            UtenteService utenteService) {
-        this.richiestaService = richiestaService;
+    public RichiestaContenutoController(RichiestaContenutoService richiestaContenutoService, ServizioEmail servizioEmail,
+                                        UtenteService utenteService) {
+        this.richiestaContenutoService = richiestaContenutoService;
         this.servizioEmail = servizioEmail;
         this.utenteService = utenteService;
     }
@@ -54,7 +54,7 @@ public class RichiestaController {
     public ResponseEntity<?> getRichiestaById(@PathVariable Long id) {
         try {
 
-            Optional<Richiesta> richiesta = richiestaService.getRichiestaById(id);
+            Optional<RichiestaContenuto> richiesta = richiestaContenutoService.getRichiestaById(id);
             return richiesta.isPresent() ? ResponseEntity.ok(richiesta.get())
                     : ResponseEntity.status(404)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -71,8 +71,8 @@ public class RichiestaController {
      * @return Una lista di richieste di contenuto.
      */
     @GetMapping("/visualizza/all")
-    public ResponseEntity<List<Richiesta>> getAllRichiesteContenuto(@RequestParam (required = false) String ordine) {
-        List<Richiesta> richiesteContenuto = this.richiestaService.getAllRichiesteContenuto(ordine);
+    public ResponseEntity<List<RichiestaContenuto>> getAllRichiesteContenuto(@RequestParam (required = false) String ordine) {
+        List<RichiestaContenuto> richiesteContenuto = this.richiestaContenutoService.getAllRichiesteContenuto(ordine);
         return ResponseEntity.ok(richiesteContenuto);
     }
 
@@ -92,7 +92,7 @@ public class RichiestaController {
             File[] certificati = ConvertitoreMultipartFileToFile
                     .convertMultipartFileArrayToFileArray(infoAggiuntiveDTO.getCertificati());
 
-            Richiesta richiestaInfoAggiuntive = this.richiestaService.nuovaRichiestaInformazioniAggiuntive(
+            RichiestaContenuto richiestaInfoAggiuntive = this.richiestaContenutoService.nuovaRichiestaInformazioniAggiuntive(
                     infoAggiuntiveDTO.getDescrizione(),
                     infoAggiuntiveDTO.getProduzione(),
                     infoAggiuntiveDTO.getMetodologie(),
@@ -123,7 +123,7 @@ public class RichiestaController {
             File[] immagini = ConvertitoreMultipartFileToFile
                     .convertMultipartFileArrayToFileArray(prodottoDTO.getImmagini());
 
-            Richiesta richiestaProdotto = this.richiestaService.nuovaRichiestaProdotto(
+            RichiestaContenuto richiestaProdotto = this.richiestaContenutoService.nuovaRichiestaProdotto(
                     prodottoDTO.getNome(),
                     prodottoDTO.getDescrizione(),
                     prodottoDTO.getIdAzienda(),
@@ -147,7 +147,7 @@ public class RichiestaController {
             @ModelAttribute @Valid RichiestaPacchettoDTO pacchettoDTO) {
 
         try {
-            Richiesta richiestaPacchetto = this.richiestaService.nuovaRichiestaPacchetto(
+            RichiestaContenuto richiestaPacchetto = this.richiestaContenutoService.nuovaRichiestaPacchetto(
                     pacchettoDTO.getNome(),
                     pacchettoDTO.getDescrizione(),
                     pacchettoDTO.getPrezzo(),
@@ -190,7 +190,7 @@ public class RichiestaController {
         try {
             File locandina = ConvertitoreMultipartFileToFile.convertiMultipartFileToFile(dto.getLocandina());
 
-            Richiesta richiestaEvento = richiestaService.nuovaRichiestaFiera(
+            RichiestaContenuto richiestaEvento = richiestaContenutoService.nuovaRichiestaFiera(
                     dto.getTitolo(),
                     dto.getDescrizione(),
                     dto.getInizio(),
@@ -235,7 +235,7 @@ public class RichiestaController {
         try {
             File locandina = ConvertitoreMultipartFileToFile.convertiMultipartFileToFile(dto.getLocandina());
 
-            Richiesta richiestaEvento = richiestaService.nuovaRichiestaVisita(
+            RichiestaContenuto richiestaEvento = richiestaContenutoService.nuovaRichiestaVisita(
                     dto.getTitolo(),
                     dto.getDescrizione(),
                     dto.getInizio(),
@@ -269,7 +269,7 @@ public class RichiestaController {
      */
     @PatchMapping(value = "/valuta")
     public ResponseEntity<?> valutaRichiesta(@RequestBody CambiaStatoRichiestaCollaborazioneDTO dto) {
-        return richiestaService.getRichiestaById(dto.getId())
+        return richiestaContenutoService.getRichiestaById(dto.getId())
                 .map(richiesta -> {
                     if (richiesta.getApprovato() != null) {
                         return ResponseEntity.badRequest()
@@ -291,7 +291,7 @@ public class RichiestaController {
      * @param dto       dell'esito della verifica della richiesta parte del Curatore
      * @return
      */
-    private ResponseEntity<?> elaborazioneRichiesta(Richiesta richiesta, CambiaStatoRichiestaCollaborazioneDTO dto) {
+    private ResponseEntity<?> elaborazioneRichiesta(RichiestaContenuto richiesta, CambiaStatoRichiestaCollaborazioneDTO dto) {
         if (!dto.getStato()) {
             if (dto.getMessaggioAggiuntivo() == null) {
                 return ResponseEntity.badRequest()
@@ -304,7 +304,7 @@ public class RichiestaController {
             this.servizioEmail.inviaMail(emailUtente, messaggio,
                     "Valutazione Richiesta di " + richiesta.getTipologia().toString());
         }
-        richiestaService.processaRichiesta(richiesta, dto.getStato());
+        richiestaContenutoService.processaRichiesta(richiesta, dto.getStato());
         return ResponseEntity.ok().body(Collections.singletonMap("message",
                 dto.getStato() ? "Richiesta accettata con successo." : "Richiesta correttamente rifiutata."));
     }

@@ -1,16 +1,49 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesteCollaborazione;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaCollaborazione;
 
 import java.io.File;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.RichiestaCollaborazioneBuilder;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.ContenutoBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 
-public class RichiestaCollaborazioneDirector {
-    private RichiestaCollaborazioneBuilder builder;
+public class CollaborazioneDirector {
+    private ContenutoBuilder builder;
 
-    public RichiestaCollaborazioneDirector(RichiestaCollaborazioneBuilder builder) {
-        this.builder = builder;
+    public CollaborazioneDirector() {
+        this.builder = new ContenutoBuilder();
+    }
+
+    private void costruisciAccount(
+            String nome,
+            String cognome,
+            String telefono,
+            String email,
+            Ruolo ruolo,
+            String iban,
+            File cartaIdentita
+    ){
+        builder.costruisciNome(nome);
+        builder.costruisciCognome(cognome);
+        builder.costruisciTelefono(telefono);
+        builder.costruisciEmail(email);
+        builder.costruisciRuolo(ruolo);
+        builder.costruisciIban(iban);
+        builder.costruisciCartaIdentita(cartaIdentita);
+
+    }
+
+    private void costruisciAzienda(
+            String denSociale,
+            Indirizzo sedeLegale,
+            Indirizzo sedeOperativa,
+            String iva,
+            File certificato
+    ) {
+        builder.costruisciDenSociale(denSociale);
+        builder.costruisciSedeLegale(sedeLegale);
+        builder.costruisciSedeOperativa(sedeOperativa);
+        builder.costruisciIva(iva);
+        builder.aggiungiCertificato(certificato);
     }
 
     /**
@@ -32,7 +65,7 @@ public class RichiestaCollaborazioneDirector {
      * @param certificato    Il file contenente il certificato aziendale richiesto.
      * @param cartaIdentita  Il file contenente la carta d'identità del rappresentante.
      */
-    public void creaAzienda(
+    public Collaborazione creaAzienda(
             String nome,
             String cognome,
             String telefono,
@@ -45,18 +78,9 @@ public class RichiestaCollaborazioneDirector {
             String iva,
             File certificato,
             File cartaIdentita) {
-        builder.costruisciNome(nome);
-        builder.costruisciCognome(cognome);
-        builder.costruisciTelefono(telefono);
-        builder.costruisciEmail(email);
-        builder.costruisciRuolo(ruolo);
-        builder.costruisciDenSociale(denSociale);
-        builder.costruisciSedeLegale(sedeLegale);
-        builder.costruisciSedeOperativa(sedeOperativa);
-        builder.costruisciIban(iban);
-        builder.costruisciIva(iva);
-        builder.aggiungiCertificato(certificato);
-        builder.aggiungiCartaIdentita(cartaIdentita);
+        costruisciAccount(nome, cognome, telefono, email, ruolo, iban, cartaIdentita);
+        costruisciAzienda(denSociale, sedeLegale, sedeOperativa, iva, certificato);
+        return builder.build();
     }
 
     /**
@@ -73,23 +97,17 @@ public class RichiestaCollaborazioneDirector {
      * @param iban            Il codice IBAN dell'animatore per le transazioni bancarie.
      * @param cartaIdentita   Il file contenente la carta d'identità dell'animatore.
      */
-    public void creaAnimatore(
+    public Collaborazione creaAnimatore(
             String nome,
             String cognome,
             String telefono,
             String email,
             Ruolo ruolo,
-//            String aziendaReferente,
             String iban,
             File cartaIdentita) {
-        builder.costruisciNome(nome);
-        builder.costruisciCognome(cognome);
-        builder.costruisciTelefono(telefono);
-        builder.costruisciEmail(email);
-        builder.costruisciRuolo(ruolo);
-       // builder.costruisciReferente(aziendaReferente);
-        builder.costruisciIban(iban);
-        builder.aggiungiCartaIdentita(cartaIdentita);
+        costruisciAccount(nome, cognome, telefono, email, ruolo, iban, cartaIdentita);
+        return builder.build();
+
     }
 
     /**
@@ -105,7 +123,7 @@ public class RichiestaCollaborazioneDirector {
      * @param cartaIdentita Il file contenente la carta d'identità del curatore.
      * @param cv            Il file contenente il curriculum vitae del curatore.
      */
-    public void creaCuratore(
+    public Collaborazione creaCuratore(
             String nome,
             String cognome,
             String telefono,
@@ -116,14 +134,9 @@ public class RichiestaCollaborazioneDirector {
             File cv
 
     ) {
-        builder.costruisciNome(nome);
-        builder.costruisciCognome(cognome);
-        builder.costruisciTelefono(telefono);
-        builder.costruisciEmail(email);
-        builder.costruisciRuolo(ruolo);
-        builder.costruisciIban(iban);
-        builder.aggiungiCartaIdentita(cartaIdentita);
-        builder.aggiungiCv(cv);
+        costruisciAccount(nome, cognome, telefono, email, ruolo, iban, cartaIdentita);
+        builder.costruisciCV(cv);
+        return builder.build();
     }
 
 }

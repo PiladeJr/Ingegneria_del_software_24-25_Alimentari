@@ -27,8 +27,6 @@ public class AziendaBuilder {
 
     public void costruisciIva(String iva){ this.azienda.setIva(iva); }
 
-    public void costruisciIban(String iban){ this.azienda.setIban(iban); }
-
     public void aggiungiCertificato(File certificato){ this.azienda.setCertificato(certificato); }
 
     public Azienda getAzienda() {

@@ -2,6 +2,8 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import javax.validation.Valid;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiesteCollaborazioneOutputDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaCollaborazione.RichiestaCollaborazione;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,8 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.Camb
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiestaCollaborazioneAziendaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiestaCollaborazioneCuratoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiestaCollaborazioneAnimatoreDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesteCollaborazione.RichiestaCollaborazione;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.RichiesteCollaborazioneService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaCollaborazione.Collaborazione;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Collaborazione.RichiesteCollaborazioneService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;
 import java.io.File;
 
@@ -46,8 +48,8 @@ public class RichiestaCollaborazioneController {
      * @return {@code ResponseEntity} contenente la lista di {@code RichiestaCollaborazione}.
      */
     @GetMapping
-    public ResponseEntity<List<RichiestaCollaborazione>> getAllRichieste() {
-        List<RichiestaCollaborazione> richieste = richiesteCollaborazioneService.getAllRichieste();
+    public ResponseEntity<List<RichiesteCollaborazioneOutputDTO>> getAllRichieste(@RequestParam (required = false) String ordine) {
+        List<RichiesteCollaborazioneOutputDTO> richieste = richiesteCollaborazioneService.getAllRichieste(ordine);
         return ResponseEntity.ok(richieste);
     }
 
@@ -66,14 +68,7 @@ public class RichiestaCollaborazioneController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getRichiestaById(@PathVariable Long id) {
         try {
-            Optional<RichiestaCollaborazione> richiesta = richiesteCollaborazioneService.getRichiestaById(id);
-            if (richiesta.isPresent()) {
-                return ResponseEntity.ok(richiesta.get());
-            } else {
-                return ResponseEntity.status(404)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body("{\"error\": \"Richiesta non trovata\"}");
-            }
+             return richiesteCollaborazioneService.ottieniRichiestaById(id);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Errore interno del server: " + e.getMessage());
         }
@@ -96,7 +91,7 @@ public class RichiestaCollaborazioneController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRichiesta(@PathVariable Long id) {
         try {
-            Optional<RichiestaCollaborazione> richiesta = richiesteCollaborazioneService.getRichiestaById(id);
+            Optional<Collaborazione> richiesta = richiesteCollaborazioneService.ottieniRichiestaById(id);
             if (richiesta.isPresent()) {
                 richiesteCollaborazioneService.deleteRichiesta(id);
                 return ResponseEntity.ok(Collections.singletonMap("message", "Richiesta eliminata con successo"));
@@ -175,7 +170,7 @@ public class RichiestaCollaborazioneController {
             File fileCartaIdentita = convertiMultipartFileToFile(richiestaAnimatoreDTO.getCartaIdentita());
 
             // Create the collaboration request.
-            RichiestaCollaborazione richiesta = richiesteCollaborazioneService.creaRichiestaAnimatore(
+            Collaborazione richiesta = richiesteCollaborazioneService.creaRichiestaAnimatore(
                     richiestaAnimatoreDTO.getNome(),
                     richiestaAnimatoreDTO.getCognome(),
                     richiestaAnimatoreDTO.getTelefono(),
@@ -214,7 +209,7 @@ public class RichiestaCollaborazioneController {
             File fileCv = convertiMultipartFileToFile(richiestaCuratoreDTO.getCv());
 
             // Create the collaboration request.
-            RichiestaCollaborazione richiesta = richiesteCollaborazioneService.creaRichiestaCuratore(
+            Collaborazione richiesta = richiesteCollaborazioneService.creaRichiestaCuratore(
                     richiestaCuratoreDTO.getNome(),
                     richiestaCuratoreDTO.getCognome(),
                     richiestaCuratoreDTO.getTelefono(),
@@ -248,11 +243,11 @@ public class RichiestaCollaborazioneController {
      *         - HTTP 404 (NOT FOUND) se la richiesta non esiste.
      */
     @PatchMapping("/stato")
-    public ResponseEntity<?> updateStato(@RequestBody CambiaStatoRichiestaCollaborazioneDTO dto) {
+    public ResponseEntity<?> elaboraRichiesta(@RequestBody CambiaStatoRichiestaCollaborazioneDTO dto) {
 
-        Optional<RichiestaCollaborazione> richiesta = richiesteCollaborazioneService.getRichiestaById(dto.getId());
+        Optional<Collaborazione> richiesta = richiesteCollaborazioneService.ottieniRichiestaById(dto.getId());
         if (richiesta.isPresent()) {
-            if (richiesta.get().getStato() != null) {
+            if (richiesta.get().getApprovato() != null) {
                 return ResponseEntity.badRequest()
                         .body(Collections.singletonMap("message", "La richiesta è già stata elaborata"));
             }

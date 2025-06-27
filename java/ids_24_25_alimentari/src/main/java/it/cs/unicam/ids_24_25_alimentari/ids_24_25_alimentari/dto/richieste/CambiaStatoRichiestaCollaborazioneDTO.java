@@ -5,7 +5,7 @@ public class CambiaStatoRichiestaCollaborazioneDTO {
 
     private Boolean stato;
     private String messaggioAggiuntivo;
-    private Long id;
+    private Long id; //sposta su path variable
 
     public Long getId() {
         return id;

@@ -1,5 +1,7 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.Richiesta;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.Tipologia;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,19 +13,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class Richiesta {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+public class RichiestaContenuto extends Richiesta {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Tipologia tipologia;
 
     private String tipoContenuto;
-
-    @Column(nullable = true)
-    private Boolean approvato;
 
     @Column(nullable = false)
     private long idMittente;

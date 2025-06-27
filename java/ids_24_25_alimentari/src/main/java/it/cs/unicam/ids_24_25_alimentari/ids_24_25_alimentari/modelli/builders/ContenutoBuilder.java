@@ -1,27 +1,19 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesteCollaborazione.RichiestaCollaborazione;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaCollaborazione.Collaborazione;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 
 import java.io.File;
 
-/**
- * -- GETTER --
- *  metodo che restituisce l'oggetto utente creato
- *
- * @return l'oggetto RichiestaCollaborazione creato
- */
-public class RichiestaCollaborazioneBuilder {
-    private RichiestaCollaborazione collaborazione;
+public class ContenutoBuilder {
+    private Collaborazione collaborazione;
 
-    public RichiestaCollaborazioneBuilder() {
+    public ContenutoBuilder() {
         reset();
     }
 
-    public void costruisciNome(String nome) {
-        collaborazione.setNome(nome);
-    }
+    public void costruisciNome(String nome) { collaborazione.setNome(nome); }
 
     public void costruisciCognome(String cognome) {
         collaborazione.setCognome(cognome);
@@ -59,11 +51,11 @@ public class RichiestaCollaborazioneBuilder {
         collaborazione.setIva(iva);
     }
 
-    public void aggiungiCv(File cv) {
+    public void costruisciCV(File cv) {
         collaborazione.setCv(cv);
     }
 
-    public void aggiungiCartaIdentita(File cartaIdentita) {
+    public void costruisciCartaIdentita(File cartaIdentita) {
         collaborazione.setCartaIdentita(cartaIdentita);
     }
 
@@ -71,16 +63,15 @@ public class RichiestaCollaborazioneBuilder {
         collaborazione.setCertificato(certificato);
     }
 
-   // public void costruisciReferente(String referente) { collaborazione.setAziendaReferente(referente); }
 
-    public RichiestaCollaborazione getRichiesta() {
-        RichiestaCollaborazione r = this.collaborazione;
+    public Collaborazione build() {
+        Collaborazione r = this.collaborazione;
         reset();
         return r;
     }
 
     public void reset(){
-        this.collaborazione = new RichiestaCollaborazione();
+        this.collaborazione = new Collaborazione();
     }
 
 }

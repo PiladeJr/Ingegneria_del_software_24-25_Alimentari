@@ -26,4 +26,7 @@ public interface UtenteRepository extends JpaRepository<Utente, Long> {
     Utente findByRuolo(Ruolo ruolo);
     @Query("SELECT u FROM Utente u WHERE u.ruolo = ?1")
     List<Utente> findAllByRuolo(Ruolo ruolo);
+
+    @Query("SELECT u.email FROM Utente u WHERE u.ruolo = ?1 ")
+    List<String> findEmailsByRuolo(Ruolo ruolo);
 }
