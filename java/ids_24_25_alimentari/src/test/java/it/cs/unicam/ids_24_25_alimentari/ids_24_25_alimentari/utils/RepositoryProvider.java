@@ -1,8 +1,8 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,7 +20,7 @@ import lombok.Getter;
 
 @Component
 @ComponentScan(basePackageClasses = { InformazioniAggiuntiveRepository.class, IndirizzoRepository.class,
-        RichiestaRepository.class, RichiestaCollaborazioneRepository.class, UtenteRepository.class,
+        RichiestaContenutoRepository.class, CollaborazioneRepository.class, UtenteRepository.class,
         AziendaRepository.class })
 
 public class RepositoryProvider {
@@ -31,10 +31,10 @@ public class RepositoryProvider {
     private final IndirizzoRepository indirizzoRepository;
 
     @Getter
-    private final RichiestaRepository richiestaRepository;
+    private final RichiestaContenutoRepository richiestaContenutoRepository;
 
     @Getter
-    private final RichiestaCollaborazioneRepository richiestaCollaborazioneRepository;
+    private final CollaborazioneRepository collaborazioneRepository;
 
     @Getter
     private final UtenteRepository utenteRepository;
@@ -44,13 +44,13 @@ public class RepositoryProvider {
 
     @Autowired
     public RepositoryProvider(InformazioniAggiuntiveRepository informazioniAggiuntiveRepository,
-            IndirizzoRepository indirizzoRepository, RichiestaRepository richiestaRepository,
-            RichiestaCollaborazioneRepository richiestaCollaborazioneRepository, UtenteRepository utenteRepository,
-            AziendaRepository aziendaRepository) {
+                              IndirizzoRepository indirizzoRepository, RichiestaContenutoRepository richiestaContenutoRepository,
+                              CollaborazioneRepository collaborazioneRepository, UtenteRepository utenteRepository,
+                              AziendaRepository aziendaRepository) {
         this.informazioniAggiuntiveRepository = informazioniAggiuntiveRepository;
         this.indirizzoRepository = indirizzoRepository;
-        this.richiestaRepository = richiestaRepository;
-        this.richiestaCollaborazioneRepository = richiestaCollaborazioneRepository;
+        this.richiestaContenutoRepository = richiestaContenutoRepository;
+        this.collaborazioneRepository = collaborazioneRepository;
         this.utenteRepository = utenteRepository;
         this.aziendaRepository = aziendaRepository;
     }

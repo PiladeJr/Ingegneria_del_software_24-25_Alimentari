@@ -1,7 +1,8 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.indirizzo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
+
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import lombok.Getter;
 
 @Getter

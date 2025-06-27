@@ -1,6 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.ProdottoSingolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -36,9 +37,6 @@ public class Azienda {
 
     @Column(name = "iva", nullable = false)
     private String iva;
-
-    @Column(name = "iban", nullable = false)
-    private String iban;
 
     @Column(name = "certificato")
     private File certificato;
@@ -91,19 +89,14 @@ public class Azienda {
         this.iva = iva;
     }
 
-    public String getIban() {
-        return iban;
-    }
-
-    public void setIban(String iban) {
-        this.iban = iban;
-    }
 
     public File getCertificato() {
         return certificato;
     }
 
-    public void setCertificato(File certificato) { this.certificato = certificato; }
+    public void setCertificato(File certificato) {
+        this.certificato = certificato;
+    }
 
     @Nullable
     public InformazioniAggiuntive getInformazioniAggiuntive() {

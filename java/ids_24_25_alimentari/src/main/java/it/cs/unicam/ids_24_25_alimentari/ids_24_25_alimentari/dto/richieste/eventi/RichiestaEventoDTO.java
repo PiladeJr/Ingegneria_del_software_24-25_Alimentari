@@ -1,7 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.StatusEvento;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,4 +21,3 @@ public abstract class RichiestaEventoDTO {
     private Indirizzo indirizzo;
     private Utente creatore;
 }
-

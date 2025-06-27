@@ -1,14 +1,15 @@
-
-
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione;
+
 import java.beans.ConstructorProperties;
 
 
-
-
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 
+@Getter
+@Setter
 public class RichiestaCollaborazioneAnimatoreDTO {
 
     private String nome;
@@ -34,67 +35,4 @@ public class RichiestaCollaborazioneAnimatoreDTO {
         this.cartaIdentita = cartaIdentita;
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCognome() {
-        return cognome;
-    }
-
-    public void setCognome(String cognome) {
-        this.cognome = cognome;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Ruolo getRuolo() {
-        return ruolo;
-    }
-
-    public void setRuolo(Ruolo ruolo) {
-        this.ruolo = ruolo;
-    }
-
-    public String getAziendaReferente() {
-        return aziendaReferente;
-    }
-
-    public void setAziendaReferente(String aziendaReferente) {
-        this.aziendaReferente = aziendaReferente;
-    }
-
-    public String getIban() {
-        return iban;
-    }
-
-    public void setIban(String iban) {
-        this.iban = iban;
-    }
-
-    public MultipartFile getCartaIdentita() {
-        return cartaIdentita;
-    }
-
-    public void setCartaIdentita(MultipartFile cartaIdentita) {
-        this.cartaIdentita = cartaIdentita;
-    }
 }

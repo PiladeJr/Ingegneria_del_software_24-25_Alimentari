@@ -49,6 +49,18 @@ public class UtenteService implements UserDetailsService {
     }
 
     /**
+     * seleziona l'utente dall'id
+     *
+     * @return l'utente salvato nel sistema
+     */
+    public Utente getUtenteById(long id) {
+        Utente utente = utenteRepository.findById(id);
+        if (utente == null)
+            throw new IllegalArgumentException("utente non trovato");
+        return utente;
+    }
+
+    /**
      * ottieni l'id dell'utente autenticato estraendolo dal suo token
      * 
      * @return l'id dell'utente autenticato
@@ -107,6 +119,16 @@ public class UtenteService implements UserDetailsService {
     }
 
     /**
+     * <h2>Restituisce una lista di email degli utenti che hanno un determinato ruolo.</h2>
+     *
+     * @param ruolo - il ruolo degli utenti di cui si vogliono ottenere le email
+     * @return una lista di email degli utenti con il ruolo specificato
+     */
+    public List<String> getEmailsByRuolo(Ruolo ruolo) {
+        return utenteRepository.findEmailsByRuolo(ruolo);
+    }
+
+    /**
      * costruzione delle credenziali base dell'utente
      * 
      * @param nome     il nome dell'utente
@@ -115,32 +137,16 @@ public class UtenteService implements UserDetailsService {
      * @param password la password dell'utente
      * @param telefono il telefono dell'utente
      */
-    private void credenzialiBase(String nome, String cognome, String email, String password, String telefono) {
+    private void credenzialiBase(String nome, String cognome, String email, String password, String telefono, String iban, Ruolo ruolo) {
         builder.costruisciNome(nome);
         builder.costruisciCognome(cognome);
         builder.costruisciEmail(email);
         builder.costruisciPassword(password);
         builder.costruisciTelefono(telefono);
+        builder.costruisciIban(iban);
+        builder.costruisciRuolo(ruolo);
     }
 
-    // ---------------------------------da vedere se utilizzato o meno
-    /**
-     * Creazione di un nuovo oggetto utente
-     * 
-     * @param nome     il nome dell'utente
-     * @param cognome  il cognome dell'utente
-     * @param email    l'email dell'utente
-     * @param password la password dell'utente
-     * @param telefono il telefono dell'utente
-     */
-
-    public void nuovoUtente(String nome, String cognome, String email, String password, String telefono) {
-        credenzialiBase(nome, cognome, email, password, telefono);
-        builder.costruisciRuolo(Ruolo.ACQUIRENTE);
-        utenteRepository.save(builder.getUtente());
-    }
-
-    // ---------------------------------
     /**
      * crea un nuovo account di tipo animatore
      * usa gli stessi parametri per il metodo credenziali base
@@ -151,9 +157,7 @@ public class UtenteService implements UserDetailsService {
      */
     public void nuovoAnimatore(String nome, String cognome, String email, String password, String telefono, String iban,
             File carta) {
-        credenzialiBase(nome, cognome, email, password, telefono);
-        builder.costruisciRuolo(Ruolo.ANIMATORE);
-        builder.costruisciIban(iban);
+        credenzialiBase(nome, cognome, email, password, telefono, iban, Ruolo.ANIMATORE);
         builder.costruisciCartaIdentita(carta);
         utenteRepository.save(builder.getUtente());
     }
@@ -168,29 +172,12 @@ public class UtenteService implements UserDetailsService {
      *                      TRASFORMATORE, DISTRIBUTORE)
      * @param cartaIdentita il file contenente la carta d'identità dell'utente
      */
-    public void nuovoAzienda(String nome, String cognome, String email, String telefono, Ruolo ruolo, long idAzienda,
-            File cartaIdentita, String password) {
-        builder.costruisciNome(nome);
-        builder.costruisciCognome(cognome);
-        builder.costruisciEmail(email);
-        builder.costruisciTelefono(telefono);
-        builder.costruisciRuolo(ruolo);
+    public void nuovoAzienda(String nome, String cognome, String email, String password, String telefono, Ruolo ruolo, String iban, long idAzienda,
+            File cartaIdentita) {
+        credenzialiBase(nome, cognome, email, password, telefono, iban, ruolo);
         builder.costruisciIdAzienda(idAzienda);
         builder.costruisciCartaIdentita(cartaIdentita);
-        builder.costruisciPassword(password);
         utenteRepository.save(builder.getUtente());
-    }
-
-    /**
-     * seleziona l'utente dall'id
-     *
-     * @return l'utente salvato nel sistema
-     */
-    public Utente getUtenteById(long id) {
-        Utente utente = utenteRepository.findById(id);
-        if (utente == null)
-            throw new IllegalArgumentException("utente non trovato");
-        return utente;
     }
 
     /**
@@ -204,9 +191,7 @@ public class UtenteService implements UserDetailsService {
      */
     public void nuovoCuratore(String nome, String cognome, String email, String password, String telefono, String iban,
             File carta, File cv) {
-        credenzialiBase(nome, cognome, email, password, telefono);
-        builder.costruisciRuolo(Ruolo.CURATORE);
-        builder.costruisciIban(iban);
+        credenzialiBase(nome, cognome, email, password, telefono, iban, Ruolo.CURATORE);
         builder.costruisciCartaIdentita(carta);
         builder.costruisciCv(cv);
         utenteRepository.save(builder.getUtente());

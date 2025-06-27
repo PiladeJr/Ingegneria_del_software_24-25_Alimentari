@@ -2,7 +2,8 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiesteCollaborazione;
 
 import org.springframework.web.multipart.MultipartFile;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
+
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import jakarta.validation.Valid;
 
@@ -20,8 +21,6 @@ public class RichiestaCollaborazioneAziendaDTO {
     private String iban;
     private String iva;
     private MultipartFile certificato;
-
-
 
     private MultipartFile cartaIdentita;
 
@@ -110,9 +109,15 @@ public class RichiestaCollaborazioneAziendaDTO {
         return certificato;
     }
 
-    public void setCertificato(MultipartFile certificato) { this.certificato = certificato; }
-    
-    public MultipartFile getCartaIdentita() { return cartaIdentita; }
+    public void setCertificato(MultipartFile certificato) {
+        this.certificato = certificato;
+    }
 
-    public void setCartaIdentita(MultipartFile cartaIdentita) { this.cartaIdentita = cartaIdentita; }
+    public MultipartFile getCartaIdentita() {
+        return cartaIdentita;
+    }
+
+    public void setCartaIdentita(MultipartFile cartaIdentita) {
+        this.cartaIdentita = cartaIdentita;
+    }
 }

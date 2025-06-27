@@ -8,13 +8,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.InformazioniAggiuntiveBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.ProdottoSingolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoFiera;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoVisita;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.StatusEvento;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.*;
@@ -35,13 +35,13 @@ public class RepositoryCostructor {
     private IndirizzoRepository indirizzoRepository;
 
     @Autowired
-    private RichiestaRepository richiestaRepository;
+    private RichiestaContenutoRepository richiestaContenutoRepository;
 
     @Autowired
     private InformazioniAggiuntiveRepository informazioniAggiuntiveRepository;
 
     @Autowired
-    private RichiestaCollaborazioneRepository richiestaCollaborazioneRepository;
+    private CollaborazioneRepository collaborazioneRepository;
 
     @Autowired
     private UtenteRepository utenteRepository;
@@ -65,8 +65,8 @@ public class RepositoryCostructor {
         impostaAziende(aziendaRepository);
         impostaInfoAggiuntive(informazioniAggiuntiveRepository);
         impostaProdottiSingoli(prodottoSingoloRepository);
-        impostaRichiesteCollaborazione(richiestaCollaborazioneRepository);
-        impostaRichieste(richiestaRepository);
+        impostaRichiesteCollaborazione(collaborazioneRepository);
+        impostaRichieste(richiestaContenutoRepository);
         impostaAziendeEsterne(utenteAziendaEsternaRepository);
         impostaEventi(eventoRepository);
     }
@@ -81,8 +81,7 @@ public class RepositoryCostructor {
     public boolean isUtenteAziendaEsternaRepositorySet = false;
     public boolean isEventoRepositorySet = false;
 
-    public Utente
-            PRODUTTORE,
+    public Utente PRODUTTORE,
             TRASFORMATORE,
             DISTRIBUTORE,
             ANIMATORE,
@@ -90,59 +89,53 @@ public class RepositoryCostructor {
             CURATORE,
             GESTORE;
 
-    public Azienda
-            AZIENDA_PRODUTTORE,
+    public Azienda AZIENDA_PRODUTTORE,
             AZIENDA_TRASFORMATORE,
             AZIENDA_DISTRIBUTORE;
 
-    public Indirizzo
-            INDIRIZZO_PRODUTTORE,
+    public Indirizzo INDIRIZZO_PRODUTTORE,
             INDIRIZZO_TRASFORMATORE,
             INDIRIZZO_DISTRIBUTORE,
             INDIRIZZO_FIERA_AUTUNNO,
             INDIRIZZO_FIERA_CONTADINA;
 
-    public InformazioniAggiuntive
-            INFORMAZIONI_AGGIUNTIVE_PRODUTTORE,
+    public InformazioniAggiuntive INFORMAZIONI_AGGIUNTIVE_PRODUTTORE,
             INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE;
 
-    public ProdottoSingolo
-            PRODOTTO_LATTE,
+    public ProdottoSingolo PRODOTTO_LATTE,
             PRODOTTO_BURRO,
             PRODOTTO_FORMAGGIO;
 
-    public EventoFiera
-            FIERA_CONTADINA,
+    public EventoFiera FIERA_CONTADINA,
             FIERA_AUTUNNO;
 
-    public EventoVisita
-            VISITA_PRODUTTORE,
+    public EventoVisita VISITA_PRODUTTORE,
             VISITA_TRASFORMATORE;
 
-    public RichiestaCollaborazioneRepository RICHIESTA_PRODUTTORE, RICHIESTA_TRASFORMATORE, RICHIESTA_DISTRIBUTORE,
+    public CollaborazioneRepository RICHIESTA_PRODUTTORE, RICHIESTA_TRASFORMATORE, RICHIESTA_DISTRIBUTORE,
             RICHIESTA_ANIMATORE, RICHIESTA_CURATORE;
 
-    public RichiestaRepository RICHIESTA_TIPO_INFORMAZIONI_AGGIUNTIVE;
+    public RichiestaContenutoRepository RICHIESTA_TIPO_INFORMAZIONI_AGGIUNTIVE;
     public UtenteAziendaEsternaRepository UTENTE_TRASFORMATORE_PRODUTTORE;
 
-    public void pulisciRichieste(RichiestaRepository richiestaRepository) {
-        richiestaRepository.deleteAll();
-        richiestaRepository.flush();
+    public void pulisciRichieste(RichiestaContenutoRepository richiestaContenutoRepository) {
+        richiestaContenutoRepository.deleteAll();
+        richiestaContenutoRepository.flush();
         isRichiestaRepositorySet = false;
     }
 
-    public void impostaRichieste(RichiestaRepository richiestaRepository) {
-        pulisciRichieste(richiestaRepository);
+    public void impostaRichieste(RichiestaContenutoRepository richiestaContenutoRepository) {
+        pulisciRichieste(richiestaContenutoRepository);
     }
 
-    public void pulisciRichiesteCollaborazione(RichiestaCollaborazioneRepository richiestaCollaborazioneRepository) {
-        richiestaCollaborazioneRepository.deleteAll();
-        richiestaCollaborazioneRepository.flush();
+    public void pulisciRichiesteCollaborazione(CollaborazioneRepository collaborazioneRepository) {
+        collaborazioneRepository.deleteAll();
+        collaborazioneRepository.flush();
         isRichiestaCollaborazioneRepositorySet = false;
     }
 
-    public void impostaRichiesteCollaborazione(RichiestaCollaborazioneRepository richiestaCollaborazioneRepository) {
-        pulisciRichiesteCollaborazione(richiestaCollaborazioneRepository);
+    public void impostaRichiesteCollaborazione(CollaborazioneRepository collaborazioneRepository) {
+        pulisciRichiesteCollaborazione(collaborazioneRepository);
 
     }
 
@@ -151,6 +144,7 @@ public class RepositoryCostructor {
         utenteAziendaEsternaRepository.flush();
         isUtenteAziendaEsternaRepositorySet = false;
     }
+
     public void impostaAziendeEsterne(UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
         pulisciAziendeEsterne(utenteAziendaEsternaRepository);
     }
@@ -166,28 +160,31 @@ public class RepositoryCostructor {
         aziendaRepository.flush();
         isAziendaRepositorySet = false;
     }
+
     public void pulisciUtenti(UtenteRepository repo) {
         repo.deleteAll();
         repo.flush();
         isUtenteRepositorySet = false;
     }
 
-    public void pulisciInfoAggiuntive(InformazioniAggiuntiveRepository repo){
+    public void pulisciInfoAggiuntive(InformazioniAggiuntiveRepository repo) {
         repo.deleteAll();
         repo.flush();
         isInformazioniAggiuntiveRepositorySet = false;
     }
 
-    public void pulisciProdottiSingoli(ProdottoSingoloRepository repo){
+    public void pulisciProdottiSingoli(ProdottoSingoloRepository repo) {
         repo.deleteAll();
         repo.flush();
         isProdottoSingoloRepositorySet = false;
     }
-    public void pulisciEventi(EventoRepository repo){
+
+    public void pulisciEventi(EventoRepository repo) {
         repo.deleteAll();
         repo.flush();
         isEventoRepositorySet = false;
     }
+
     public void impostaUtenti(UtenteRepository repo) {
         pulisciUtenti(repo);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -220,6 +217,7 @@ public class RepositoryCostructor {
         repo.flush();
         isUtenteRepositorySet = true;
     }
+
     public void impostaIndirizzi(IndirizzoRepository indirizzoRepository) {
         pulisciIndirizzi(indirizzoRepository);
 
@@ -274,21 +272,19 @@ public class RepositoryCostructor {
         AZIENDA_PRODUTTORE = new Azienda();
         AZIENDA_PRODUTTORE.setDenominazioneSociale("Azienda Agricola Rossi");
         AZIENDA_PRODUTTORE.setIva("IT12345678901");
-        AZIENDA_PRODUTTORE.setIban("IT60X0542811101000000123456");
         AZIENDA_PRODUTTORE.setSedeLegale(INDIRIZZO_PRODUTTORE);
         AZIENDA_PRODUTTORE.setSedeOperativa(INDIRIZZO_PRODUTTORE);
 
         AZIENDA_TRASFORMATORE = new Azienda();
         AZIENDA_TRASFORMATORE.setDenominazioneSociale("Industria Alimentare Bianchi");
         AZIENDA_TRASFORMATORE.setIva("IT09876543210");
-        AZIENDA_TRASFORMATORE.setIban("IT20Z0300203280000400167890");
         AZIENDA_TRASFORMATORE.setSedeLegale(INDIRIZZO_TRASFORMATORE);
         AZIENDA_TRASFORMATORE.setSedeOperativa(INDIRIZZO_TRASFORMATORE);
 
         AZIENDA_PRODUTTORE = aziendaRepository.save(AZIENDA_PRODUTTORE);
         AZIENDA_TRASFORMATORE = aziendaRepository.save(AZIENDA_TRASFORMATORE);
 
-        aziendaRepository.flush();  // Assicura la persistenza immediata
+        aziendaRepository.flush(); // Assicura la persistenza immediata
 
         // Associare le aziende agli utenti
         PRODUTTORE.setIdAzienda(AZIENDA_PRODUTTORE.getId());
@@ -301,7 +297,7 @@ public class RepositoryCostructor {
         isAziendaRepositorySet = true;
     }
 
-    public void impostaInfoAggiuntive(InformazioniAggiuntiveRepository repo){
+    public void impostaInfoAggiuntive(InformazioniAggiuntiveRepository repo) {
         try {
             File immagine = new File(getClass().getClassLoader().getResource("azienda1.jpg").toURI());
 
@@ -309,7 +305,8 @@ public class RepositoryCostructor {
 
             InformazioniAggiuntiveBuilder builder = new InformazioniAggiuntiveBuilder();
 
-            builder.costruisciDescrizione("La nostra azienda vi garantisce il miglior prodotto nostrano della nostra terra");
+            builder.costruisciDescrizione(
+                    "La nostra azienda vi garantisce il miglior prodotto nostrano della nostra terra");
             builder.costruisciProduzione("Frutta e Verdura");
             builder.costruisciMetodi("Metodi sostenibili, utilizzando solo energia rinnovabile");
             builder.aggiungiImmagine(immagine);
@@ -341,30 +338,28 @@ public class RepositoryCostructor {
         }
     }
 
-    public void impostaProdottiSingoli(ProdottoSingoloRepository repo){
+    public void impostaProdottiSingoli(ProdottoSingoloRepository repo) {
         try {
             List<File> immaginiProdotto = new ArrayList<>(Arrays.asList(
                     new File(getClass().getClassLoader().getResource("latte.jpg").toURI()),
-                    new File(getClass().getClassLoader().getResource("latte1.jpeg").toURI())
-            ));
+                    new File(getClass().getClassLoader().getResource("latte1.jpeg").toURI())));
 
             List<File> immaginiProdotto1 = new ArrayList<>(Arrays.asList(
                     new File(getClass().getClassLoader().getResource("burro.jpeg").toURI()),
-                    new File(getClass().getClassLoader().getResource("burro1.jpg").toURI())
-            ));
+                    new File(getClass().getClassLoader().getResource("burro1.jpg").toURI())));
 
             List<File> immaginiProdotto2 = new ArrayList<>(Arrays.asList(
                     new File(getClass().getClassLoader().getResource("formaggio.jpg").toURI()),
-                    new File(getClass().getClassLoader().getResource("formaggio1.jpeg").toURI())
-            ));
-
+                    new File(getClass().getClassLoader().getResource("formaggio1.jpeg").toURI())));
 
             List<ProdottoSingolo> prodSing = new ArrayList<>(Arrays.asList(
-                    new ProdottoSingolo("Latte Rossi", "Latte scremato ad alta digeribilita'", 4.99, 1L, immaginiProdotto, 50, "latticini", "allevamento bestiame sostenibile"),
-                    new ProdottoSingolo("Burro Bianchi", "Burro di altissima qualita'", 2.99, 2L, immaginiProdotto1, 25, "latticini", "Latte selezionato e senza conservanti"),
-                    new ProdottoSingolo("Formaggio Bianchi", "Formaggio fresco dal sapore delicato e fresco", 3.99, 2L, immaginiProdotto2, 15, "latticini", "Latte selezionato e senza conservanti, con tecniche sostenibili")
-            ));
-
+                    new ProdottoSingolo("Latte Rossi", "Latte scremato ad alta digeribilita'", 4.99, 1L,
+                            immaginiProdotto, 50, "latticini", "allevamento bestiame sostenibile"),
+                    new ProdottoSingolo("Burro Bianchi", "Burro di altissima qualita'", 2.99, 2L, immaginiProdotto1, 25,
+                            "latticini", "Latte selezionato e senza conservanti"),
+                    new ProdottoSingolo("Formaggio Bianchi", "Formaggio fresco dal sapore delicato e fresco", 3.99, 2L,
+                            immaginiProdotto2, 15, "latticini",
+                            "Latte selezionato e senza conservanti, con tecniche sostenibili")));
 
             PRODOTTO_LATTE = repo.save(prodSing.get(0));
             PRODOTTO_BURRO = repo.save(prodSing.get(1));
@@ -377,7 +372,7 @@ public class RepositoryCostructor {
         }
     }
 
-    public void impostaEventi(EventoRepository repo){
+    public void impostaEventi(EventoRepository repo) {
         try {
             File immagine1 = new File(getClass().getClassLoader().getResource("facSimileLocandinaFiera2.jpeg").toURI());
             File immagine2 = new File(getClass().getClassLoader().getResource("facSimileLocandinaFiera.jpeg").toURI());
@@ -400,7 +395,8 @@ public class RepositoryCostructor {
             FIERA_CONTADINA.setLocandina(immagine1);
             FIERA_CONTADINA.setIndirizzo(INDIRIZZO_FIERA_CONTADINA);
             FIERA_CONTADINA.setCreatore(ANIMATORE);
-            FIERA_CONTADINA.setAziendePresenti(new ArrayList<>(Arrays.asList(AZIENDA_PRODUTTORE, AZIENDA_TRASFORMATORE)));
+            FIERA_CONTADINA
+                    .setAziendePresenti(new ArrayList<>(Arrays.asList(AZIENDA_PRODUTTORE, AZIENDA_TRASFORMATORE)));
 
             FIERA_AUTUNNO = new EventoFiera();
             FIERA_AUTUNNO.setTitolo("Fiera di Autunno");

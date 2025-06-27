@@ -2,11 +2,11 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richiesta.Richiesta;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.AziendaService;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.RichiestaService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.RichiestaContenutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,11 +32,11 @@ public class AziendaController {
     @Autowired
     private final AziendaService aziendaService;
     @Autowired
-    private final RichiestaService richiestaService;
+    private final RichiestaContenutoService richiestaContenutoService;
 
-    public AziendaController(AziendaService aziendaService, RichiestaService richiestaService) {
+    public AziendaController(AziendaService aziendaService, RichiestaContenutoService richiestaContenutoService) {
         this.aziendaService = aziendaService;
-        this.richiestaService = richiestaService;
+        this.richiestaContenutoService = richiestaContenutoService;
     }
 
     /**
@@ -136,7 +136,7 @@ public class AziendaController {
      * @return ResponseEntity contenente la Richiesta creata.
      */
     @PostMapping(value = "/informazioni/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createAziendaInformazioni(
+    public ResponseEntity<?> createInformazioniAzienda(
             @ModelAttribute RichiestaInformazioniAggiuntiveAziendaDTO richiestaInformazioniAggiuntiveAziendaDTO) {
 
         File[] immaginiFiles;
@@ -160,7 +160,7 @@ public class AziendaController {
         }
 
         try {
-            Richiesta richiesta = this.richiestaService.nuovaRichiestaInformazioniAggiuntive(
+            RichiestaContenuto richiesta = this.richiestaContenutoService.nuovaRichiestaInformazioniAggiuntive(
                     richiestaInformazioniAggiuntiveAziendaDTO.getDescrizione(),
                     richiestaInformazioniAggiuntiveAziendaDTO.getProduzione(),
                     richiestaInformazioniAggiuntiveAziendaDTO.getMetodologie(),
@@ -171,9 +171,6 @@ public class AziendaController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Collections.singletonMap("error", "Parametro non valido: " + e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.singletonMap("error", "Errore interno del server: " + e.getMessage()));
         }
     }
 }
