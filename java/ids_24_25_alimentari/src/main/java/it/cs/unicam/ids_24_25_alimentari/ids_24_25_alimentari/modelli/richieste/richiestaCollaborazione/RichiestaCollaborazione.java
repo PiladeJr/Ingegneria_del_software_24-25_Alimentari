@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@DiscriminatorValue("COLLABORAZIONE")
 @Getter
 @Setter
 public class RichiestaCollaborazione extends Richiesta {

@@ -9,4 +9,5 @@ public class TransazioneDTO {
     private double importo;
     private MetodiPagamentoTransazione metodoPagamento;
     private StatoTransazione statoTransazione;
+    private String paypalPaymentId;
 }

@@ -13,7 +13,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "richiestacollaborazione")
+@Table(name = "collaborazione")
 @NoArgsConstructor
 public class Collaborazione extends Contenuto {
 

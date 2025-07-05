@@ -28,7 +28,7 @@ public class Ordine {
 
     @Column(name = "totale", nullable = false)
     private double totale;
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "stato", nullable = false)
     private StatoOrdine stato;
 

@@ -37,6 +37,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'jakarta.validation:jakarta.validation-api'
 	implementation "me.paulschwarz:spring-dotenv:4.0.0"
+	implementation 'com.paypal.sdk:rest-api-sdk:1.14.0'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'

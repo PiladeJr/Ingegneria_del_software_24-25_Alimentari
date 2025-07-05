@@ -5,6 +5,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruo
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.UtenteBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -25,10 +26,13 @@ import java.util.Optional;
 public class UtenteService implements UserDetailsService {
     @Autowired
     private final UtenteRepository utenteRepository;
+    @Autowired
+    private final IndirizzoService indirizzoService;
     UtenteBuilder builder;
 
-    public UtenteService(UtenteRepository utenteRepository) {
+    public UtenteService(UtenteRepository utenteRepository, IndirizzoService indirizzoService) {
         this.utenteRepository = utenteRepository;
+        this.indirizzoService = indirizzoService;
         this.builder = new UtenteBuilder();
     }
 
@@ -119,7 +123,8 @@ public class UtenteService implements UserDetailsService {
     }
 
     /**
-     * <h2>Restituisce una lista di email degli utenti che hanno un determinato ruolo.</h2>
+     * <h2>Restituisce una lista di email degli utenti che hanno un determinato
+     * ruolo.</h2>
      *
      * @param ruolo - il ruolo degli utenti di cui si vogliono ottenere le email
      * @return una lista di email degli utenti con il ruolo specificato
@@ -137,7 +142,8 @@ public class UtenteService implements UserDetailsService {
      * @param password la password dell'utente
      * @param telefono il telefono dell'utente
      */
-    private void credenzialiBase(String nome, String cognome, String email, String password, String telefono, String iban, Ruolo ruolo) {
+    private void credenzialiBase(String nome, String cognome, String email, String password, String telefono,
+            String iban, Ruolo ruolo) {
         builder.costruisciNome(nome);
         builder.costruisciCognome(cognome);
         builder.costruisciEmail(email);
@@ -172,7 +178,8 @@ public class UtenteService implements UserDetailsService {
      *                      TRASFORMATORE, DISTRIBUTORE)
      * @param cartaIdentita il file contenente la carta d'identità dell'utente
      */
-    public void nuovoAzienda(String nome, String cognome, String email, String password, String telefono, Ruolo ruolo, String iban, long idAzienda,
+    public void nuovoAzienda(String nome, String cognome, String email, String password, String telefono, Ruolo ruolo,
+            String iban, long idAzienda,
             File cartaIdentita) {
         credenzialiBase(nome, cognome, email, password, telefono, iban, ruolo);
         builder.costruisciIdAzienda(idAzienda);
@@ -195,5 +202,46 @@ public class UtenteService implements UserDetailsService {
         builder.costruisciCartaIdentita(carta);
         builder.costruisciCv(cv);
         utenteRepository.save(builder.getUtente());
+    }
+
+    /**
+     * Aggiunge un indirizzo di spedizione all'utente
+     *
+     * @param idUtente  l'id dell'utente a cui aggiungere l'indirizzo
+     * @param indirizzo l'indirizzo di spedizione da aggiungere
+     */
+    public void aggiungiIndirizzoSpedizione(Long idUtente, Indirizzo indirizzo) {
+        if (idUtente == null) {
+            throw new IllegalArgumentException("ID utente non può essere null");
+        }
+        if (indirizzo == null) {
+            throw new IllegalArgumentException("Indirizzo non può essere null");
+        }
+
+        Indirizzo indirizzoSalvato = indirizzoService.save(indirizzo);
+
+        Utente utente = getUtenteById(idUtente);
+        utente.setIndirizzoSpedizione(indirizzoSalvato);
+        utenteRepository.save(utente);
+    }
+
+    /**
+     * Aggiunge un indirizzo di fatturazione all'utente
+     *
+     * @param idUtente  l'id dell'utente a cui aggiungere l'indirizzo
+     * @param indirizzo l'indirizzo di fatturazione da aggiungere
+     */
+    public void aggiungiIndirizzoFatturazione(Long idUtente, Indirizzo indirizzo) {
+        if (idUtente == null) {
+            throw new IllegalArgumentException("ID utente non può essere null");
+        }
+        if (indirizzo == null) {
+            throw new IllegalArgumentException("Indirizzo non può essere null");
+        }
+        Indirizzo indirizzoSalvato = indirizzoService.save(indirizzo);
+
+        Utente utente = getUtenteById(idUtente);
+        utente.setIndirizzoFatturazione(indirizzoSalvato);
+        utenteRepository.save(utente);
     }
 }
