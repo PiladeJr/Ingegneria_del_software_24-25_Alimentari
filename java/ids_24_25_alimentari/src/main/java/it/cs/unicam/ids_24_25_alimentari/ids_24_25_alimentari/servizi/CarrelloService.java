@@ -8,7 +8,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ute
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.Prodotto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.CarrelloRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.ContenutoCarrelloRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.ProdottoService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
