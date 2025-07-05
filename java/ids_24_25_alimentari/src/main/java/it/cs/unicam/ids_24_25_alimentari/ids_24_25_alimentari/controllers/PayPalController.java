@@ -10,18 +10,32 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * Controller per la gestione dei pagamenti PayPal.
+ * Espone endpoint REST per la creazione, il completamento, l'annullamento e il
+ * test dei pagamenti PayPal.
+ */
 @RestController
 @RequestMapping("/api/paypal")
 public class PayPalController {
 
+    /**
+     * Service per la logica di business PayPal.
+     */
     @Autowired
     private PayPalService payPalService;
 
+    /**
+     * Service per la logica di business degli ordini.
+     */
     @Autowired
     private OrdineService ordineService;
 
     /**
-     * Inizia il processo di pagamento PayPal
+     * Inizia il processo di pagamento PayPal.
+     * 
+     * @param transazioneDTO dati della transazione
+     * @return ResponseEntity con i dati del pagamento creato o errore
      */
     @PostMapping("/create-payment")
     public ResponseEntity<?> createPayment(@RequestBody TransazioneDTO transazioneDTO) {
@@ -51,7 +65,12 @@ public class PayPalController {
 
     /**
      * Gestisce il completamento del pagamento PayPal tramite redirect da PayPal
-     * (GET)
+     * (GET).
+     * 
+     * @param token    token PayPal
+     * @param payerId  id del pagatore
+     * @param ordineId id dell'ordine (opzionale)
+     * @return ResponseEntity con i dati dell'ordine aggiornato o errore
      */
     @GetMapping("/success")
     public ResponseEntity<?> paymentSuccessRedirect(@RequestParam("token") String token,
@@ -90,7 +109,10 @@ public class PayPalController {
     }
 
     /**
-     * Gestisce il completamento del pagamento PayPal tramite API (POST)
+     * Gestisce il completamento del pagamento PayPal tramite API (POST).
+     * 
+     * @param request mappa contenente paymentId e payerId
+     * @return ResponseEntity con i dati dell'ordine aggiornato o errore
      */
     @PostMapping("/complete-payment")
     public ResponseEntity<?> completePayment(@RequestBody Map<String, String> request) {
@@ -122,7 +144,12 @@ public class PayPalController {
     }
 
     /**
-     * Gestisce l'annullamento del pagamento PayPal tramite redirect da PayPal (GET)
+     * Gestisce l'annullamento del pagamento PayPal tramite redirect da PayPal
+     * (GET).
+     * 
+     * @param token    token PayPal
+     * @param ordineId id dell'ordine (opzionale)
+     * @return ResponseEntity con i dati dell'ordine annullato o errore
      */
     @GetMapping("/cancel")
     public ResponseEntity<?> paymentCancelRedirect(@RequestParam("token") String token,
@@ -159,7 +186,10 @@ public class PayPalController {
     }
 
     /**
-     * Gestisce l'annullamento del pagamento PayPal tramite API (POST)
+     * Gestisce l'annullamento del pagamento PayPal tramite API (POST).
+     * 
+     * @param request mappa contenente paymentId
+     * @return ResponseEntity con i dati dell'ordine annullato o errore
      */
     @PostMapping("/cancel-payment")
     public ResponseEntity<?> cancelPayment(@RequestBody Map<String, String> request) {
@@ -190,7 +220,10 @@ public class PayPalController {
     }
 
     /**
-     * Ottiene i dettagli di un pagamento
+     * Ottiene i dettagli di un pagamento PayPal.
+     * 
+     * @param paymentId id del pagamento PayPal
+     * @return ResponseEntity con i dettagli del pagamento o errore
      */
     @GetMapping("/payment/{paymentId}")
     public ResponseEntity<?> getPaymentDetails(@PathVariable String paymentId) {
@@ -208,7 +241,10 @@ public class PayPalController {
     }
 
     /**
-     * Metodo per testare l'integrazione PayPal
+     * Metodo per testare l'integrazione PayPal.
+     * 
+     * @param transazioneDTO dati della transazione di test
+     * @return ResponseEntity con esito del test
      */
     @PostMapping("/test-payment")
     public ResponseEntity<?> testPayment(@RequestBody TransazioneDTO transazioneDTO) {

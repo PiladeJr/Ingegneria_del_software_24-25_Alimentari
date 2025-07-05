@@ -13,24 +13,49 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Controller per la gestione degli ordini.
+ * Espone endpoint REST per operazioni sugli ordini, inclusa la gestione dello
+ * stato e dei pagamenti.
+ */
 @RestController
 @RequestMapping("/api/ordini")
 public class OrdineController {
 
+    /**
+     * Service per la logica di business degli ordini.
+     */
     @Autowired
     private OrdineService ordineService;
 
+    /**
+     * Restituisce la lista di tutti gli ordini.
+     * 
+     * @return lista di ordini
+     */
     @GetMapping
     public List<Ordine> getAllOrdini() {
         return ordineService.getAllOrdini();
     }
 
+    /**
+     * Restituisce un ordine dato il suo id.
+     * 
+     * @param id identificativo dell'ordine
+     * @return ResponseEntity contenente l'ordine o 404 se non trovato
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Ordine> getOrdineById(@PathVariable Long id) {
         Optional<Ordine> ordine = ordineService.getOrdineById(id);
         return ordine.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    /**
+     * Crea un nuovo ordine.
+     * 
+     * @param ordine dati dell'ordine da creare
+     * @return ResponseEntity con i dati dell'ordine creato o errore
+     */
     @PostMapping
     public ResponseEntity<?> creaOrdine(@RequestBody OrdineDTO ordine) {
         try {
@@ -42,6 +67,13 @@ public class OrdineController {
         }
     }
 
+    /**
+     * Aggiorna lo stato di un ordine esistente.
+     * 
+     * @param id         identificativo dell'ordine da aggiornare
+     * @param nuovoStato nuovo stato da assegnare all'ordine
+     * @return ResponseEntity con l'ordine aggiornato o 404 se non trovato
+     */
     @PutMapping("/{id}/stato")
     public ResponseEntity<Ordine> aggiornaStatoOrdine(@PathVariable Long id, @RequestBody StatoOrdine nuovoStato) {
         try {
@@ -53,7 +85,12 @@ public class OrdineController {
     }
 
     /**
-     * Endpoint per completare il pagamento PayPal di un ordine
+     * Endpoint per completare il pagamento PayPal di un ordine.
+     * 
+     * @param id        identificativo dell'ordine
+     * @param paymentId id del pagamento PayPal
+     * @param payerId   id del pagatore PayPal
+     * @return ResponseEntity con lo stato del pagamento
      */
     @PostMapping("/{id}/completa-paypal")
     public ResponseEntity<?> completaPaymentPayPal(
@@ -77,7 +114,10 @@ public class OrdineController {
 
     /**
      * Ottiene lo stato dettagliato di un ordine incluse le informazioni di
-     * transazione
+     * transazione.
+     * 
+     * @param id identificativo dell'ordine
+     * @return ResponseEntity con dettagli ordine e transazione o errore
      */
     @GetMapping("/{id}/stato")
     public ResponseEntity<?> getStatoDettagliatoOrdine(@PathVariable Long id) {
@@ -107,7 +147,9 @@ public class OrdineController {
     }
 
     /**
-     * Endpoint per testare la creazione di un ordine
+     * Endpoint per testare la creazione di un ordine.
+     * 
+     * @return ResponseEntity con messaggio di test e stato
      */
     @PostMapping("/test")
     public ResponseEntity<?> testCreazioneOrdine() {
