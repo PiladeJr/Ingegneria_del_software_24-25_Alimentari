@@ -89,7 +89,6 @@ public class Azienda {
         this.iva = iva;
     }
 
-
     public File getCertificato() {
         return certificato;
     }
