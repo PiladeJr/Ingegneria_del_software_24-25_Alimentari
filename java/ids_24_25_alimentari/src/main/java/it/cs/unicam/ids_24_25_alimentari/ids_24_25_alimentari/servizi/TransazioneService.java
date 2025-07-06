@@ -30,6 +30,7 @@ public class TransazioneService {
         t.setImporto(dto.getImporto());
         t.setMetodoPagamento(dto.getMetodoPagamento());
         t.setStatoTransazione(dto.getStatoTransazione());
+        t.setPaypalPaymentId(dto.getPaypalPaymentId());
         t.setDataTransazione(java.time.LocalDateTime.now());
         return transazioneRepository.save(t);
     }
@@ -41,6 +42,7 @@ public class TransazioneService {
             t.setImporto(dto.getImporto());
             t.setMetodoPagamento(dto.getMetodoPagamento());
             t.setStatoTransazione(dto.getStatoTransazione());
+            t.setPaypalPaymentId(dto.getPaypalPaymentId());
             return transazioneRepository.save(t);
         });
     }

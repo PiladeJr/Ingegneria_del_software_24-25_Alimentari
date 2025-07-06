@@ -267,4 +267,5 @@ public class RichiestaCollaborazioneController {
             throw new RuntimeException(e);
         }
     }
+
 }

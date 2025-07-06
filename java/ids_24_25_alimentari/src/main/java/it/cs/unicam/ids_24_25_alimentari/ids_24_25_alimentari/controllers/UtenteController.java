@@ -4,6 +4,8 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.utente.UtenteD
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.JwtService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -115,6 +117,70 @@ public class UtenteController {
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Errore durante l'autenticazione.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
+     * <h2>Aggiunge un indirizzo di spedizione all'utente</h2>
+     * <br>
+     * Questo metodo gestisce una richiesta HTTP POST per aggiungere un indirizzo
+     * di spedizione a un utente specifico identificato dall'ID.
+     * Se la richiesta va a buon fine, restituisce uno stato HTTP 200 (OK).
+     * In caso di errore, restituisce uno stato HTTP 500 (INTERNAL_SERVER_ERROR)
+     * con un messaggio di errore.
+     *
+     * @param idUtente  l'ID dell'utente a cui aggiungere l'indirizzo
+     * @param indirizzo l'indirizzo di spedizione da aggiungere
+     * @return {@code ResponseEntity} con messaggio di successo o errore
+     */
+    @PostMapping("/{idUtente}/indirizzo-spedizione")
+    public ResponseEntity<?> aggiungiIndirizzoSpedizione(@PathVariable Long idUtente,
+            @RequestBody Indirizzo indirizzo) {
+        try {
+            utenteService.aggiungiIndirizzoSpedizione(idUtente, indirizzo);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Indirizzo di spedizione aggiunto con successo.");
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Errore nell'aggiunta dell'indirizzo di spedizione.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
+     * <h2>Aggiunge un indirizzo di fatturazione all'utente</h2>
+     * <br>
+     * Questo metodo gestisce una richiesta HTTP POST per aggiungere un indirizzo
+     * di fatturazione a un utente specifico identificato dall'ID.
+     * Se la richiesta va a buon fine, restituisce uno stato HTTP 200 (OK).
+     * In caso di errore, restituisce uno stato HTTP 500 (INTERNAL_SERVER_ERROR)
+     * con un messaggio di errore.
+     *
+     * @param idUtente  l'ID dell'utente a cui aggiungere l'indirizzo
+     * @param indirizzo l'indirizzo di fatturazione da aggiungere
+     * @return {@code ResponseEntity} con messaggio di successo o errore
+     */
+    @PostMapping("/{idUtente}/indirizzo-fatturazione")
+    public ResponseEntity<?> aggiungiIndirizzoFatturazione(@PathVariable Long idUtente,
+            @RequestBody Indirizzo indirizzo) {
+        try {
+            utenteService.aggiungiIndirizzoFatturazione(idUtente, indirizzo);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Indirizzo di fatturazione aggiunto con successo.");
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Errore nell'aggiunta dell'indirizzo di fatturazione.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

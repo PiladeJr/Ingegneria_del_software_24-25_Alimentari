@@ -20,9 +20,14 @@ public class Transazione {
     private double importo;
     @Column(name = "data_transazione", nullable = false)
     private LocalDateTime dataTransazione;
+    @Enumerated(EnumType.STRING)
     @Column(name = "stato_transazione", nullable = false)
     private StatoTransazione statoTransazione;
+    @Enumerated(EnumType.STRING)
     @Column(name = "metodo_pagamento", nullable = false)
     private MetodiPagamentoTransazione metodoPagamento;
+
+    @Column(name = "paypal_payment_id", nullable = true)
+    private String paypalPaymentId;
 
 }

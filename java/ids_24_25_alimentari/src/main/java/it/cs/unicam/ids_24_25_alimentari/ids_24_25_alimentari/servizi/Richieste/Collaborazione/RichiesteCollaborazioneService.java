@@ -35,6 +35,7 @@ public class RichiesteCollaborazioneService extends RichiestaService {
     private final CollaborazioneService collaborazioneService;
     private final ServizioEmail servizioEmail;
 
+
     public RichiesteCollaborazioneService(RichiestaCollaborazioneRepository richiestaRepository,
             UtenteService utenteService, CollaborazioneService collaborazioneService, ServizioEmail servizioEmail,
             ImplementazioneServizioMail implementazioneServizioMail, AziendaService aziendaService) {
@@ -57,12 +58,14 @@ public class RichiesteCollaborazioneService extends RichiestaService {
      *         rappresentano le richieste di collaborazione.
      */
     public List<RichiesteCollaborazioneOutputDTO> getAllRichieste(String sortBy) {
+
         List<RichiestaCollaborazione> richieste = new ArrayList<>(richiestaRepository.findAll());
         if (sortBy == null || sortBy.isEmpty()) {
             return richieste.stream()
                     .map(RichiesteCollaborazioneOutputDTO::new)
                     .collect(Collectors.toList());
         }
+
         Comparator<RichiestaCollaborazione> comparator = switch (sortBy.toLowerCase()) {
             case "ruolo" -> Comparator.comparing(RichiestaCollaborazione::getRuolo);
             case "stato" -> Comparator.comparing(RichiestaCollaborazione::getApprovato);
@@ -87,6 +90,7 @@ public class RichiesteCollaborazioneService extends RichiestaService {
      */
     public ResponseEntity<?> getCollaborazioneById(long id) {
         RichiestaCollaborazione collaborazione = getRichiestaById(id);
+
         try {
             Ruolo ruolo = collaborazione.getRuolo();
             if (ruolo == Ruolo.ANIMATORE){
@@ -95,6 +99,7 @@ public class RichiesteCollaborazioneService extends RichiestaService {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(Optional.of(collaborazione).map(CollaborazioneAnimatoreDTO::new));
             }
+
             return ResponseEntity
                     .ok()
                     .contentType(MediaType.APPLICATION_JSON)
@@ -122,6 +127,7 @@ public class RichiesteCollaborazioneService extends RichiestaService {
     public RichiestaCollaborazione salvaRichiesta(RichiestaCollaborazione richiesta) {
         return richiestaRepository.save(richiesta);
     }
+
 
     /**
      * <h2>Elimina una richiesta di collaborazione</h2>
@@ -157,6 +163,7 @@ public class RichiesteCollaborazioneService extends RichiestaService {
             throw new NoSuchElementException("Collaborazione non trovata");
         }
     }
+
 
     public RichiestaCollaborazione creaRichiesta(Contenuto contenuto, Ruolo ruolo) {
         RichiestaCollaborazioneBuilder builder = new RichiestaCollaborazioneBuilder();
@@ -199,6 +206,7 @@ public class RichiesteCollaborazioneService extends RichiestaService {
             String iva,
             File certificato,
             File cartaIdentita) {
+
         if (sedeOperativa == null) {
             sedeOperativa = new Indirizzo(
                     sedeLegale.getVia(),
@@ -207,6 +215,7 @@ public class RichiesteCollaborazioneService extends RichiestaService {
                     sedeLegale.getProvincia(),
                     sedeLegale.getCap());
         }
+
         Collaborazione collab = collaborazioneService.creaNuovaAzienda(
                 nome,
                 cognome,
@@ -408,4 +417,5 @@ public class RichiesteCollaborazioneService extends RichiestaService {
                     .body(e);
         }
     }
+
 }

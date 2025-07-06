@@ -86,6 +86,7 @@ public class SecurityConfig {
                 utenteAuth(auth);
                 eventiAuth(auth);
                 prodottoAuth(auth);
+                paypal(auth);
                 richiestaContenutoAuth(auth);
 
                 // Tutto il resto: autenticazione richiesta
@@ -99,6 +100,17 @@ public class SecurityConfig {
                                 .hasAuthority(SecurityConfig.ROLE_GESTORE)
                                 .requestMatchers("/api/richieste-collaborazione/**")
                                 .hasAuthority(SecurityConfig.ROLE_GESTORE);
+        }
+
+        private void paypal(
+                        AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
+                auth
+                                .requestMatchers(HttpMethod.GET, "/api/paypal/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/paypal/**").permitAll()
+                                .requestMatchers(HttpMethod.PUT, "/api/paypal/**").permitAll()
+                                .requestMatchers(HttpMethod.PATCH, "/api/paypal/**").permitAll()
+                                .requestMatchers(HttpMethod.DELETE, "/api/paypal/**").permitAll()
+                                .requestMatchers(HttpMethod.OPTIONS, "/api/paypal/**").permitAll();
         }
 
         private void aziendaAuth(
@@ -122,7 +134,10 @@ public class SecurityConfig {
                 auth
                                 .requestMatchers("/api/users").hasAuthority(SecurityConfig.ROLE_GESTORE)
                                 .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
+                                .requestMatchers("/api/users/*/indirizzo-spedizione").authenticated()
+                                .requestMatchers("/api/users/*/indirizzo-fatturazione").authenticated()
                                 .requestMatchers("/api/users/**").hasAuthority(SecurityConfig.ROLE_GESTORE);
+
         }
 
         private void eventiAuth(
