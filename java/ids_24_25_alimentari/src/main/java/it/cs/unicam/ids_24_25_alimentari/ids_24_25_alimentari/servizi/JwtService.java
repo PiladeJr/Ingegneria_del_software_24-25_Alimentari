@@ -13,6 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.List;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.eccezioni.CustomJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +35,11 @@ public class JwtService {
 
     // Extracts the username from the token
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        try {
+            return extractClaim(token, Claims::getSubject);
+        } catch (Exception e) {
+            throw new CustomJwtException(e.getMessage());
+        }
     }
 
     // Extracts specific claims from the token using a claims resolver

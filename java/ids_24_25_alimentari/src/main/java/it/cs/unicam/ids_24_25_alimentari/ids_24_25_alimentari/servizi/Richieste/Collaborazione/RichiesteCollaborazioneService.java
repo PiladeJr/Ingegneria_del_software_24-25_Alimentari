@@ -1,14 +1,13 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Collaborazione;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.CollaborazioneAnimatoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.CollaborazioneOutDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiesteCollaborazioneOutputDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.ValutaRichiestaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.Richieste.RichiestaCollaborazioneBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
@@ -24,22 +23,23 @@ import org.apache.commons.lang3.RandomStringUtils;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RichiesteCollaborazioneService extends RichiestaService {
-    private final RichiestaCollaborazioneRepository collaborazioneRepository;
+    private final RichiestaCollaborazioneRepository richiestaRepository;
     private final AziendaService aziendaService;
     private final CollaborazioneService collaborazioneService;
     private final ServizioEmail servizioEmail;
 
-    public RichiesteCollaborazioneService(RichiestaCollaborazioneRepository collaborazioneRepository,
+    public RichiesteCollaborazioneService(RichiestaCollaborazioneRepository richiestaRepository,
             UtenteService utenteService, CollaborazioneService collaborazioneService, ServizioEmail servizioEmail,
             ImplementazioneServizioMail implementazioneServizioMail, AziendaService aziendaService) {
         super(implementazioneServizioMail, utenteService);
-        this.collaborazioneRepository = collaborazioneRepository;
+        this.richiestaRepository = richiestaRepository;
         this.collaborazioneService = collaborazioneService;
         this.servizioEmail = servizioEmail;
         this.aziendaService = aziendaService;
@@ -57,7 +57,12 @@ public class RichiesteCollaborazioneService extends RichiestaService {
      *         rappresentano le richieste di collaborazione.
      */
     public List<RichiesteCollaborazioneOutputDTO> getAllRichieste(String sortBy) {
-        List<RichiestaCollaborazione> richieste = new ArrayList<>(collaborazioneRepository.findAll());
+        List<RichiestaCollaborazione> richieste = new ArrayList<>(richiestaRepository.findAll());
+        if (sortBy == null || sortBy.isEmpty()) {
+            return richieste.stream()
+                    .map(RichiesteCollaborazioneOutputDTO::new)
+                    .collect(Collectors.toList());
+        }
         Comparator<RichiestaCollaborazione> comparator = switch (sortBy.toLowerCase()) {
             case "ruolo" -> Comparator.comparing(RichiestaCollaborazione::getRuolo);
             case "stato" -> Comparator.comparing(RichiestaCollaborazione::getApprovato);
@@ -80,22 +85,30 @@ public class RichiesteCollaborazioneService extends RichiestaService {
      *         richiesta di collaborazione,
      *         oppure un `Optional` vuoto se la richiesta non è stata trovata.
      */
-    public ResponseEntity<?> ottieniRichiestaById(long id) {
+    public ResponseEntity<?> getCollaborazioneById(long id) {
         RichiestaCollaborazione collaborazione = getRichiestaById(id);
-        if (collaborazione == null) {
-            return ResponseEntity.status(404)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body("{\"error\": \"Richiesta non trovata\"}");
-        } else {
+        try {
+            Ruolo ruolo = collaborazione.getRuolo();
+            if (ruolo == Ruolo.ANIMATORE){
+                return ResponseEntity
+                        .ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(Optional.of(collaborazione).map(CollaborazioneAnimatoreDTO::new));
+            }
             return ResponseEntity
                     .ok()
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Optional.of(collaborazione).map(CollaborazioneOutDTO::new));
+        } catch (NullPointerException e) {
+            return ResponseEntity.status(404)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("{\"error\": \"Richiesta non trovata\"}");
         }
     }
 
+
     public RichiestaCollaborazione getRichiestaById(long id) {
-        return collaborazioneRepository.findById(id).orElse(null);
+        return richiestaRepository.findById(id).orElse(null);
     }
 
     /**
@@ -107,11 +120,42 @@ public class RichiesteCollaborazioneService extends RichiestaService {
      * @return La richiesta di collaborazione salvata.
      */
     public RichiestaCollaborazione salvaRichiesta(RichiestaCollaborazione richiesta) {
-        return collaborazioneRepository.save(richiesta);
+        return richiestaRepository.save(richiesta);
     }
 
-    public void deleteRichiesta(long id) {
-        collaborazioneRepository.deleteById(id);
+    /**
+     * <h2>Elimina una richiesta di collaborazione</h2>
+     * <br>
+     * Questo metodo elimina una richiesta di collaborazione specificata dal suo ID.
+     *
+     * @param id L'ID della richiesta di collaborazione da eliminare.
+     * @return Una risposta HTTP che indica il successo o il fallimento dell'operazione:
+     *        - 200 OK se la richiesta è stata eliminata con successo.
+     *        - 404 NOT FOUND se la richiesta non esiste.
+     */
+    public ResponseEntity<?> eliminaRichiesta(long id) {
+        Optional<RichiestaCollaborazione> collaborazione = richiestaRepository.findById(id);
+        if (collaborazione.isPresent()) {
+            deleteCollaborazione(collaborazione.get());
+            deleteRichiesta(id);
+            return ResponseEntity.ok(Collections.singletonMap("message", "Richiesta eliminata con successo"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("{\"error\": \"Richiesta non trovata\"}");
+        }
+    }
+    private void deleteRichiesta(long id) {
+        richiestaRepository.deleteById(id);
+    }
+
+    private void deleteCollaborazione(RichiestaCollaborazione richiestaCollaborazione){
+        Collaborazione collaborazione = richiestaCollaborazione.getCollaborazione();
+        if (collaborazione!=null) {
+            richiestaRepository.deleteById(collaborazione.getId());
+        } else {
+            throw new NoSuchElementException("Collaborazione non trovata");
+        }
     }
 
     public RichiestaCollaborazione creaRichiesta(Contenuto contenuto, Ruolo ruolo) {
@@ -155,6 +199,14 @@ public class RichiesteCollaborazioneService extends RichiestaService {
             String iva,
             File certificato,
             File cartaIdentita) {
+        if (sedeOperativa == null) {
+            sedeOperativa = new Indirizzo(
+                    sedeLegale.getVia(),
+                    sedeLegale.getNumeroCivico(),
+                    sedeLegale.getCitta(),
+                    sedeLegale.getProvincia(),
+                    sedeLegale.getCap());
+        }
         Collaborazione collab = collaborazioneService.creaNuovaAzienda(
                 nome,
                 cognome,
@@ -251,20 +303,6 @@ public class RichiesteCollaborazioneService extends RichiestaService {
         return salvaRichiesta(richiesta);
     }
 
-    public ResponseEntity<RichiestaCollaborazione> accettaRichiesta(long id) {
-        Optional<RichiestaCollaborazione> richiesta = collaborazioneRepository.findById(id);
-        if (richiesta.isPresent()) {
-            richiesta.get().setApprovato(true);
-            if (richiesta.get().getApprovato()) {
-                Optional<Collaborazione> collab = collaborazioneService
-                        .getCollabById(richiesta.get().getCollaborazione().getId());
-                processaCollaborazione(collab);
-            }
-            return ResponseEntity.ok(salvaRichiesta(richiesta.get()));
-        } else
-            return ResponseEntity.notFound().build();
-    }
-
     private void processaCollaborazione(Optional<Collaborazione> collab) {
         String password = RandomStringUtils.randomAlphanumeric(8);
         switch (collab.get().getRuolo()) {
@@ -307,7 +345,7 @@ public class RichiesteCollaborazioneService extends RichiestaService {
                 // Gestore non ha bisogno di un account, quindi non facciamo nulla
             }
         }
-        inviaConferma(collab.get().getRuolo(), collab.get().getEmail(), password);
+        notificaAccettazioneRichiesta(collab.get().getRuolo(), collab.get().getEmail(), password);
     }
 
     private Long generaAzienda(Optional<Collaborazione> collaborazione) {
@@ -320,13 +358,54 @@ public class RichiesteCollaborazioneService extends RichiestaService {
         return azienda.getId();
     }
 
-    private void inviaConferma(Ruolo ruolo, String email, String password) {
-        String messaggio = "La sua richiesta di collaborazione per il ruolo di "
-                + ruolo
-                + " è stata accettata con successo! Ecco le sue credenziali:\n"
-                + "Email: " + email + "\n" + "Password: " + password;
-        this.servizioEmail.inviaMail(email, messaggio,
-                "Accettazione Richiesta di Collaborazione");
+    public ResponseEntity<?> elaboraRichiesta(ValutaRichiestaDTO dto, long id) {
+        RichiestaCollaborazione richiesta = getRichiestaById(id);
+        if (richiesta!=null) {
+            if (richiesta.getApprovato() != null) {
+                return ResponseEntity.badRequest()
+                        .body(Collections.singletonMap("message", "La richiesta è già stata elaborata"));
+            }
+
+            if (dto.getStato()) {
+               accettaRichiesta(richiesta);
+            } else {
+                if (dto.getMessaggioAggiuntivo() == null) {
+                    return ResponseEntity.badRequest()
+                            .body(Collections.singletonMap("message", "Inserire un messaggio di rifiuto"));
+                }
+                rifiutaRichiesta(richiesta, dto);
+            }
+            return ResponseEntity.ok().body(Collections.singletonMap("message",
+                    dto.getStato() ? "Richiesta accettata con successo." : "Richiesta correttamente rifiutata."));
+        }
+        return ResponseEntity.status(404).body(Collections.singletonMap("error", " Richiesta non trovata"));
     }
 
+    public ResponseEntity<?> accettaRichiesta(RichiestaCollaborazione richiesta) {
+        try{
+            richiesta.setApprovato(true);
+            Optional<Collaborazione> collab = collaborazioneService
+                    .getCollabById(richiesta.getCollaborazione().getId());
+            processaCollaborazione(collab);
+            return ResponseEntity.ok(salvaRichiesta(richiesta));
+        }  catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e);
+        }
+    }
+
+    public ResponseEntity<?> rifiutaRichiesta(RichiestaCollaborazione richiesta, ValutaRichiestaDTO dto) {
+        try{
+            richiesta.setApprovato(false);
+            Optional<Collaborazione> collab = collaborazioneService
+                    .getCollabById(richiesta.getCollaborazione().getId());
+            collab.ifPresent(collaborazione -> collaborazioneService.deleteCollaborazione(collaborazione.getId()));
+            // notifica il rifiuto all'utente tramite mail
+            notificaRifiutoRichiesta(dto.getMessaggioAggiuntivo(), richiesta.getCollaborazione().getEmail());
+            return ResponseEntity.ok(salvaRichiesta(richiesta));
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e);
+        }
+    }
 }

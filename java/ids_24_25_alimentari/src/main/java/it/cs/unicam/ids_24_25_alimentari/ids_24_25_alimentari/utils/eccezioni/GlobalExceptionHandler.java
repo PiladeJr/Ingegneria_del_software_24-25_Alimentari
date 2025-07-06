@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -98,7 +99,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 errors,
-                Arrays.toString(ex.getStackTrace()));
+                Optional.of(Arrays.toString(ex.getStackTrace())));
     }
 
 
@@ -108,7 +109,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 "Errore nel caricamento dei file: " + ex.getMessage(),
-                Arrays.toString(ex.getStackTrace()));
+                Optional.of(Arrays.toString(ex.getStackTrace())));
     }
 
 
@@ -118,7 +119,8 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED,
                 HttpStatus.UNAUTHORIZED.getReasonPhrase(),
                 ex.getMessage(),
-                Arrays.toString(ex.getStackTrace()));
+                Optional.empty());
+
     }
 
 
@@ -128,7 +130,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 "Riferimento nullo: " + ex.getMessage(),
-                Arrays.toString(ex.getStackTrace()));
+                Optional.of(Arrays.toString(ex.getStackTrace())));
     }
 
 
@@ -138,7 +140,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 "Errore di I/O: " + ex.getMessage(),
-                Arrays.toString(ex.getStackTrace()));
+                Optional.of(Arrays.toString(ex.getStackTrace())));
     }
 
 
@@ -148,16 +150,17 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 "Errore generico: " + ex.getMessage(),
-                Arrays.toString(ex.getStackTrace()));
+                Optional.of(Arrays.toString(ex.getStackTrace())));
     }
 
 
-    private ResponseEntity<Map<String, Object>> handleCustomException(HttpStatus status, String error, Object details, String stackTrace) {
+    private ResponseEntity<Map<String, Object>> handleCustomException(HttpStatus status, String error, Object details, Optional<String> stackTrace) {
         Map<String, Object> response = new HashMap<>();
         response.put("status", status.value());
         response.put("error", error);
         response.put("details", details);
-        response.put("stackTrace", stackTrace);
+
+        stackTrace.ifPresent(trace -> response.put("stackTrace", trace));
 
         return ResponseEntity.status(status).body(response);
     }

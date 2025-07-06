@@ -267,9 +267,9 @@ public class RichiestaContenutoController {
      *         - Un errore 400 con messaggio se la richiesta è già stata elaborata;
      *         - Un errore 404 se la richiesta non esiste.
      */
-    @PatchMapping(value = "/valuta")
-    public ResponseEntity<?> valutaRichiesta(@RequestBody CambiaStatoRichiestaCollaborazioneDTO dto) {
-        return richiestaContenutoService.getRichiestaById(dto.getId())
+    @PatchMapping(value = "/{id}/valuta")
+    public ResponseEntity<?> valutaRichiesta(@RequestBody ValutaRichiestaDTO dto, @PathVariable long id) {
+        return richiestaContenutoService.getRichiestaById(id)
                 .map(richiesta -> {
                     if (richiesta.getApprovato() != null) {
                         return ResponseEntity.badRequest()
@@ -291,7 +291,7 @@ public class RichiestaContenutoController {
      * @param dto       dell'esito della verifica della richiesta parte del Curatore
      * @return
      */
-    private ResponseEntity<?> elaborazioneRichiesta(RichiestaContenuto richiesta, CambiaStatoRichiestaCollaborazioneDTO dto) {
+    private ResponseEntity<?> elaborazioneRichiesta(RichiestaContenuto richiesta, ValutaRichiestaDTO dto) {
         if (!dto.getStato()) {
             if (dto.getMessaggioAggiuntivo() == null) {
                 return ResponseEntity.badRequest()

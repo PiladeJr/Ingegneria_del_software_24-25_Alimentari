@@ -95,7 +95,7 @@ public class SecurityConfig {
         private void collaborazioniAuth(
                         AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
                 auth
-                                .requestMatchers(HttpMethod.PATCH, "/api/richieste-collaborazione/stato")
+                                .requestMatchers(HttpMethod.PATCH, "/api/richieste-collaborazione/{id}/stato")
                                 .hasAuthority(SecurityConfig.ROLE_GESTORE)
                                 .requestMatchers("/api/richieste-collaborazione/**")
                                 .hasAuthority(SecurityConfig.ROLE_GESTORE);

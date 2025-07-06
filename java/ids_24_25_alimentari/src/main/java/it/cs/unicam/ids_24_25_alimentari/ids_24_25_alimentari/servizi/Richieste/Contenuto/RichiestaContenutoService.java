@@ -114,7 +114,10 @@ public class RichiestaContenutoService extends RichiestaService {
     /**
      * <h2>Ottiene il contenuto della richiesta tramite il suo ID.</h2>
      * <br>
-     * 
+     * Questo metodo recupera il contenuto associato a una richiesta specifica
+     * tramite il suo ID. Utilizza una strategia specifica in base alla
+     * tipologia della richiesta per ottenere il contenuto.
+     *
      * @param idRichiesta L'ID della richiesta da cui ottenere il contenuto.
      * @return Il contenuto della richiesta, o un'eccezione se non trovata o se la
      *         tipologia non è supportata.
