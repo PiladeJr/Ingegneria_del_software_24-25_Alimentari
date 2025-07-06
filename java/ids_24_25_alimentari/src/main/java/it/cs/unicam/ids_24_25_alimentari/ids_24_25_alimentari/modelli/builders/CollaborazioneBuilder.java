@@ -6,16 +6,14 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruo
 
 import java.io.File;
 
-public class ContenutoBuilder {
+public class CollaborazioneBuilder {
     private Collaborazione collaborazione;
 
-    public ContenutoBuilder() {
+    public CollaborazioneBuilder() {
         reset();
     }
 
-    public void costruisciNome(String nome) {
-        collaborazione.setNome(nome);
-    }
+    public void costruisciNome(String nome) { collaborazione.setNome(nome); }
 
     public void costruisciCognome(String cognome) {
         collaborazione.setCognome(cognome);

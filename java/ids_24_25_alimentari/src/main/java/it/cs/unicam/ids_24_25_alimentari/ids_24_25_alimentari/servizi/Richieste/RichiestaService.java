@@ -1,10 +1,15 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.ValutaRichiestaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaCollaborazione.RichiestaCollaborazione;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ImplementazioneServizioMail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -20,19 +25,22 @@ public abstract class RichiestaService implements RichiestaInterface {
 
     public List<String> fornisciDestinatari(Ruolo ruolo) {
 
-        List<String> gestori = utenteService.getEmailsByRuolo(ruolo);
-        if (gestori == null && gestori.isEmpty()) {
+        ArrayList<String> admin = (ArrayList<String>) utenteService.getEmailsByRuolo(ruolo);
+        if (admin == null && admin.isEmpty()) {
             throw new RuntimeException("Nessun curatore trovato nel database");
         }
-        return gestori;
-
+        return admin;
     }
 
     private void notificaUtenti(String oggetto, String messaggio, List<String> destinatari) {
         for (String mail : destinatari) {
-            if (mail != null && !mail.isEmpty()) {
-                mailService.inviaMail(oggetto, messaggio, mail);
-            }
+            notificaUtenti(oggetto, messaggio, mail);
+        }
+    }
+
+    private void notificaUtenti(String oggetto, String messaggio, String destinatario) {
+        if (destinatario != null && !destinatario.isEmpty()) {
+            mailService.inviaMail(oggetto, messaggio, destinatario);
         }
     }
 
@@ -41,5 +49,21 @@ public abstract class RichiestaService implements RichiestaInterface {
         String oggetto = "Notifica Nuova Richiesta";
         notificaUtenti(oggetto, messaggio, fornisciDestinatari(ruolo));
     }
+
+    public void notificaAccettazioneRichiesta(Ruolo ruolo, String email, String password) {
+        String messaggio = "La sua richiesta di collaborazione per il ruolo di "
+                + ruolo
+                + " è stata accettata con successo! Ecco le sue credenziali:\n"
+                + "Email: " + email + "\n" + "Password: " + password;
+        String oggetto ="Elaborazione Richiesta di Collaborazione";
+        notificaUtenti(oggetto, messaggio,email);
+    }
+    public void notificaRifiutoRichiesta(String rifiuto, String email){
+        String messaggio = "La sua richiesta di collaborazione è stata rifiutata per la seguente motivazione: " +
+                (rifiuto);
+        String oggetto ="Elaborazione Richiesta di Collaborazione";
+        notificaUtenti(oggetto, messaggio,email);
+    }
+
 
 }

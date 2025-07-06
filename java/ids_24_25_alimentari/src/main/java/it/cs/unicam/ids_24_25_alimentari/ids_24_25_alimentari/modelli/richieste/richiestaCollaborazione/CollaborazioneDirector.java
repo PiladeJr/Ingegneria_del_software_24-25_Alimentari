@@ -3,14 +3,14 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste
 import java.io.File;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.ContenutoBuilder;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.CollaborazioneBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 
 public class CollaborazioneDirector {
-    private ContenutoBuilder builder;
+    private CollaborazioneBuilder builder;
 
     public CollaborazioneDirector() {
-        this.builder = new ContenutoBuilder();
+        this.builder = new CollaborazioneBuilder();
     }
 
     private void costruisciAccount(
