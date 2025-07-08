@@ -6,6 +6,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.AziendaService;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.InfoAggiuntiveService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.RichiestaContenutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,14 +30,16 @@ import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multi
 @RequestMapping("/api/azienda")
 public class AziendaController {
 
-    @Autowired
     private final AziendaService aziendaService;
-    @Autowired
     private final RichiestaContenutoService richiestaContenutoService;
+    private final InfoAggiuntiveService infoAggiuntiveService;
 
-    public AziendaController(AziendaService aziendaService, RichiestaContenutoService richiestaContenutoService) {
+
+
+    public AziendaController(AziendaService aziendaService, RichiestaContenutoService richiestaContenutoService, InfoAggiuntiveService infoAggiuntiveService) {
         this.aziendaService = aziendaService;
         this.richiestaContenutoService = richiestaContenutoService;
+        this.infoAggiuntiveService = infoAggiuntiveService;
     }
 
     /**
@@ -96,6 +99,23 @@ public class AziendaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Collections.singletonMap("error", "Errore interno del server: " + e.getMessage()));
         }
+    }
+
+    /**
+     * <h2>Ottieni le informazioni aggiuntive dell'azienda</h2>
+     * <br/>
+     * <p>Endpoint per ottenere le informazioni aggiuntive approvate relative all'azienda dell'utente autenticato.</p>
+     *<br/>
+     * <p><strong>Response:</strong></p>
+     * <ul>
+     *   <li><code>200 OK</code>: Contiene le informazioni aggiuntive approvate.</li>
+     *   <li><code>200 OK</code>: Messaggio vuoto se non ci sono informazioni disponibili.</li>
+     *   <li><code>404 Not Found</code>: Se le informazioni non sono trovate.</li>
+     * </ul>
+     */
+    @GetMapping("/informazioni")
+    public ResponseEntity<?> getInformazioniAzienda() {
+        return infoAggiuntiveService.ottieniInformazioniAzienda();
     }
 
     /**
@@ -173,4 +193,6 @@ public class AziendaController {
                     .body(Collections.singletonMap("error", "Parametro non valido: " + e.getMessage()));
         }
     }
+
+
 }

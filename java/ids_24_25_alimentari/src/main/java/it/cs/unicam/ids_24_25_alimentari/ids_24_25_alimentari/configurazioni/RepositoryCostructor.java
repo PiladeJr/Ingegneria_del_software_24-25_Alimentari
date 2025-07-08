@@ -264,41 +264,49 @@ public class RepositoryCostructor {
     public void impostaAziende(AziendaRepository aziendaRepository) {
         pulisciAziende(aziendaRepository);
 
+        // Fetch Indirizzo entities from the database
         INDIRIZZO_PRODUTTORE = indirizzoRepository.findById(INDIRIZZO_PRODUTTORE.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Indirizzo produttore non trovato"));
         INDIRIZZO_TRASFORMATORE = indirizzoRepository.findById(INDIRIZZO_TRASFORMATORE.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Indirizzo trasformatore non trovato"));
 
+        // Fetch Utente entities from the database
+        PRODUTTORE = utenteRepository.findById(PRODUTTORE.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Produttore non trovato"));
+        TRASFORMATORE = utenteRepository.findById(TRASFORMATORE.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Trasformatore non trovato"));
+
+        // Ensure Utente entities are attached to the persistence context
+        utenteRepository.flush();
+
+        // Create and associate Azienda entities
         AZIENDA_PRODUTTORE = new Azienda();
         AZIENDA_PRODUTTORE.setDenominazioneSociale("Azienda Agricola Rossi");
         AZIENDA_PRODUTTORE.setIva("IT12345678901");
         AZIENDA_PRODUTTORE.setSedeLegale(INDIRIZZO_PRODUTTORE);
         AZIENDA_PRODUTTORE.setSedeOperativa(INDIRIZZO_PRODUTTORE);
+        AZIENDA_PRODUTTORE.setUtente(PRODUTTORE);
 
         AZIENDA_TRASFORMATORE = new Azienda();
         AZIENDA_TRASFORMATORE.setDenominazioneSociale("Industria Alimentare Bianchi");
         AZIENDA_TRASFORMATORE.setIva("IT09876543210");
         AZIENDA_TRASFORMATORE.setSedeLegale(INDIRIZZO_TRASFORMATORE);
         AZIENDA_TRASFORMATORE.setSedeOperativa(INDIRIZZO_TRASFORMATORE);
+        AZIENDA_TRASFORMATORE.setUtente(TRASFORMATORE);
 
+        // Save Azienda entities
         AZIENDA_PRODUTTORE = aziendaRepository.save(AZIENDA_PRODUTTORE);
         AZIENDA_TRASFORMATORE = aziendaRepository.save(AZIENDA_TRASFORMATORE);
 
-        aziendaRepository.flush(); // Assicura la persistenza immediata
-
-        // Associare le aziende agli utenti
-        PRODUTTORE.setIdAzienda(AZIENDA_PRODUTTORE.getId());
-        TRASFORMATORE.setIdAzienda(AZIENDA_TRASFORMATORE.getId());
-
-        utenteRepository.save(PRODUTTORE);
-        utenteRepository.save(TRASFORMATORE);
-        utenteRepository.flush();
+        aziendaRepository.flush(); // Ensure immediate persistence
 
         isAziendaRepositorySet = true;
     }
 
     public void impostaInfoAggiuntive(InformazioniAggiuntiveRepository repo) {
         try {
+            pulisciInfoAggiuntive(repo);
+
             File immagine = new File(getClass().getClassLoader().getResource("azienda1.jpg").toURI());
 
             File certificato = new File(getClass().getClassLoader().getResource("certificato.pdf").toURI());
@@ -311,6 +319,7 @@ public class RepositoryCostructor {
             builder.costruisciMetodi("Metodi sostenibili, utilizzando solo energia rinnovabile");
             builder.aggiungiImmagine(immagine);
             builder.aggiungiCertificato(certificato);
+            builder.costruisciAzienda(AZIENDA_PRODUTTORE);
             INFORMAZIONI_AGGIUNTIVE_PRODUTTORE = builder.getInformazioniAggiuntive();
 
             builder.costruisciDescrizione("Dalle migliori materie prime per la qualita' che meritate");
@@ -318,18 +327,13 @@ public class RepositoryCostructor {
             builder.costruisciMetodi("Metodi sostenibili e nessuno spreco di risorse");
             builder.aggiungiImmagine(immagine);
             builder.aggiungiCertificato(certificato);
+            builder.costruisciAzienda(AZIENDA_TRASFORMATORE);
             INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE = builder.getInformazioniAggiuntive();
-
-            AZIENDA_PRODUTTORE.setInformazioniAggiuntive(INFORMAZIONI_AGGIUNTIVE_PRODUTTORE);
-            AZIENDA_TRASFORMATORE.setInformazioniAggiuntive(INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE);
 
             repo.save(INFORMAZIONI_AGGIUNTIVE_PRODUTTORE);
             repo.save(INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE);
-
-            aziendaRepository.save(AZIENDA_PRODUTTORE);
-            aziendaRepository.save(AZIENDA_TRASFORMATORE);
-
-            aziendaService.CollegaAzienda(TRASFORMATORE.getId(), AZIENDA_PRODUTTORE.getId());
+//TODO sistemare utente-azienda-esterna
+           // aziendaService.collegaAzienda(AZIENDA_TRASFORMATORE.getUtente().getId(), AZIENDA_PRODUTTORE.getId());
 
             isInformazioniAggiuntiveRepositorySet = true;
 

@@ -8,12 +8,14 @@ import org.springframework.stereotype.Repository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AziendaRepository extends JpaRepository<Azienda, Long> {
-    @Query("SELECT a FROM Azienda a JOIN Utente u ON a.id = u.idAzienda WHERE u.ruolo = :ruolo")
+    @Query("SELECT a FROM Azienda a WHERE a.utente.ruolo = :ruolo")
     List<Azienda> findAziendeByRuolo(Ruolo ruolo);
-
-    @Query("SELECT a FROM Azienda a JOIN Utente u ON a.id = u.idAzienda WHERE u.ruolo = :ruolo AND a.id = :idAzienda")
-    Azienda findAziendaByIdAndruolo(long idAzienda, Ruolo ruolo);
+    @Query("SELECT a FROM Azienda a WHERE a.utente.ruolo = :ruolo AND a.id = :idAzienda")
+    Azienda findAziendaByIdAndRuolo(long idAzienda, Ruolo ruolo);
+    @Query("SELECT a FROM Azienda a WHERE a.utente = :idUtente")
+    Optional<Azienda> findAziendaByUtenteId(long idUtente);
 }

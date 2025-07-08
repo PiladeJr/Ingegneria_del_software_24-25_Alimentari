@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -57,11 +58,9 @@ public class UtenteService implements UserDetailsService {
      *
      * @return l'utente salvato nel sistema
      */
-    public Utente getUtenteById(long id) {
-        Utente utente = utenteRepository.findById(id);
-        if (utente == null)
-            throw new IllegalArgumentException("utente non trovato");
-        return utente;
+    public Optional<Utente> getUtenteById(long id) {
+        Utente utente = utenteRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Utente con id " + id + " non trovato"));;
+        return Optional.ofNullable(utente);
     }
 
     /**
@@ -154,41 +153,7 @@ public class UtenteService implements UserDetailsService {
     }
 
     /**
-     * crea un nuovo account di tipo animatore
-     * usa gli stessi parametri per il metodo credenziali base
-     * usa inoltre i seguenti parametri:
-     * 
-     * @param iban  l'iban dell'animatore
-     * @param carta il file contenente la carta d'identità dell'animatore
-     */
-    public void nuovoAnimatore(String nome, String cognome, String email, String password, String telefono, String iban,
-            File carta) {
-        credenzialiBase(nome, cognome, email, password, telefono, iban, Ruolo.ANIMATORE);
-        builder.costruisciCartaIdentita(carta);
-        utenteRepository.save(builder.getUtente());
-    }
-
-    /**
-     * crea un nuovo account di tipo produttore, trasformatore o distruibutore,
-     * in base al ruolo selezionato dall'utente.
-     * usa gli stessi parametri per il metodo credenziali base
-     * usa inoltre i seguenti parametri:
-     * 
-     * @param ruolo         il ruolo selezionato dall'utente (PRODUTTORE,
-     *                      TRASFORMATORE, DISTRIBUTORE)
-     * @param cartaIdentita il file contenente la carta d'identità dell'utente
-     */
-    public void nuovoAzienda(String nome, String cognome, String email, String password, String telefono, Ruolo ruolo,
-            String iban, long idAzienda,
-            File cartaIdentita) {
-        credenzialiBase(nome, cognome, email, password, telefono, iban, ruolo);
-        builder.costruisciIdAzienda(idAzienda);
-        builder.costruisciCartaIdentita(cartaIdentita);
-        utenteRepository.save(builder.getUtente());
-    }
-
-    /**
-     * crea un nuovo account di tipo curatore.
+     * crea un nuovo account Utente.
      * usa gli stessi parametri per il metodo credenziali base
      * usa inoltre i seguenti parametri:
      * 
@@ -196,52 +161,68 @@ public class UtenteService implements UserDetailsService {
      * @param carta la carta d'identità del curatore
      * @param cv    il curriculum del curatore
      */
-    public void nuovoCuratore(String nome, String cognome, String email, String password, String telefono, String iban,
-            File carta, File cv) {
-        credenzialiBase(nome, cognome, email, password, telefono, iban, Ruolo.CURATORE);
+    public Utente nuovoUtente(String nome, String cognome, String email, String password, String telefono, String iban,Ruolo ruolo,
+                            File carta, File cv) {
+        credenzialiBase(nome, cognome, email, password, telefono, iban, ruolo);
         builder.costruisciCartaIdentita(carta);
         builder.costruisciCv(cv);
-        utenteRepository.save(builder.getUtente());
+        return utenteRepository.save(builder.getUtente());
     }
 
+    private void aggiungiIndirizzo(Long idUtente, Indirizzo indirizzo, boolean isSpedizione) {
+            if (idUtente == null) {
+                throw new IllegalArgumentException("ID utente non può essere null");
+            }
+            if (indirizzo == null) {
+                throw new IllegalArgumentException("Indirizzo non può essere null");
+            }
+
+            Indirizzo indirizzoSalvato = indirizzoService.save(indirizzo);
+
+            Optional<Utente> utente = getUtenteById(idUtente);
+            if (utente.isPresent()) {
+                if (isSpedizione) {
+                    utente.get().setIndirizzoSpedizione(indirizzoSalvato);
+                } else {
+                    utente.get().setIndirizzoFatturazione(indirizzoSalvato);
+                }
+                utenteRepository.save(utente.get());
+            } else {
+                throw new NoSuchElementException("Utente con id " + idUtente + " non trovato");
+            }
+        }
+
     /**
-     * Aggiunge un indirizzo di spedizione all'utente
+     * <h2>Aggiunge un indirizzo di spedizione all'utente</h2>
+     * <p>
+     * Questo metodo consente di aggiungere un indirizzo di spedizione a un utente
+     * esistente nel sistema. L'indirizzo viene salvato nel database e associato
+     * all'utente specificato.
+     * </p>
      *
-     * @param idUtente  l'id dell'utente a cui aggiungere l'indirizzo
-     * @param indirizzo l'indirizzo di spedizione da aggiungere
+     * @param idUtente  L'ID dell'utente a cui aggiungere l'indirizzo.
+     * @param indirizzo L'indirizzo di spedizione da aggiungere.
+     * @throws IllegalArgumentException Se l'ID utente o l'indirizzo sono null.
+     * @throws NoSuchElementException   Se l'utente con l'ID specificato non è trovato.
      */
     public void aggiungiIndirizzoSpedizione(Long idUtente, Indirizzo indirizzo) {
-        if (idUtente == null) {
-            throw new IllegalArgumentException("ID utente non può essere null");
-        }
-        if (indirizzo == null) {
-            throw new IllegalArgumentException("Indirizzo non può essere null");
-        }
-
-        Indirizzo indirizzoSalvato = indirizzoService.save(indirizzo);
-
-        Utente utente = getUtenteById(idUtente);
-        utente.setIndirizzoSpedizione(indirizzoSalvato);
-        utenteRepository.save(utente);
+        aggiungiIndirizzo(idUtente, indirizzo, true);
     }
 
     /**
-     * Aggiunge un indirizzo di fatturazione all'utente
+     * <h2>Aggiunge un indirizzo di fatturazione all'utente</h2>
+     * <p>
+     * Questo metodo consente di aggiungere un indirizzo di fatturazione a un utente
+     * esistente nel sistema. L'indirizzo viene salvato nel database e associato
+     * all'utente specificato.
+     * </p>
      *
-     * @param idUtente  l'id dell'utente a cui aggiungere l'indirizzo
-     * @param indirizzo l'indirizzo di fatturazione da aggiungere
+     * @param idUtente  L'ID dell'utente a cui aggiungere l'indirizzo.
+     * @param indirizzo L'indirizzo di fatturazione da aggiungere.
+     * @throws IllegalArgumentException Se l'ID utente o l'indirizzo sono null.
+     * @throws NoSuchElementException   Se l'utente con l'ID specificato non è trovato.
      */
     public void aggiungiIndirizzoFatturazione(Long idUtente, Indirizzo indirizzo) {
-        if (idUtente == null) {
-            throw new IllegalArgumentException("ID utente non può essere null");
-        }
-        if (indirizzo == null) {
-            throw new IllegalArgumentException("Indirizzo non può essere null");
-        }
-        Indirizzo indirizzoSalvato = indirizzoService.save(indirizzo);
-
-        Utente utente = getUtenteById(idUtente);
-        utente.setIndirizzoFatturazione(indirizzoSalvato);
-        utenteRepository.save(utente);
+        aggiungiIndirizzo(idUtente, indirizzo, false);
     }
 }

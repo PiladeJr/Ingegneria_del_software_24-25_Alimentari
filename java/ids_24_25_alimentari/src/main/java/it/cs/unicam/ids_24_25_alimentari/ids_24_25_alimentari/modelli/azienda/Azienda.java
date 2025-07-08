@@ -3,10 +3,13 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.ProdottoSingolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -15,6 +18,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "aziende")
+@Getter
+@Setter
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 public class Azienda {
@@ -41,69 +46,16 @@ public class Azienda {
     @Column(name = "certificato")
     private File certificato;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @Nullable
-    private InformazioniAggiuntive informazioniAggiuntive;
-
     @OneToMany(cascade = CascadeType.ALL)
     @Column(name = "prodotto", nullable = true)
     private List<ProdottoSingolo> prodotti;
 
-    public long getId() {
-        return id;
-    }
+    @OneToOne
+    @JoinColumn(name = "utente_id", nullable = false)
+    private Utente utente;
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getDenominazioneSociale() {
-        return denominazioneSociale;
-    }
-
-    public void setDenominazioneSociale(String denominazioneSociale) {
-        this.denominazioneSociale = denominazioneSociale;
-    }
-
-    public Indirizzo getSedeLegale() {
-        return sedeLegale;
-    }
-
-    public void setSedeLegale(Indirizzo sedeLegale) {
-        this.sedeLegale = sedeLegale;
-    }
-
-    public Indirizzo getSedeOperativa() {
-        return sedeOperativa;
-    }
-
-    public void setSedeOperativa(Indirizzo sedeOperativa) {
-        this.sedeOperativa = sedeOperativa;
-    }
-
-    public String getIva() {
-        return iva;
-    }
-
-    public void setIva(String iva) {
-        this.iva = iva;
-    }
-
-
-    public File getCertificato() {
-        return certificato;
-    }
-
-    public void setCertificato(File certificato) {
-        this.certificato = certificato;
-    }
-
+    @OneToOne(mappedBy = "azienda", cascade = CascadeType.ALL, orphanRemoval = true)
     @Nullable
-    public InformazioniAggiuntive getInformazioniAggiuntive() {
-        return informazioniAggiuntive;
-    }
+    private InformazioniAggiuntive informazioniAggiuntive;
 
-    public void setInformazioniAggiuntive(@Nullable InformazioniAggiuntive informazioniAggiuntive) {
-        this.informazioniAggiuntive = informazioniAggiuntive;
-    }
 }

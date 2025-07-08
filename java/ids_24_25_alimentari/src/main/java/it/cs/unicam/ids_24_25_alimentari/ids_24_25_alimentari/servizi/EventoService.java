@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -636,7 +633,7 @@ public class EventoService {
             Indirizzo indirizzo,
             List<Azienda> aziende) {
         EventoDirector eventoDirector = new EventoDirector();
-        Utente creatore = utenteService.getUtenteById(utenteService.getIdUtenteAutenticato());
+        Optional<Utente> creatore = utenteService.getUtenteById(utenteService.getIdUtenteAutenticato());
         Evento evento = eventoDirector.creaFieraCompleta(
                 titolo, descrizione, inizio, fine, locandina, indirizzo, creatore, aziende);
         return salvaEvento(evento).getId();
@@ -667,7 +664,7 @@ public class EventoService {
             Indirizzo indirizzo,
             Azienda aziendaRiferimento) {
         EventoDirector eventoDirector = new EventoDirector();
-        Utente creatore = utenteService.getUtenteById(utenteService.getIdUtenteAutenticato());
+        Optional<Utente> creatore = utenteService.getUtenteById(utenteService.getIdUtenteAutenticato());
         Evento evento = eventoDirector.creaVisitaCompleta(
                 titolo, descrizione, inizio, fine, locandina, indirizzo, creatore, aziendaRiferimento);
         return salvaEvento(evento).getId();
@@ -711,13 +708,13 @@ public class EventoService {
      *         l'evento, {@code false} altrimenti.
      */
     public boolean checkCreator(EventoVisita evento) {
-        Utente autenticato = utenteService.getUtenteById(utenteService.getIdUtenteAutenticato());
-        switch (autenticato.getRuolo()) {
+        Optional<Utente> autenticato = utenteService.getUtenteById(utenteService.getIdUtenteAutenticato());
+        switch (autenticato.get().getRuolo()) {
             case GESTORE -> {
                 return true; // Il gestore può sempre visualizzare gli eventi
             }
             default -> {
-                return evento.getCreatore().getId() == autenticato.getId(); // L'utente è il creatore dell'evento
+                return evento.getCreatore().getId() == autenticato.get().getId(); // L'utente è il creatore dell'evento
             }
         }
     }
@@ -793,10 +790,14 @@ public class EventoService {
      *         altrimenti
      */
     public boolean aggiungiIscrizione(EventoVisita visita, Long idUtente) {
-        Utente utente = utenteService.getUtenteById(idUtente);
-        visita.getIscritti().add(utente);
-        eventoRepository.save(visita);
-        return true;
-    }
+                Optional<Utente> utente = utenteService.getUtenteById(idUtente);
+                if (utente.isPresent()) {
+                    visita.getIscritti().add(utente.get());
+                } else {
+                    return false;
+                }
+                eventoRepository.save(visita);
+                return true;
+            }
 
 }

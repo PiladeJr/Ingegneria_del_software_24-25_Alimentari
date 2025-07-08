@@ -11,8 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface UtenteRepository extends JpaRepository<Utente, Long> {
-    @Query("SELECT u FROM Utente u WHERE u.id = ?1")
-    Utente findById(long id);
     @Query("SELECT u FROM Utente u WHERE u.nome = ?1")
     Utente findByNome(String nome);
     @Query("SELECT u FROM Utente u WHERE u.nome LIKE %?1%")

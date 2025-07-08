@@ -271,45 +271,14 @@ public class RichiestaContenutoController {
     @PatchMapping(value = "/{id}/valuta")
     public ResponseEntity<?> valutaRichiesta(@RequestBody ValutaRichiestaDTO dto, @PathVariable long id) {
         return richiestaContenutoService.getRichiestaById(id)
-
                 .map(richiesta -> {
                     if (richiesta.getApprovato() != null) {
                         return ResponseEntity.badRequest()
                                 .body(Collections.singletonMap("message", "La richiesta è già stata elaborata"));
                     }
-                    return elaborazioneRichiesta(richiesta, dto);
+                    return richiestaContenutoService.elaborazioneRichiesta(richiesta, dto);
                 })
                 .orElseGet(() -> ResponseEntity.status(404)
                         .body(Collections.singletonMap("error", "Richiesta non trovata")));
-    }
-
-    /**
-     * Elabora la richiesta in base alla decisione del Curatore, che decide se
-     * approvarla o rifiutarla,
-     * inviando una mail all'utente che ha effettuato tale richiesta con l'esito
-     * della decisione.
-     *
-     * @param richiesta da elaborare da parte del Curatore
-     * @param dto       dell'esito della verifica della richiesta parte del Curatore
-     * @return
-     */
-
-    private ResponseEntity<?> elaborazioneRichiesta(RichiestaContenuto richiesta, ValutaRichiestaDTO dto) {
-
-        if (!dto.getStato()) {
-            if (dto.getMessaggioAggiuntivo() == null) {
-                return ResponseEntity.badRequest()
-                        .body(Collections.singletonMap("message", "Inserire un messaggio di rifiuto"));
-            }
-            String messaggio = "La sua richiesta di collaborazione è stata rifiutata per la seguente motivazione: "
-                    + dto.getMessaggioAggiuntivo();
-            Utente utente = utenteService.getUtenteById(richiesta.getIdMittente());
-            String emailUtente = utente.getEmail();
-            this.servizioEmail.inviaMail(emailUtente, messaggio,
-                    "Valutazione Richiesta di " + richiesta.getTipologia().toString());
-        }
-        richiestaContenutoService.processaRichiesta(richiesta, dto.getStato());
-        return ResponseEntity.ok().body(Collections.singletonMap("message",
-                dto.getStato() ? "Richiesta accettata con successo." : "Richiesta correttamente rifiutata."));
     }
 }

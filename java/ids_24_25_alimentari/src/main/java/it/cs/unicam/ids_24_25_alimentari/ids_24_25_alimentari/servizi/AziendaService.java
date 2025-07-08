@@ -4,6 +4,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Az
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.AziendaBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.UtenteAziendaEsterna;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.AziendaRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteAziendaEsternaRepository;
@@ -37,6 +38,10 @@ public class AziendaService {
         return aziendaRepository.findById(id);
     }
 
+    public Optional<Azienda> getAziendaByUtente(long id) {
+        return aziendaRepository.findAziendaByUtenteId(id);
+    }
+
     public Azienda saveAzienda(Azienda azienda) {
         return aziendaRepository.save(azienda);
     }
@@ -50,13 +55,15 @@ public class AziendaService {
             Indirizzo sedeLegale,
             Indirizzo sedeOperativa,
             String iva,
-            File certificato) {
+            File certificato,
+            Utente utente) {
         AziendaBuilder builder = new AziendaBuilder();
         builder.costruisciDenSociale(denSociale);
         builder.costruisciSedeLegale(sedeLegale);
         builder.costruisciSedeOperativa(sedeOperativa);
         builder.costruisciIva(iva);
         builder.aggiungiCertificato(certificato);
+        builder.costruisciUtente(utente);
         return saveAzienda(builder.getAzienda());
     }
 
@@ -67,14 +74,14 @@ public class AziendaService {
      * @param idAziendaProduttrice ID dell'azienda produttrice da collegare.
      * @return l'associazione salvata nel database.
      */
-    public UtenteAziendaEsterna CollegaAzienda(Long idUtente, Long idAziendaProduttrice) {
-        UtenteAziendaEsterna collegamento = new UtenteAziendaEsterna();
-        Azienda azienda = aziendaRepository.findAziendaByIdAndruolo(idAziendaProduttrice, Ruolo.PRODUTTORE);
+    public UtenteAziendaEsterna collegaAzienda(Long idUtente, Long idAziendaProduttrice) {
+        Azienda azienda = aziendaRepository.findAziendaByIdAndRuolo(idAziendaProduttrice, Ruolo.PRODUTTORE);
 
         if (azienda == null) {
-            throw new IllegalArgumentException("Azienda non trovata");
+            throw new IllegalArgumentException("Azienda non trovata con ID: " + idAziendaProduttrice + " e ruolo: PRODUTTORE");
         }
 
+        UtenteAziendaEsterna collegamento = new UtenteAziendaEsterna();
         collegamento.setUtenteId(idUtente);
         collegamento.setAziendaId(idAziendaProduttrice);
 

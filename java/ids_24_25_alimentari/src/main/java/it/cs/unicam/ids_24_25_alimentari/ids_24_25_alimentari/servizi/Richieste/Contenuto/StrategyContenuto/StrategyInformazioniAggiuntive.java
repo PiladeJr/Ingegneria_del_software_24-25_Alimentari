@@ -1,5 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.StrategyContenuto;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.Tipologia;
@@ -19,7 +20,10 @@ public class StrategyInformazioniAggiuntive implements RichiestaContenutoStrateg
     @Override
     public void processaRichiesta(RichiestaContenuto richiesta, Boolean status) {
         var info = informazioniRepository.findById(richiesta.getTargetId());
-        System.out.println("Elaborazione della richiesta per informazioni aggiuntive: " + richiesta.getId());
+        info.get().setApprovato(status);
+        richiesta.setApprovato(status);
+        informazioniRepository.save(info.get());
+        richiesta.setApprovato(status);
     }
 
 

@@ -1,5 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -60,8 +61,9 @@ public class Utente implements UserDetails {
     @Column(name = "cartaIdentita")
     private File cartaIdentita;
 
-    @Column(nullable = true)
-    private long idAzienda;
+    @OneToOne(mappedBy = "utente", cascade = CascadeType.MERGE)
+    private Azienda azienda;
+
 
     public long getId() {
         return id;
@@ -175,13 +177,6 @@ public class Utente implements UserDetails {
         this.cartaIdentita = cartaIdentita;
     }
 
-    public long getIdAzienda() {
-        return idAzienda;
-    }
-
-    public void setIdAzienda(long idAzienda) {
-        this.idAzienda = idAzienda;
-    }
 
     public Indirizzo getIndirizzoFatturazione() {
         return indirizzoFatturazione;

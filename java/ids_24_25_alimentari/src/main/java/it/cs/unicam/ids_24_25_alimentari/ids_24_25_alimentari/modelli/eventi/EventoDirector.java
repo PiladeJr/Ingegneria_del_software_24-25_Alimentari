@@ -11,6 +11,7 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class EventoDirector {
 
@@ -64,7 +65,7 @@ public class EventoDirector {
             LocalDateTime fine,
             File file,
             Indirizzo luogo,
-            Utente utente) {
+            Optional<Utente> utente) {
 
         builder.reset()
                 .costruisciTitolo(titolo)
@@ -74,7 +75,7 @@ public class EventoDirector {
                 .costruisciFine(fine)
                 .costruisciLocandina(file)
                 .costruisciIndirizzo(luogo)
-                .costruisciCreatore(utente);
+                .costruisciCreatore(utente.get());
         return builder;
     }
 
@@ -86,7 +87,7 @@ public class EventoDirector {
             LocalDateTime fine,
             File file,
             Indirizzo luogo,
-            Utente creatore,
+            Optional<Utente> creatore,
             List<Azienda> aziende) {
         cambiaBuilder(fieraBuilder);
         if (!(builderCorrente instanceof FieraBuilder fieraBuilder))
@@ -103,7 +104,7 @@ public class EventoDirector {
             LocalDateTime fine,
             File file,
             Indirizzo luogo,
-            Utente creatore,
+            Optional<Utente> creatore,
             Azienda azienda) {
         cambiaBuilder(visitaBuilder);
         if (!(builderCorrente instanceof VisitaBuilder visitaBuilder))

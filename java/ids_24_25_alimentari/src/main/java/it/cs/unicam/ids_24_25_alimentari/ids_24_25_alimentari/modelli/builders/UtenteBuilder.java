@@ -56,12 +56,6 @@ public class UtenteBuilder {
         utente.setCartaIdentita(cartaIdentita);
         return this;
     }
-    //TODO Spostare dal builder di utente a quello di azienda
-    public UtenteBuilder costruisciIdAzienda(long idAzienda) {
-        utente.setIdAzienda(idAzienda);
-        return this;
-    }
-
     public UtenteBuilder rimuoviCv(){
         utente.setCv(null);
         return this;

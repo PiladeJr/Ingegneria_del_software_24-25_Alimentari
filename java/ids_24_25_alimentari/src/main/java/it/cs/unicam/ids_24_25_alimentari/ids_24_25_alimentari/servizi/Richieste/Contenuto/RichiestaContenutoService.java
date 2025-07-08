@@ -1,5 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.ValutaRichiestaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.Richieste.RichiestaContenutoBuilder;
@@ -21,6 +22,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ImplementazioneServizioMail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -102,13 +104,45 @@ public class RichiestaContenutoService extends RichiestaService {
      * @throws IllegalArgumentException se la tipologia della richiesta non è
      *                                  supportata.
      */
-    public void processaRichiesta(RichiestaContenuto richiesta, Boolean stato) {
+    private void processaRichiesta(RichiestaContenuto richiesta, Boolean stato) {
         RichiestaContenutoStrategy strategy = strategyFactory.getStrategy(richiesta.getTipologia());
         if (strategy != null) {
             strategy.processaRichiesta(richiesta, stato);
         } else {
             throw new IllegalArgumentException("Tipologia non supportata: " + richiesta.getTipologia());
         }
+    }
+
+
+    /**
+     * <h2>Elabora una richiesta di contenuto</h2>
+     * <br>
+     * Questo metodo consente di elaborare una richiesta di contenuto, approvandola o rifiutandola
+     * in base allo stato fornito. Se la richiesta viene rifiutata, è necessario fornire un messaggio
+     * aggiuntivo. In caso di approvazione, viene inviata una notifica di accettazione.
+     *
+     * @param richiesta La richiesta di contenuto da elaborare.
+     * @param dto       Oggetto contenente lo stato della richiesta (approvata o rifiutata) e un
+     *                  eventuale messaggio aggiuntivo in caso di rifiuto.
+     * @return Una risposta HTTP che indica il risultato dell'elaborazione della richiesta.
+     */
+    public ResponseEntity<?> elaborazioneRichiesta(RichiestaContenuto richiesta, ValutaRichiestaDTO dto) {
+        processaRichiesta(richiesta, dto.getStato());
+        String emailUtente = (utenteService.getUtenteById(richiesta.getIdMittente())).get().getEmail();
+        if (!dto.getStato()) {
+            if (dto.getMessaggioAggiuntivo() == null) {
+                return ResponseEntity.badRequest()
+                        .body(Collections.singletonMap("message", "Inserire un messaggio di rifiuto"));
+            }
+            notificaRifiutoRichiesta(dto.getMessaggioAggiuntivo(), emailUtente, richiesta.getTipoContenuto());
+        } else {
+            String messaggio = "\"La sua richiesta di inserimento di " + richiesta.getTipoContenuto() + " con ID "
+                    + richiesta.getTargetId() +
+                    "                + \" è stata accettata con successo!";
+            notificaAccettazioneRichiesta(messaggio, emailUtente, richiesta.getTipoContenuto());
+        }
+        return ResponseEntity.ok().body(Collections.singletonMap("message",
+                dto.getStato() ? "Richiesta accettata con successo." : "Richiesta correttamente rifiutata."));
     }
 
     /**

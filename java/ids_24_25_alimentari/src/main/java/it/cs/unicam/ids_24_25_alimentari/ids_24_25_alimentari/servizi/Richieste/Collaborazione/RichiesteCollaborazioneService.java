@@ -13,6 +13,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.R
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaCollaborazione.Collaborazione;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaCollaborazione.RichiestaCollaborazione;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.RichiestaCollaborazioneRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.AziendaService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.CollaborazioneService;
@@ -314,57 +315,36 @@ public class RichiesteCollaborazioneService extends RichiestaService {
 
     private void processaCollaborazione(Optional<Collaborazione> collab) {
         String password = RandomStringUtils.randomAlphanumeric(8);
-        switch (collab.get().getRuolo()) {
-            case PRODUTTORE, TRASFORMATORE, DISTRIBUTORE -> {
-                utenteService.nuovoAzienda(
-                        collab.get().getNome(),
-                        collab.get().getCognome(),
-                        collab.get().getEmail(),
-                        password,
-                        collab.get().getTelefono(),
-                        collab.get().getRuolo(),
-                        collab.get().getIban(),
-                        generaAzienda(collab),
-                        collab.get().getCartaIdentita()
-
-                );
-            }
-            case ANIMATORE -> {
-                utenteService.nuovoAnimatore(
-                        collab.get().getNome(),
-                        collab.get().getCognome(),
-                        collab.get().getEmail(),
-                        password,
-                        collab.get().getTelefono(),
-                        collab.get().getIban(),
-                        collab.get().getCartaIdentita());
-            }
-            case CURATORE -> {
-                utenteService.nuovoCuratore(
-                        collab.get().getNome(),
-                        collab.get().getCognome(),
-                        collab.get().getEmail(),
-                        password,
-                        collab.get().getTelefono(),
-                        collab.get().getIban(),
-                        collab.get().getCartaIdentita(),
-                        collab.get().getCv());
-            }
-            case GESTORE -> {
-                // Gestore non ha bisogno di un account, quindi non facciamo nulla
-            }
-        }
-        notificaAccettazioneRichiesta(collab.get().getRuolo(), collab.get().getEmail(), password);
+        Collaborazione collaborazione = collab.orElseThrow(() -> new NoSuchElementException("Collaborazione non trovata"));
+            Utente utente = utenteService.nuovoUtente(
+                    collaborazione.getNome(),
+                    collaborazione.getCognome(),
+                    collaborazione.getEmail(),
+                    password,
+                    collaborazione.getTelefono(),
+                    collaborazione.getIban(),
+                    collaborazione.getRuolo(),
+                    collaborazione.getCartaIdentita(),
+                    collaborazione.getCv());
+        if (utente.getRuolo()==Ruolo.PRODUTTORE || utente.getRuolo()==Ruolo.TRASFORMATORE || utente.getRuolo()==Ruolo.DISTRIBUTORE)
+            generaAzienda(collaborazione, utente);
+        String messaggio = "La sua richiesta di collaborazione con id " + collaborazione.getId() + " per il ruolo di "
+                + collaborazione.getRuolo()
+                + " è stata accettata con successo! Ecco le sue credenziali:\n"
+                + "Email: " + collaborazione.getEmail() + "\n" + "Password: " + password;
+        notificaAccettazioneRichiesta(messaggio, collaborazione.getEmail(), "Collaborazione");
     }
 
-    private Long generaAzienda(Optional<Collaborazione> collaborazione) {
+    private void generaAzienda(Collaborazione collaborazione,Utente utente) {
         Azienda azienda = aziendaService.createAzienda(
-                collaborazione.get().getDenominazioneSociale(),
-                collaborazione.get().getSedeLegale(),
-                collaborazione.get().getSedeOperativa(),
-                collaborazione.get().getIva(),
-                collaborazione.get().getCertificato());
-        return azienda.getId();
+                collaborazione.getDenominazioneSociale(),
+                collaborazione.getSedeLegale(),
+                collaborazione.getSedeOperativa(),
+                collaborazione.getIva(),
+                collaborazione.getCertificato(),
+                utente
+                );
+        aziendaService.saveAzienda(azienda);
     }
 
     public ResponseEntity<?> elaboraRichiesta(ValutaRichiestaDTO dto, long id) {
@@ -410,7 +390,7 @@ public class RichiesteCollaborazioneService extends RichiestaService {
                     .getCollabById(richiesta.getCollaborazione().getId());
             collab.ifPresent(collaborazione -> collaborazioneService.deleteCollaborazione(collaborazione.getId()));
             // notifica il rifiuto all'utente tramite mail
-            notificaRifiutoRichiesta(dto.getMessaggioAggiuntivo(), richiesta.getCollaborazione().getEmail());
+            notificaRifiutoRichiesta(dto.getMessaggioAggiuntivo(), richiesta.getCollaborazione().getEmail(), "collaborazione");
             return ResponseEntity.ok(salvaRichiesta(richiesta));
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

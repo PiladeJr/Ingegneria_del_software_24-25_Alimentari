@@ -50,16 +50,12 @@ public abstract class RichiestaService implements RichiestaInterface {
         notificaUtenti(oggetto, messaggio, fornisciDestinatari(ruolo));
     }
 
-    public void notificaAccettazioneRichiesta(Ruolo ruolo, String email, String password) {
-        String messaggio = "La sua richiesta di collaborazione per il ruolo di "
-                + ruolo
-                + " è stata accettata con successo! Ecco le sue credenziali:\n"
-                + "Email: " + email + "\n" + "Password: " + password;
-        String oggetto ="Elaborazione Richiesta di Collaborazione";
+    public void notificaAccettazioneRichiesta(String messaggio, String email, String tipologia) {
+        String oggetto ="Elaborazione Richiesta di " + tipologia;
         notificaUtenti(oggetto, messaggio,email);
     }
-    public void notificaRifiutoRichiesta(String rifiuto, String email){
-        String messaggio = "La sua richiesta di collaborazione è stata rifiutata per la seguente motivazione: " +
+    public void notificaRifiutoRichiesta(String rifiuto, String email, String tipologia) {
+        String messaggio = "La sua richiesta di " + tipologia + " è stata rifiutata per la seguente motivazione: " +
                 (rifiuto);
         String oggetto ="Elaborazione Richiesta di Collaborazione";
         notificaUtenti(oggetto, messaggio,email);

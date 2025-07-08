@@ -1,5 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
 
 import java.io.File;
@@ -19,22 +20,19 @@ public class InformazioniAggiuntiveBuilder {
         reset();
     }
 
-    public InformazioniAggiuntiveBuilder costruisciDescrizione(String descrizioneAzienda) {
+    public void costruisciDescrizione(String descrizioneAzienda) {
         this.informazioniAggiuntive.setDescrizioneAzienda(descrizioneAzienda);
-        return this;
     }
 
-    public InformazioniAggiuntiveBuilder costruisciProduzione(String descrizioneProduzione) {
+    public void costruisciProduzione(String descrizioneProduzione) {
         this.informazioniAggiuntive.setDescrizioneProduzione(descrizioneProduzione);
-        return this;
     }
 
-    public InformazioniAggiuntiveBuilder costruisciMetodi(String descrizioneMetodi) {
+    public void costruisciMetodi(String descrizioneMetodi) {
         this.informazioniAggiuntive.setDescrizioneMetodi(descrizioneMetodi);
-        return this;
     }
 
-    public InformazioniAggiuntiveBuilder aggiungiImmagine(File immagine) {
+    public void aggiungiImmagine(File immagine) {
         if (this.informazioniAggiuntive.getImmagini() == null) {
             List<File> immagini = new ArrayList<>();
             immagini.add(immagine);
@@ -42,10 +40,9 @@ public class InformazioniAggiuntiveBuilder {
         } else {
             this.informazioniAggiuntive.getImmagini().add(immagine);
         }
-        return this;
     }
 
-    public InformazioniAggiuntiveBuilder aggiungiCertificato(File certificato) {
+    public void aggiungiCertificato(File certificato) {
         if (this.informazioniAggiuntive.getCertificati() == null) {
             List<File> certificati = new ArrayList<>();
             certificati.add(certificato);
@@ -53,17 +50,18 @@ public class InformazioniAggiuntiveBuilder {
         } else {
             this.informazioniAggiuntive.getCertificati().add(certificato);
         }
-        return this;
     }
 
-    public InformazioniAggiuntiveBuilder rimuoviImmagine(File immagine) {
+    public void rimuoviImmagine(File immagine) {
         this.informazioniAggiuntive.getImmagini().remove(immagine);
-        return this;
     }
 
-    public InformazioniAggiuntiveBuilder rimuoviCertificato(File certificato) {
+    public void rimuoviCertificato(File certificato) {
         this.informazioniAggiuntive.getCertificati().remove(certificato);
-        return this;
+    }
+
+    public void costruisciAzienda(Azienda azienda){
+        this.informazioniAggiuntive.setAzienda(azienda);
     }
 
     public InformazioniAggiuntive getInformazioniAggiuntive() {

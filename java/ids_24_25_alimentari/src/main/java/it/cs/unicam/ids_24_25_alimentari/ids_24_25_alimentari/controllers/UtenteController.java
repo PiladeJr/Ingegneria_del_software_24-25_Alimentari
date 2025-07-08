@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/users")
@@ -75,7 +76,7 @@ public class UtenteController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
-            Utente utente = utenteService.getUtenteById(id);
+            Optional<Utente> utente = utenteService.getUtenteById(id);
             if (utente == null) {
                 Map<String, String> response = new HashMap<>();
                 response.put("message", "Utente non trovato.");

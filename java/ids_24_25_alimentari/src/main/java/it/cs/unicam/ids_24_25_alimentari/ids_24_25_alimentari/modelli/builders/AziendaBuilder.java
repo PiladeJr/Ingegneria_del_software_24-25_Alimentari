@@ -2,6 +2,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 
 import java.io.File;
 
@@ -37,6 +38,10 @@ public class AziendaBuilder {
 
     public void aggiungiCertificato(File certificato) {
         this.azienda.setCertificato(certificato);
+    }
+
+    public void costruisciUtente(Utente utente) {
+        this.azienda.setUtente(utente);
     }
 
     public Azienda getAzienda() {
