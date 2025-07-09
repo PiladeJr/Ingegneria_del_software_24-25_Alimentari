@@ -34,8 +34,8 @@ public class SecurityConfig {
         public static final String ROLE_CURATORE = "ROLE_CURATORE";
         public static final String ROLE_PRODUTTORE = "ROLE_PRODUTTORE";
         public static final String ROLE_TRASFORMATORE = "ROLE_TRASFORMATORE";
+        public static final String ROLE_DISTRIBUTORE = "ROLE_DISTRIBUTORE";
         public static final String ROLE_ANIMATORE = "ROLE_ANIMATORE";
-
         public static final String[] ENDPOINT_AUTH = { "/api/auth/**", "/h2-console/**" };
         public static final String[] ENDPOINT_ACCESSO_LIBERO = {
                         "/api/richieste-collaborazione/azienda",
@@ -123,10 +123,11 @@ public class SecurityConfig {
                                                 SecurityConfig.ROLE_TRASFORMATORE)
                                 .requestMatchers(HttpMethod.DELETE, "/api/azienda/{id}")
                                 .hasAuthority(SecurityConfig.ROLE_GESTORE)
-                                .requestMatchers("/api/azienda/informazioni/new")
+                                .requestMatchers("/api/azienda/informazioni")
                                 .hasAnyAuthority(SecurityConfig.ROLE_PRODUTTORE, SecurityConfig.ROLE_TRASFORMATORE)
                                 .requestMatchers("/api/azienda/**")
                                 .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE);
+
         }
 
         private void utenteAuth(
@@ -171,11 +172,16 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PATCH,
                                                 "/api/richieste-contenuto/valuta")
                                 .hasAnyAuthority(SecurityConfig.ROLE_CURATORE)
+                                .requestMatchers(HttpMethod.POST, "/api/richieste-contenuto/informazioni/produttore/new")
+                                .hasAuthority(SecurityConfig.ROLE_PRODUTTORE)
+                                .requestMatchers(HttpMethod.POST, "/api/richieste-contenuto/informazioni/trasformatore/new")
+                                .hasAuthority(SecurityConfig.ROLE_TRASFORMATORE)
                                 .requestMatchers(HttpMethod.POST,
-                                                "/api/richieste-contenuto/informazioni-aggiuntive/new",
-                                                "/api/richieste-contenuto/prodotto/singolo/new",
+                                                "/api/richieste-contenuto/prodotto/singolo/new")
+                                .hasAnyAuthority(SecurityConfig.ROLE_PRODUTTORE, SecurityConfig.ROLE_TRASFORMATORE, SecurityConfig.ROLE_DISTRIBUTORE)
+                                .requestMatchers(HttpMethod.POST,
                                                 "/api/richieste-contenuto/prodotto/pacchetto/new")
-                                .hasAnyAuthority(SecurityConfig.ROLE_PRODUTTORE, SecurityConfig.ROLE_TRASFORMATORE)
+                                .hasAuthority(SecurityConfig.ROLE_DISTRIBUTORE)
                                 .requestMatchers(HttpMethod.POST,
                                                 "/api/richieste-contenuto/eventi/new",
                                                 "/api/richieste-contenuto/visita/new")
