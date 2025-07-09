@@ -5,9 +5,8 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.A
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.UtenteAziendaEsterna;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.AziendaRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteAziendaEsternaRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -18,12 +17,11 @@ import java.util.Optional;
 public class AziendaService {
 
     private final AziendaRepository aziendaRepository;
-    private final UtenteAziendaEsternaRepository utenteAziendaEsternaRepository;
+    private final UtenteService utenteService;
 
-    public AziendaService(AziendaRepository aziendaRepository,
-            UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
+    public AziendaService(AziendaRepository aziendaRepository, UtenteService utenteService) {
         this.aziendaRepository = aziendaRepository;
-        this.utenteAziendaEsternaRepository = utenteAziendaEsternaRepository;
+        this.utenteService = utenteService;
     }
 
     public List<Azienda> getAllAziende() {
@@ -50,6 +48,21 @@ public class AziendaService {
         aziendaRepository.deleteById(id);
     }
 
+    /**
+     * <h2>Crea una nuova azienda</h2>
+     * <br/>
+     * <p>Metodo responsabile della creazione di una nuova azienda.</p>
+     * <p>Utilizza un builder per costruire l'oggetto azienda con i dati forniti.</p>
+     * <p>Restituisce l'azienda salvata nella repository.</p>
+     *
+     * @param denSociale La denominazione sociale dell'azienda.
+     * @param sedeLegale L'indirizzo della sede legale dell'azienda.
+     * @param sedeOperativa L'indirizzo della sede operativa dell'azienda.
+     * @param iva Il numero di partita IVA dell'azienda.
+     * @param certificato Il file contenente il certificato dell'azienda.
+     * @param utente L'utente associato all'azienda.
+     * @return {@link Azienda} L'azienda salvata nella repository.
+     */
     public Azienda createAzienda(
             String denSociale,
             Indirizzo sedeLegale,
@@ -68,24 +81,22 @@ public class AziendaService {
     }
 
     /**
-     * Collega un utente con ruolo di trasformatore a un'azienda produttrice.
+     * <h2>Collega aziende a un utente</h2>
+     * <br/>
+     * <p>Metodo responsabile dell'associazione di una lista di aziende a un utente specifico.</p>
+     * <p>Se l'utente con l'ID fornito non viene trovato, viene lanciata un'eccezione.</p>
      *
-     * @param idUtente             ID dell'utente con ruolo di trasformatore.
-     * @param idAziendaProduttrice ID dell'azienda produttrice da collegare.
-     * @return l'associazione salvata nel database.
+     * @param utenteId L'ID dell'utente a cui collegare le aziende.
+     * @param aziende La lista di aziende da collegare all'utente.
+     * @throws IllegalArgumentException Se l'utente con l'ID fornito non viene trovato.
      */
-    public UtenteAziendaEsterna collegaAzienda(Long idUtente, Long idAziendaProduttrice) {
-        Azienda azienda = aziendaRepository.findAziendaByIdAndRuolo(idAziendaProduttrice, Ruolo.PRODUTTORE);
+    public void collegaAziendeUtente(long utenteId, List<Azienda> aziende) {
 
-        if (azienda == null) {
-            throw new IllegalArgumentException("Azienda non trovata con ID: " + idAziendaProduttrice + " e ruolo: PRODUTTORE");
-        }
+        Utente utente = utenteService.getUtenteById(utenteId)
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato con ID: " + utenteId));
+        utente.getAziendeCollegate().addAll(aziende);
 
-        UtenteAziendaEsterna collegamento = new UtenteAziendaEsterna();
-        collegamento.setUtenteId(idUtente);
-        collegamento.setAziendaId(idAziendaProduttrice);
-
-        return utenteAziendaEsternaRepository.save(collegamento);
+        utenteService.salvaUtente(utente);
     }
 
 }

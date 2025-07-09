@@ -1,7 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.azienda.AziendaPreviewDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoVisita;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.EventoVisita;
 import lombok.Getter;
 
 @Getter

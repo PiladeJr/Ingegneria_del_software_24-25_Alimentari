@@ -8,12 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.InformazioniAggiuntiveBuilder;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.InfoAziendaBuilder;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.info.InfoAzienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.ProdottoSingolo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoFiera;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoVisita;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.StatusEvento;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.EventoFiera;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.EventoVisita;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.StatusEvento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
@@ -47,9 +47,6 @@ public class RepositoryCostructor {
     private UtenteRepository utenteRepository;
 
     @Autowired
-    private UtenteAziendaEsternaRepository utenteAziendaEsternaRepository;
-
-    @Autowired
     private ProdottoSingoloRepository prodottoSingoloRepository;
 
     @Autowired
@@ -67,7 +64,6 @@ public class RepositoryCostructor {
         impostaProdottiSingoli(prodottoSingoloRepository);
         impostaRichiesteCollaborazione(collaborazioneRepository);
         impostaRichieste(richiestaContenutoRepository);
-        impostaAziendeEsterne(utenteAziendaEsternaRepository);
         impostaEventi(eventoRepository);
     }
 
@@ -99,7 +95,7 @@ public class RepositoryCostructor {
             INDIRIZZO_FIERA_AUTUNNO,
             INDIRIZZO_FIERA_CONTADINA;
 
-    public InformazioniAggiuntive INFORMAZIONI_AGGIUNTIVE_PRODUTTORE,
+    public InfoAzienda INFORMAZIONI_AGGIUNTIVE_PRODUTTORE,
             INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE;
 
     public ProdottoSingolo PRODOTTO_LATTE,
@@ -116,7 +112,6 @@ public class RepositoryCostructor {
             RICHIESTA_ANIMATORE, RICHIESTA_CURATORE;
 
     public RichiestaContenutoRepository RICHIESTA_TIPO_INFORMAZIONI_AGGIUNTIVE;
-    public UtenteAziendaEsternaRepository UTENTE_TRASFORMATORE_PRODUTTORE;
 
     public void pulisciRichieste(RichiestaContenutoRepository richiestaContenutoRepository) {
         richiestaContenutoRepository.deleteAll();
@@ -137,16 +132,6 @@ public class RepositoryCostructor {
     public void impostaRichiesteCollaborazione(CollaborazioneRepository collaborazioneRepository) {
         pulisciRichiesteCollaborazione(collaborazioneRepository);
 
-    }
-
-    public void pulisciAziendeEsterne(UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
-        utenteAziendaEsternaRepository.deleteAll();
-        utenteAziendaEsternaRepository.flush();
-        isUtenteAziendaEsternaRepositorySet = false;
-    }
-
-    public void impostaAziendeEsterne(UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
-        pulisciAziendeEsterne(utenteAziendaEsternaRepository);
     }
 
     public void pulisciIndirizzi(IndirizzoRepository indirizzoRepository) {
@@ -311,7 +296,7 @@ public class RepositoryCostructor {
 
             File certificato = new File(getClass().getClassLoader().getResource("certificato.pdf").toURI());
 
-            InformazioniAggiuntiveBuilder builder = new InformazioniAggiuntiveBuilder();
+            InfoAziendaBuilder builder = new InfoAziendaBuilder();
 
             builder.costruisciDescrizione(
                     "La nostra azienda vi garantisce il miglior prodotto nostrano della nostra terra");
@@ -320,7 +305,7 @@ public class RepositoryCostructor {
             builder.aggiungiImmagine(immagine);
             builder.aggiungiCertificato(certificato);
             builder.costruisciAzienda(AZIENDA_PRODUTTORE);
-            INFORMAZIONI_AGGIUNTIVE_PRODUTTORE = builder.getInformazioniAggiuntive();
+            INFORMAZIONI_AGGIUNTIVE_PRODUTTORE = builder.build();
 
             builder.costruisciDescrizione("Dalle migliori materie prime per la qualita' che meritate");
             builder.costruisciProduzione("Tecniche avanzate e tecnologia industriale all'avanguardia");
@@ -328,7 +313,7 @@ public class RepositoryCostructor {
             builder.aggiungiImmagine(immagine);
             builder.aggiungiCertificato(certificato);
             builder.costruisciAzienda(AZIENDA_TRASFORMATORE);
-            INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE = builder.getInformazioniAggiuntive();
+            INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE = builder.build();
 
             repo.save(INFORMAZIONI_AGGIUNTIVE_PRODUTTORE);
             repo.save(INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE);

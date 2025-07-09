@@ -170,28 +170,29 @@ public class RichiestaContenutoService extends RichiestaService {
         }
     }
 
-    /**
-     * Crea una nuova richiesta di informazioni aggiuntive per un'azienda.
-     *
-     * @param descrizione Descrizione aggiuntiva dell'azienda.
-     * @param produzione  Informazioni sulla produzione dell'azienda.
-     * @param metodologie Metodologie di produzione utilizzate dall'azienda.
-     * @param immagini    File contenenti immagini relative alle informazioni
-     *                    aggiuntive.
-     * @param certificati File contenenti eventuali certificazioni dell'azienda.
-     * @param idAzienda   Identificativi dell'azienda coinvolta.
-     * @return La richiesta di informazioni aggiuntive creata e salvata nel
-     *         database.
-     */
-    public RichiestaContenuto nuovaRichiestaInformazioniAggiuntive(
+    public RichiestaContenuto nuovaRichiestaInformazioniTrasformatore(
             String descrizione,
             String produzione,
             String metodologie,
             File[] immagini,
             File[] certificati,
-            Long[] idAzienda) {
+            List<Azienda> aziendeCollegate) {
         long id = this.infoAggiuntiveService
-                .nuovaInformazioneAggiuntiva(descrizione, produzione, metodologie, immagini, certificati, idAzienda)
+                .nuoveInformazioniTrasformatore(descrizione, produzione, metodologie, immagini, certificati, aziendeCollegate)
+                .getId();
+        RichiestaContenuto richiesta = this.nuovaRichiesta(id, Tipologia.INFO_AZIENDA, "info_azienda");
+        this.notificaNuovaRichiesta(Ruolo.CURATORE);
+        return salvaRichiesta(richiesta);
+    }
+
+    public RichiestaContenuto nuovaRichiestaInformazioniProduttore(
+            String descrizione,
+            String produzione,
+            String metodologie,
+            File[] immagini,
+            File[] certificati) {
+        long id = this.infoAggiuntiveService
+                .nuoveInformazioniProduttore(descrizione, produzione, metodologie, immagini, certificati)
                 .getId();
         RichiestaContenuto richiesta = this.nuovaRichiesta(id, Tipologia.INFO_AZIENDA, "info_azienda");
         this.notificaNuovaRichiesta(Ruolo.CURATORE);

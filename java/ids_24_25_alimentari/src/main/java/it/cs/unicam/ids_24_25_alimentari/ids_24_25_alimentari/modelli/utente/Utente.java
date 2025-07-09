@@ -1,15 +1,16 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -22,6 +23,8 @@ import java.util.List;
 @Entity
 @Table(name = "utente")
 @NoArgsConstructor
+@Getter
+@Setter
 public class Utente implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,34 +67,13 @@ public class Utente implements UserDetails {
     @OneToOne(mappedBy = "utente", cascade = CascadeType.MERGE)
     private Azienda azienda;
 
-
-    public long getId() {
-        return id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCognome() {
-        return cognome;
-    }
-
-    public void setCognome(String cognome) {
-        this.cognome = cognome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "utente_aziende",
+            joinColumns = @JoinColumn(name = "utente_id"),
+            inverseJoinColumns = @JoinColumn(name = "azienda_id")
+    )
+    private List<Azienda> aziendeCollegate;
 
     /**
      * Restituisce l'elenco delle autorità (ruoli) assegnate all'utente.
@@ -108,10 +90,6 @@ public class Utente implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + ruolo.name()));
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     /**
@@ -137,63 +115,10 @@ public class Utente implements UserDetails {
         return true;
     }
 
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public Ruolo getRuolo() {
-        return ruolo;
-    }
-
-    public void setRuolo(Ruolo idRuolo) {
-        this.ruolo = idRuolo;
-    }
-
-    public String getIban() {
-        return iban;
-    }
-
-    public void setIban(String iban) {
-        this.iban = iban;
-    }
-
-    public File getCv() {
-        return cv;
-    }
-
-    public void setCv(File cv) {
-        this.cv = cv;
-    }
-
-    public File getCartaIdentita() {
-        return cartaIdentita;
-    }
-
-    public void setCartaIdentita(File cartaIdentita) {
-        this.cartaIdentita = cartaIdentita;
-    }
-
-
-    public Indirizzo getIndirizzoFatturazione() {
-        return indirizzoFatturazione;
-    }
-
-    public void setIndirizzoFatturazione(Indirizzo indirizzoFatturazione) {
-        this.indirizzoFatturazione = indirizzoFatturazione;
-    }
-
-    public Indirizzo getIndirizzoSpedizione() {
-        return IndirizzoSpedizione;
-    }
-
-    public void setIndirizzoSpedizione(Indirizzo indirizzoSpedizione) {
-        IndirizzoSpedizione = indirizzoSpedizione;
-    }
-
+    /**
+     *Costruttore parziale dell'oggetto Utente
+     * utillizzato per inizializzazione del RepositoryConstructor
+     */
     public Utente(String nome, String cognome, String email, String password, String telefono) {
 
         this.nome = nome;

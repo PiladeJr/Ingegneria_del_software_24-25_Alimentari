@@ -1,7 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.info.InfoAzienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
@@ -78,7 +78,7 @@ public class RepositoryProvider {
             INDIRIZZO_TRASFORMATORE,
             INDIRIZZO_DISTRIBUTORE;
 
-    public InformazioniAggiuntive RICHIESTA_INFORMAZIONI_AGGIUNTIVE_PRODUTTORE,
+    public InfoAzienda RICHIESTA_INFORMAZIONI_AGGIUNTIVE_PRODUTTORE,
             RICHIESTA_INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE;
 
     public void pulisciRichiesteInformazioniAggiuntive() {

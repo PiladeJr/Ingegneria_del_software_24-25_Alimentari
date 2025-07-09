@@ -3,8 +3,9 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoFieraDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi.RichiestaEventoVisitaDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.infoAzienda.RichiestaInfoProduttoreDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.infoAzienda.RichiestaInfoTrasformatoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.RichiestaContenutoService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;
@@ -22,6 +23,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multipartConverter.ConvertitoreMultipartFileToFile.convertMultipartFileArrayToFileArray;
 
 /**
  * Controller che gestisce le richieste di contenuti.
@@ -77,35 +80,111 @@ public class RichiestaContenutoController {
     }
 
     /**
-     * Crea una nuova richiesta di informazioni aggiuntive per un'azienda.
+     * <h2>Crea una nuova richiesta di informazioni per un produttore.</h2>
+     * <p>
+     * Questo endpoint consente di creare una nuova richiesta di informazioni per un produttore.
+     * Accetta un DTO contenente i dettagli della richiesta e converte i file caricati in oggetti
+     * di tipo <code>File</code>.
+     * </p>
+     * <p><strong>Response:</strong></p>
+     * <ul>
+     *   <li><code>200 OK</code>: La richiesta è stata creata con successo.</li>
+     *   <li><code>400 Bad Request</code>: Errore durante la conversione dei file o parametro non valido.</li>
+     * </ul>
      *
-     * @param infoAggiuntiveDTO Il DTO contenente le informazioni aggiuntive.
-     * @return La richiesta creata.
+     * @param dto Il DTO contenente i dettagli della richiesta.
+     * @return Una <code>ResponseEntity</code> contenente la richiesta creata o un messaggio di errore.
      */
-    @PostMapping(value = "/informazioni-aggiuntive/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> nuovaRichiestaInformazioniAggiuntive(
-            @ModelAttribute @Valid RichiestaInformazioniAggiuntiveAziendaDTO infoAggiuntiveDTO) {
+    @PostMapping(value = "/informazioni/produttore/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createInformazioniProduttore(
+            @ModelAttribute RichiestaInfoProduttoreDTO dto) {
+
+        File[] immaginiFiles;
+        try {
+            immaginiFiles = convertMultipartFileArrayToFileArray(
+                    dto.getImmagini());
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error",
+                            "Errore durante la conversione delle immagini: " + e.getMessage()));
+        }
+
+        File[] certificatiFiles;
+        try {
+            certificatiFiles = convertMultipartFileArrayToFileArray(
+                    dto.getCertificati());
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error",
+                            "Errore durante la conversione dei certificati: " + e.getMessage()));
+        }
 
         try {
-            File[] immagini = ConvertitoreMultipartFileToFile
-                    .convertMultipartFileArrayToFileArray(infoAggiuntiveDTO.getImmagini());
-            File[] certificati = ConvertitoreMultipartFileToFile
-                    .convertMultipartFileArrayToFileArray(infoAggiuntiveDTO.getCertificati());
+            RichiestaContenuto richiesta = this.richiestaContenutoService.nuovaRichiestaInformazioniProduttore(
+                    dto.getDescrizione(),
+                    dto.getProduzione(),
+                    dto.getMetodologie(),
+                    immaginiFiles,
+                    certificatiFiles);
+            return ResponseEntity.ok(richiesta);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", "Parametro non valido: " + e.getMessage()));
+        }
+    }
 
-            RichiestaContenuto richiestaInfoAggiuntive = this.richiestaContenutoService.nuovaRichiestaInformazioniAggiuntive(
-                    infoAggiuntiveDTO.getDescrizione(),
-                    infoAggiuntiveDTO.getProduzione(),
-                    infoAggiuntiveDTO.getMetodologie(),
-                    immagini,
-                    certificati,
-                    infoAggiuntiveDTO.getAziendeCollegate());
+    /**
+     * <h2>Crea una nuova richiesta di informazioni per un trasformatore.</h2>
+     * <p>
+     * Questo endpoint consente di creare una nuova richiesta di informazioni per un trasformatore.
+     * Accetta un DTO contenente i dettagli della richiesta e converte i file caricati in oggetti
+     * di tipo <code>File</code>.
+     * </p>
+     * <p><strong>Response:</strong></p>
+     * <ul>
+     *   <li><code>200 OK</code>: La richiesta è stata creata con successo.</li>
+     *   <li><code>400 Bad Request</code>: Errore durante la conversione dei file o parametro non valido.</li>
+     * </ul>
+     *
+     * @param dto Il DTO contenente i dettagli della richiesta.
+     * @return Una <code>ResponseEntity</code> contenente la richiesta creata o un messaggio di errore.
+     */
+    @PostMapping(value = "/informazioni/trasformatore/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createInformazioniTrasformatore(
+            @ModelAttribute RichiestaInfoTrasformatoreDTO dto) {
 
-            return ResponseEntity.ok(richiestaInfoAggiuntive);
-
+        File[] immaginiFiles;
+        try {
+            immaginiFiles = convertMultipartFileArrayToFileArray(
+                    dto.getImmagini());
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Collections.singletonMap("error",
-                            "Errore nella creazione della richiesta " + e.getMessage()));
+                            "Errore durante la conversione delle immagini: " + e.getMessage()));
+        }
+
+        File[] certificatiFiles;
+        try {
+            certificatiFiles = convertMultipartFileArrayToFileArray(
+                    dto.getCertificati());
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error",
+                            "Errore durante la conversione dei certificati: " + e.getMessage()));
+        }
+
+        try {
+            RichiestaContenuto richiesta = this.richiestaContenutoService.nuovaRichiestaInformazioniTrasformatore(
+                    dto.getDescrizione(),
+                    dto.getProduzione(),
+                    dto.getMetodologie(),
+                    immaginiFiles,
+                    certificatiFiles,
+                    dto.getAziendeCollegate());
+            return ResponseEntity.ok(richiesta);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", "Parametro non valido: " + e.getMessage()));
         }
     }
 

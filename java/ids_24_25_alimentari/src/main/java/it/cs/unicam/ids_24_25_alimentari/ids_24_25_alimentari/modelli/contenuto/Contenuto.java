@@ -16,4 +16,12 @@ public abstract class Contenuto {
     @Column(name = "approvato")
     private Boolean approvato;
 
+    @Setter
+    @Column(name = "modificato")
+    private Boolean modificato;
+
+    @Setter
+    @Column(name = "eliminato")
+    private Boolean eliminato;
+
 }

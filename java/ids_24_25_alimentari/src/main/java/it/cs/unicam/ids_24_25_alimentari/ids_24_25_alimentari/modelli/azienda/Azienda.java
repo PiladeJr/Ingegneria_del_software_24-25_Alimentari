@@ -2,7 +2,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.ProdottoSingolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.info.InfoAzienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -56,6 +56,9 @@ public class Azienda {
 
     @OneToOne(mappedBy = "azienda", cascade = CascadeType.ALL, orphanRemoval = true)
     @Nullable
-    private InformazioniAggiuntive informazioniAggiuntive;
+    private InfoAzienda infoAzienda;
+
+    @ManyToMany(mappedBy = "aziendeCollegate")
+    private List<Utente> utentiCollegati;
 
 }

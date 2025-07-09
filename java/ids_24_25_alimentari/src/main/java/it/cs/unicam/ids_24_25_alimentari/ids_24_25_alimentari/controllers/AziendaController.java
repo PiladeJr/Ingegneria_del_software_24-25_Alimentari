@@ -1,6 +1,7 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.*;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.infoAzienda.RichiestaInfoProduttoreDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.infoAzienda.RichiestaInfoTrasformatoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
@@ -8,7 +9,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.AziendaSer
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.InfoAggiuntiveService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.RichiestaContenutoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -145,54 +145,5 @@ public class AziendaController {
                     .body(Collections.singletonMap("error", "Errore interno del server: " + e.getMessage()));
         }
     }
-
-    /**
-     * Crea una nuova Richiesta di informazioni di tipo InfoAzienda.
-     * Questo endpoint si aspetta una serie di parametri in formato
-     * multipart/form-data per creare una nuova Richiesta di informazioni di tipo
-     * InfoAzienda.
-     *
-     * @param richiestaInformazioniAggiuntiveAziendaDTO
-     * @return ResponseEntity contenente la Richiesta creata.
-     */
-    @PostMapping(value = "/informazioni/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createInformazioniAzienda(
-            @ModelAttribute RichiestaInformazioniAggiuntiveAziendaDTO richiestaInformazioniAggiuntiveAziendaDTO) {
-
-        File[] immaginiFiles;
-        try {
-            immaginiFiles = convertMultipartFileArrayToFileArray(
-                    richiestaInformazioniAggiuntiveAziendaDTO.getImmagini());
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Collections.singletonMap("error",
-                            "Errore durante la conversione delle immagini: " + e.getMessage()));
-        }
-
-        File[] certificatiFiles;
-        try {
-            certificatiFiles = convertMultipartFileArrayToFileArray(
-                    richiestaInformazioniAggiuntiveAziendaDTO.getCertificati());
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Collections.singletonMap("error",
-                            "Errore durante la conversione dei certificati: " + e.getMessage()));
-        }
-
-        try {
-            RichiestaContenuto richiesta = this.richiestaContenutoService.nuovaRichiestaInformazioniAggiuntive(
-                    richiestaInformazioniAggiuntiveAziendaDTO.getDescrizione(),
-                    richiestaInformazioniAggiuntiveAziendaDTO.getProduzione(),
-                    richiestaInformazioniAggiuntiveAziendaDTO.getMetodologie(),
-                    immaginiFiles,
-                    certificatiFiles,
-                    richiestaInformazioniAggiuntiveAziendaDTO.getAziendeCollegate());
-            return ResponseEntity.ok(richiesta);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Collections.singletonMap("error", "Parametro non valido: " + e.getMessage()));
-        }
-    }
-
 
 }
