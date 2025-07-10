@@ -26,7 +26,7 @@ public class EventoEstesoDTO {
         this.id = evento.getId();
         this.titolo = evento.getTitolo();
         this.descrizione = evento.getDescrizione();
-        this.status = evento.getStatus();
+        this.status = evento.getStatusEvento();
         this.inizio = evento.getInizio();
         this.fine = evento.getFine();
         this.locandina = evento.getLocandina();

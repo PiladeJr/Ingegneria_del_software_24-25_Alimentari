@@ -1,5 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.EnumComuni.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,5 +17,9 @@ public abstract class Richiesta {
     private long id;
     @Column(name = "approvato")
     private Boolean approvato;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 
 }

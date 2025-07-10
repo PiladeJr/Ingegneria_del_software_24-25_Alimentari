@@ -5,6 +5,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ImplementazioneServizioMail;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @Service
 public abstract class RichiestaService implements RichiestaInterface {
 
-    private final ImplementazioneServizioMail mailService;
+    private final ServizioEmail mailService;
     protected final UtenteService utenteService;
 
     public RichiestaService(ImplementazioneServizioMail mailService, UtenteService utenteService) {
@@ -50,11 +51,11 @@ public abstract class RichiestaService implements RichiestaInterface {
         notificaUtenti(oggetto, messaggio, fornisciDestinatari(ruolo));
     }
 
-    public void notificaAccettazioneRichiesta(String messaggio, String email, String tipologia) {
+    public void notificaApprovazione(String messaggio, String email, String tipologia) {
         String oggetto ="Elaborazione Richiesta di " + tipologia;
         notificaUtenti(oggetto, messaggio,email);
     }
-    public void notificaRifiutoRichiesta(String rifiuto, String email, String tipologia) {
+    public void notificaRifiuto(String rifiuto, String email, String tipologia) {
         String messaggio = "La sua richiesta di " + tipologia + " è stata rifiutata per la seguente motivazione: " +
                 (rifiuto);
         String oggetto ="Elaborazione Richiesta di Collaborazione";

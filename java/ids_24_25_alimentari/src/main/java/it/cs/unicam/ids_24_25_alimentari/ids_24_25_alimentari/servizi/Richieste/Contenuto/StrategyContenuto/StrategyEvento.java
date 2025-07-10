@@ -28,7 +28,7 @@ public class StrategyEvento implements RichiestaContenutoStrategy {
         evento.setApprovato(status);
         richiesta.setApprovato(status);
         if(status) {
-            evento.setStatus(StatusEvento.PROGRAMMATO);
+            evento.setStatusEvento(StatusEvento.PROGRAMMATO);
         }
         eventoRepository.save(evento);
         richiestaContenutoRepository.save(richiesta);

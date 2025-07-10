@@ -1,5 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.EnumComuni.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,16 +13,22 @@ public abstract class Contenuto {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    //TODO DA RIMPIAZZARE CON STATUS
     @Setter
     @Column(name = "approvato")
     private Boolean approvato;
 
     @Setter
-    @Column(name = "modificato")
-    private Boolean modificato;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 
     @Setter
-    @Column(name = "eliminato")
-    private Boolean eliminato;
+    @Column(name = "versione")
+    private int versione;
+
+    @Setter
+    @Column(name = "id_origine")
+    private Long idOrigine;
 
 }

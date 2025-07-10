@@ -42,7 +42,7 @@ public abstract class EventoBuilder<T extends Evento, B extends EventoBuilder<T,
     }
 
     public B costruisciStatus(StatusEvento status) {
-        evento.setStatus(status);
+        evento.setStatusEvento(status);
         return (B) this;
     }
 

@@ -378,7 +378,7 @@ public class RepositoryCostructor {
             FIERA_CONTADINA = new EventoFiera();
             FIERA_CONTADINA.setTitolo("Fiera Contadina");
             FIERA_CONTADINA.setDescrizione("Fiera dedicata ai prodotti locali e biologici");
-            FIERA_CONTADINA.setStatus(StatusEvento.PROGRAMMATO);
+            FIERA_CONTADINA.setStatusEvento(StatusEvento.PROGRAMMATO);
             FIERA_CONTADINA.setInizio(LocalDateTime.of(2025, 4, 28, 10, 0));
             FIERA_CONTADINA.setFine(LocalDateTime.of(2025, 5, 1, 18, 0));
             FIERA_CONTADINA.setLocandina(immagine1);
@@ -390,7 +390,7 @@ public class RepositoryCostructor {
             FIERA_AUTUNNO = new EventoFiera();
             FIERA_AUTUNNO.setTitolo("Fiera di Autunno");
             FIERA_AUTUNNO.setDescrizione("Fiera dedicata ai prodotti autunnali e locali");
-            FIERA_AUTUNNO.setStatus(StatusEvento.PROGRAMMATO);
+            FIERA_AUTUNNO.setStatusEvento(StatusEvento.PROGRAMMATO);
             FIERA_AUTUNNO.setInizio(LocalDateTime.of(2025, 10, 9, 10, 0));
             FIERA_AUTUNNO.setFine(LocalDateTime.of(2025, 10, 9, 18, 0));
             FIERA_AUTUNNO.setLocandina(immagine2);
@@ -401,7 +401,7 @@ public class RepositoryCostructor {
             VISITA_PRODUTTORE = new EventoVisita();
             VISITA_PRODUTTORE.setTitolo("Visita Aziendale");
             VISITA_PRODUTTORE.setDescrizione("Visita guidata presso l'azienda agricola");
-            VISITA_PRODUTTORE.setStatus(StatusEvento.PROGRAMMATO);
+            VISITA_PRODUTTORE.setStatusEvento(StatusEvento.PROGRAMMATO);
             VISITA_PRODUTTORE.setInizio(LocalDateTime.of(2025, 6, 15, 10, 0));
             VISITA_PRODUTTORE.setFine(LocalDateTime.of(2025, 6, 15, 18, 0));
             VISITA_PRODUTTORE.setLocandina(immagine3);
@@ -413,7 +413,7 @@ public class RepositoryCostructor {
             VISITA_TRASFORMATORE = new EventoVisita();
             VISITA_TRASFORMATORE.setTitolo("Visita Aziendale Trasformatore");
             VISITA_TRASFORMATORE.setDescrizione("Visita guidata presso l'azienda di trasformazione");
-            VISITA_TRASFORMATORE.setStatus(StatusEvento.PROGRAMMATO);
+            VISITA_TRASFORMATORE.setStatusEvento(StatusEvento.PROGRAMMATO);
             VISITA_TRASFORMATORE.setInizio(LocalDateTime.of(2025, 7, 20, 10, 0));
             VISITA_TRASFORMATORE.setFine(LocalDateTime.of(2025, 7, 20, 18, 0));
             VISITA_TRASFORMATORE.setLocandina(immagine4);

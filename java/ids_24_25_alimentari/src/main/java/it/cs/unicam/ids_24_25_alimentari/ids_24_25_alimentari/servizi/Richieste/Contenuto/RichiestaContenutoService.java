@@ -8,20 +8,16 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.RichiestaContenutoRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.EventoService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.InfoAggiuntiveService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.ProdottoService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.StrategyContenuto.RichiestaContenutoStrategy;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.StrategyContenuto.RichiestaStrategyFactory;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.RichiestaInterface;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.RichiestaService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ImplementazioneServizioMail;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -134,12 +130,12 @@ public class RichiestaContenutoService extends RichiestaService {
                 return ResponseEntity.badRequest()
                         .body(Collections.singletonMap("message", "Inserire un messaggio di rifiuto"));
             }
-            notificaRifiutoRichiesta(dto.getMessaggioAggiuntivo(), emailUtente, richiesta.getTipoContenuto());
+            notificaRifiuto(dto.getMessaggioAggiuntivo(), emailUtente, richiesta.getTipoContenuto());
         } else {
             String messaggio = "\"La sua richiesta di inserimento di " + richiesta.getTipoContenuto() + " con ID "
                     + richiesta.getTargetId() +
                     "                + \" è stata accettata con successo!";
-            notificaAccettazioneRichiesta(messaggio, emailUtente, richiesta.getTipoContenuto());
+            notificaApprovazione(messaggio, emailUtente, richiesta.getTipoContenuto());
         }
         return ResponseEntity.ok().body(Collections.singletonMap("message",
                 dto.getStato() ? "Richiesta accettata con successo." : "Richiesta correttamente rifiutata."));

@@ -143,7 +143,7 @@ public class EventoService {
     public EventoEstesoDTO getEventoProgrammatoById(Long id) {
         Evento evento = eventoRepository.findByIdAndProgrammato(id)
                 .orElseThrow(() -> new NoSuchElementException("Evento con ID " + id + " non trovato"));
-        if (evento.getStatus() != StatusEvento.PROGRAMMATO) {
+        if (evento.getStatusEvento() != StatusEvento.PROGRAMMATO) {
             throw new IllegalArgumentException("L'evento non è programmato");
         }
         return outputFormatEvento(evento);
@@ -751,7 +751,7 @@ public class EventoService {
                     .body("L'utente è già iscritto a questo evento");
         }
 
-        switch (evento.getStatus()) {
+        switch (evento.getStatusEvento()) {
             case CONCLUSO:
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("L'evento è già terminato");

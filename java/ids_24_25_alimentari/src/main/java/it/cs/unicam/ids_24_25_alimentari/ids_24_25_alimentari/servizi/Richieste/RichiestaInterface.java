@@ -4,7 +4,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruo
 
 public interface RichiestaInterface {
     void notificaNuovaRichiesta(Ruolo ruolo);
-    void notificaAccettazioneRichiesta(String messaggio, String email, String tipologia);
-    void notificaRifiutoRichiesta(String rifiuto, String email, String tipologia);
+    void notificaApprovazione(String messaggio, String email, String tipologia);
+    void notificaRifiuto(String rifiuto, String email, String tipologia);
 
 }

@@ -100,7 +100,7 @@ public class RichiestaCollaborazioneController {
      @DeleteMapping("/{id}/elimina")
      public ResponseEntity<?> eliminaRichiesta(@PathVariable Long id) {
          try {
-             return richiesteCollaborazioneService.eliminaRichiesta(id);
+             return richiesteCollaborazioneService.deleteRichiestaFisica(id);
          } catch (Exception e) {
                  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                  .body(Collections.singletonMap("error",

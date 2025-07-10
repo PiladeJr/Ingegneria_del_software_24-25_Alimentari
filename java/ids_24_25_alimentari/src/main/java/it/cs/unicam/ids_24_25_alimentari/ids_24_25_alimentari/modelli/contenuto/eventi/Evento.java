@@ -19,16 +19,14 @@ import java.time.LocalDateTime;
 @SequenceGenerator(name = "evento_seq", sequenceName = "evento_sequence", allocationSize = 1)
 @NoArgsConstructor
 public abstract class Evento extends Contenuto {
-    // @Id
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "evento_seq")
-    // private long id;
+
     @Column(name = "titolo", nullable = false)
     private String titolo;
     @Column(name = "descrizione", nullable = false)
     private String descrizione;
-    @Column(name = "status")
+    @Column(name = "status_evento")
     @Enumerated(EnumType.STRING)
-    private StatusEvento status;
+    private StatusEvento statusEvento;
     @Column(name = "inizio", nullable = false)
     private LocalDateTime inizio;
     @Column(name = "fine", nullable = false)
