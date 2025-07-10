@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.CollaborazioneAnimatoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.CollaborazioneOutDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiesteCollaborazioneOutputDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.CollaborazioneAziendaOutDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiesteCollaborazioneOutDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.ValutaRichiestaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.EnumComuni.Status;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
@@ -57,12 +57,12 @@ public class RichiesteCollaborazioneService extends RichiestaService {
      * @return Una lista di oggetti `RichiesteCollaborazioneOutputDTO` che
      *         rappresentano le richieste di collaborazione.
      */
-    public List<RichiesteCollaborazioneOutputDTO> getAllRichieste(String sortBy) {
+    public List<RichiesteCollaborazioneOutDTO> getAllRichieste(String sortBy) {
 
         List<RichiestaCollaborazione> richieste = new ArrayList<>(richiestaRepository.findAll());
         if (sortBy == null || sortBy.isEmpty()) {
             return richieste.stream()
-                    .map(RichiesteCollaborazioneOutputDTO::new)
+                    .map(RichiesteCollaborazioneOutDTO::new)
                     .collect(Collectors.toList());
         }
 
@@ -73,7 +73,7 @@ public class RichiesteCollaborazioneService extends RichiestaService {
         };
         return richieste.stream()
                 .sorted(comparator)
-                .map(RichiesteCollaborazioneOutputDTO::new)
+                .map(RichiesteCollaborazioneOutDTO::new)
                 .collect(Collectors.toList());
     }
 
@@ -97,13 +97,13 @@ public class RichiesteCollaborazioneService extends RichiestaService {
                 return ResponseEntity
                         .ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(Optional.of(collaborazione).map(CollaborazioneAnimatoreDTO::new));
+                        .body(Optional.of(collaborazione).map(CollaborazioneOutDTO::new));
             }
 
             return ResponseEntity
                     .ok()
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(Optional.of(collaborazione).map(CollaborazioneOutDTO::new));
+                    .body(Optional.of(collaborazione).map(CollaborazioneAziendaOutDTO::new));
         } catch (NullPointerException e) {
             return ResponseEntity.status(404)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -140,9 +140,11 @@ public class RichiesteCollaborazioneService extends RichiestaService {
      *       <p> - 404 NOT FOUND se la richiesta non esiste. </p>
      */
     public ResponseEntity<?> deleteRichiestaFisica(long id) {
-        Optional<RichiestaCollaborazione> richiesta = richiestaRepository.findById(id);
+        Optional<RichiestaCollaborazione> richiesta = richiestaRepository.findByIdAdmin(id);
         if (richiesta.isPresent()) {
-            deleteCollaborazione(richiesta.get().getCollaborazione().getId());
+            long idCollaborazione = richiesta.get().getCollaborazione().getId();
+            richiesta.get().setCollaborazione(null);
+            deleteCollaborazione(idCollaborazione);
             deleteRichiesta(id);
             return ResponseEntity.ok(Collections.singletonMap("message", "Richiesta eliminata con successo"));
         } else {
@@ -154,11 +156,15 @@ public class RichiesteCollaborazioneService extends RichiestaService {
     private void deleteRichiesta(long id) {
         richiestaRepository.deleteById(id);
     }
-    private void deleteCollaborazione(long idCollaborazione){
+    private void deleteCollaborazione(long idCollaborazione) {
         try {
-            richiestaRepository.deleteById(idCollaborazione);
+            Collaborazione collaborazione = collaborazioneService.getCollabByIdAdmin(idCollaborazione);
+            if (collaborazione.getId() == null) {
+                collaborazione = collaborazioneService.salvaCollaborazione(collaborazione);
+            }
+            collaborazioneService.deleteCollaborazione(collaborazione.getId());
         } catch (Exception e) {
-            throw new NoSuchElementException("Collaborazione non trovata" + e);
+            throw new NoSuchElementException("Errore durante l'eliminazione della Collaborazione: " + e.getMessage());
         }
     }
 

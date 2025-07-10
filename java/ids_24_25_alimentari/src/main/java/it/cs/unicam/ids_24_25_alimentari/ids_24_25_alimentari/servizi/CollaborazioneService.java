@@ -9,6 +9,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.Colla
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -174,5 +175,10 @@ public class CollaborazioneService {
     public void impostaStatus(Collaborazione collaborazione, Status status){
         collaborazione.setStatus(status);
         salvaCollaborazione(collaborazione);
+    }
+
+    public  Collaborazione getCollabByIdAdmin(long idCollaborazione) {
+        return collaborazioneRepository.findByIdAdmin(idCollaborazione)
+                .orElseThrow(() -> new NoSuchElementException("Collaborazione non trovata con ID: " + idCollaborazione));
     }
 }
