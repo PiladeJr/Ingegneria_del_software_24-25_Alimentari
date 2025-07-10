@@ -1,4 +1,4 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.prodotti;
 
 import lombok.Getter;
 import lombok.Setter;

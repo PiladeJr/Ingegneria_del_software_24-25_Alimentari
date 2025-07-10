@@ -1,4 +1,4 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.prodotti;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.Tipologia;
