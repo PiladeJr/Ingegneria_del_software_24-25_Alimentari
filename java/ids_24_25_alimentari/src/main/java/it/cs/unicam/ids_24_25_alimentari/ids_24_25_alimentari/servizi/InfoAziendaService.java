@@ -59,22 +59,38 @@ public class InfoAziendaService {
                 if (azienda.isEmpty()) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error: ", "Azienda non trovata per l'utente autenticato"));
                 }
+
             Optional<InfoAzienda> info = infoAziendaRepository.findByAzienda(azienda.get().getId());
-
-            if (utente.get().getRuolo().equals(Ruolo.PRODUTTORE)) {
                 if (info.isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.OK).body(" Nessuna informazione presente per il produttore");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error: ", "Informazioni aggiuntive non trovate per l'azienda di ruolo " + utente.get().getRuolo() +" con idAzienda: " + azienda.get().getId()));
                 }
-                return ResponseEntity.ok(info.map(InfoProduttoreDTO::new));
+
+            switch (utente.get().getRuolo()){
+                case PRODUTTORE -> {
+                    return ResponseEntity.ok(info.map(InfoProduttoreDTO::new));
+                }
+                case TRASFORMATORE -> {
+                    return ResponseEntity.ok(info.map(infoAzienda -> new InfoTrasformatoreDTO(infoAzienda, utente.get().getAziendeCollegate())));
+                }
+                default -> {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("error: ", "Ruolo non autorizzato per ottenere le informazioni aggiuntive"));
+                }
             }
 
-            if (utente.get().getRuolo().equals(Ruolo.TRASFORMATORE)) {
-                if (info.isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.OK).body(" Nessuna informazione presente per il trasformatore");
-                }
-                return ResponseEntity.ok(info.map(infoAzienda -> new InfoTrasformatoreDTO(infoAzienda, utente.get().getAziendeCollegate())));
-            }
-            else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("error: ", "Ruolo non autorizzato per ottenere le informazioni aggiuntive"));
+//            if (utente.get().getRuolo().equals(Ruolo.PRODUTTORE)) {
+//                if (info.isEmpty()) {
+//                    return ResponseEntity.status(HttpStatus.OK).body(" Nessuna informazione presente per il produttore");
+//                }
+//                return ResponseEntity.ok(info.map(InfoProduttoreDTO::new));
+//            }
+//
+//            if (utente.get().getRuolo().equals(Ruolo.TRASFORMATORE)) {
+//                if (info.isEmpty()) {
+//                    return ResponseEntity.status(HttpStatus.OK).body(" Nessuna informazione presente per il trasformatore");
+//                }
+//                return ResponseEntity.ok(info.map(infoAzienda -> new InfoTrasformatoreDTO(infoAzienda, utente.get().getAziendeCollegate())));
+//            }
+//            else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("error: ", "Ruolo non autorizzato per ottenere le informazioni aggiuntive"));
 
     }
 
