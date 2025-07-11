@@ -19,6 +19,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruo
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.AziendaService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.EnumComuni.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -306,6 +307,7 @@ public class RepositoryCostructor {
             builder.aggiungiCertificato(certificato);
             builder.costruisciAzienda(AZIENDA_PRODUTTORE);
             INFORMAZIONI_AGGIUNTIVE_PRODUTTORE = builder.build();
+            INFORMAZIONI_AGGIUNTIVE_PRODUTTORE.setStatus(Status.APPROVATO);
 
             builder.costruisciDescrizione("Dalle migliori materie prime per la qualita' che meritate");
             builder.costruisciProduzione("Tecniche avanzate e tecnologia industriale all'avanguardia");
@@ -314,6 +316,7 @@ public class RepositoryCostructor {
             builder.aggiungiCertificato(certificato);
             builder.costruisciAzienda(AZIENDA_TRASFORMATORE);
             INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE = builder.build();
+            INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE.setStatus(Status.APPROVATO);
 
             repo.save(INFORMAZIONI_AGGIUNTIVE_PRODUTTORE);
             repo.save(INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE);
