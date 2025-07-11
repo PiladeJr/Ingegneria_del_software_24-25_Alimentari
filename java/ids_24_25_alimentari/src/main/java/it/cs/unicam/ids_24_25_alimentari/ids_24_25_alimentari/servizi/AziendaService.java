@@ -1,5 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.azienda.AziendaOutDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.AziendaBuilder;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
@@ -10,8 +11,10 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.Azien
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AziendaService {
@@ -24,12 +27,32 @@ public class AziendaService {
         this.utenteService = utenteService;
     }
 
-    public List<Azienda> getAllAziende() {
-        return aziendaRepository.findAll();
+    public List<AziendaOutDTO> getAllAziende(String sortBy, String order) {
+        List<Azienda> aziende = aziendaRepository.findAll();
+        return impostaFiltroRicerca(sortBy, order, aziende);
     }
 
-    public List<Azienda> getAziendeByRuolo(Ruolo ruolo) {
-        return aziendaRepository.findAziendeByRuolo(ruolo);
+    public List<AziendaOutDTO> getAziendeByRuolo(Ruolo ruolo, String sortBy, String order) {
+        List<Azienda> aziende = aziendaRepository.findAllByRuolo(ruolo);
+        return impostaFiltroRicerca(sortBy, order, aziende);
+
+    }
+
+    private List<AziendaOutDTO> impostaFiltroRicerca(String sortBy, String order, List<Azienda> aziende) {
+        Comparator<Azienda> comparator = switch (sortBy.toLowerCase()){
+            case "denominazione" -> Comparator.comparing(Azienda::getDenominazioneSociale);
+            case "ruolo" -> Comparator.comparing(azienda -> azienda.getUtente().getRuolo());
+            case "citta" -> Comparator.comparing(azienda -> azienda.getSedeLegale().getCitta());
+            default ->  Comparator.comparing(Azienda::getId);
+        };
+        if ("desc".equalsIgnoreCase(order)){
+            comparator = comparator.reversed();
+        }
+
+        return aziende.stream()
+                .sorted(comparator)
+                .map(AziendaOutDTO::new)
+                .collect(Collectors.toList());
     }
 
     public Optional<Azienda> getAziendaById(long id) {

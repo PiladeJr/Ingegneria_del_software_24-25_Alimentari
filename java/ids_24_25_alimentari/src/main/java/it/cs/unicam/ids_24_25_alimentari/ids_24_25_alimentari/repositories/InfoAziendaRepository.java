@@ -9,9 +9,9 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.
 import java.util.Optional;
 
 @Repository
-public interface InformazioniAggiuntiveRepository extends JpaRepository<InfoAzienda, Long> {
-    @Query("SELECT i FROM InfoAzienda i WHERE i.id =?1 AND i.approvato = true")
+public interface InfoAziendaRepository extends JpaRepository<InfoAzienda, Long> {
+    @Query("SELECT i FROM InfoAzienda i WHERE i.id =?1 AND i.status = 'APPROVATO'")
     Optional<InfoAzienda> findByIdAndApprovato(Long id);
-    @Query("SELECT i FROM InfoAzienda i WHERE i.azienda =?1 ")
+    @Query("SELECT i FROM InfoAzienda i WHERE i.azienda =?1 AND i.status = 'APPROVATO'")
     Optional<InfoAzienda> findByAzienda(Long id);
 }

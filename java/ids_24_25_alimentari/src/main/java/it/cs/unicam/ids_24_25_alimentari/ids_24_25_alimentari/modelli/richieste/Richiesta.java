@@ -9,11 +9,9 @@ import lombok.Setter;
 @Setter
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@DiscriminatorColumn(name = "tipo_richiesta", discriminatorType = DiscriminatorType.STRING)
-@SequenceGenerator(name = "richiesta_seq", sequenceName = "richiesta_sequence", allocationSize = 1)
 public abstract class Richiesta {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "richiesta_seq")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @Column(name = "approvato")
     private Boolean approvato;

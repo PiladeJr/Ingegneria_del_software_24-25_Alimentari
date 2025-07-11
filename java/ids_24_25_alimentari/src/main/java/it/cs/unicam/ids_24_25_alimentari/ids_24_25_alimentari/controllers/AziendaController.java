@@ -1,26 +1,19 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.infoAzienda.RichiestaInfoProduttoreDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.infoAzienda.RichiestaInfoTrasformatoreDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.azienda.AziendaOutDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.AziendaService;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.InfoAggiuntiveService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.InfoAziendaService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.RichiestaContenutoService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.io.File;
-import java.io.IOException;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multipartConverter.ConvertitoreMultipartFileToFile.convertMultipartFileArrayToFileArray;
 
 /**
  * Controller per la gestione delle operazioni relative all'entità Azienda.
@@ -32,14 +25,14 @@ public class AziendaController {
 
     private final AziendaService aziendaService;
     private final RichiestaContenutoService richiestaContenutoService;
-    private final InfoAggiuntiveService infoAggiuntiveService;
+    private final InfoAziendaService infoAziendaService;
 
 
 
-    public AziendaController(AziendaService aziendaService, RichiestaContenutoService richiestaContenutoService, InfoAggiuntiveService infoAggiuntiveService) {
+    public AziendaController(AziendaService aziendaService, RichiestaContenutoService richiestaContenutoService, InfoAziendaService infoAziendaService) {
         this.aziendaService = aziendaService;
         this.richiestaContenutoService = richiestaContenutoService;
-        this.infoAggiuntiveService = infoAggiuntiveService;
+        this.infoAziendaService = infoAziendaService;
     }
 
     /**
@@ -48,9 +41,10 @@ public class AziendaController {
      * @return ResponseEntity contenente la lista di tutte le aziende.
      */
     @GetMapping
-    public ResponseEntity<List<Azienda>> getAllAziende() {
-        List<Azienda> aziende = aziendaService.getAllAziende();
-        return ResponseEntity.ok(aziende);
+    public ResponseEntity<List<AziendaOutDTO>> getAllAziende(
+            @RequestParam (required = false) String sortBy,
+            @RequestParam (required = false) String order) {
+        return ResponseEntity.ok(aziendaService.getAllAziende(sortBy, order));
     }
 
     /**
@@ -81,10 +75,13 @@ public class AziendaController {
      * @return la lista di aziende appartenenti ad utenti con il ruolo specificato
      */
     @GetMapping("/roles/{ruolo}")
-    public ResponseEntity<?> getAziendeByRuolo(@PathVariable String ruolo) {
+    public ResponseEntity<?> getAziendeByRuolo(
+            @PathVariable String ruolo,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String order) {
         try {
             Ruolo ruoloEnum = Ruolo.valueOf(ruolo.toUpperCase());
-            List<Azienda> aziende = aziendaService.getAziendeByRuolo(ruoloEnum);
+            List<AziendaOutDTO> aziende = aziendaService.getAziendeByRuolo(ruoloEnum, sortBy, order);
 
             if (aziende == null || aziende.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -115,7 +112,7 @@ public class AziendaController {
      */
     @GetMapping("/informazioni")
     public ResponseEntity<?> getInformazioniAzienda() {
-        return infoAggiuntiveService.ottieniInformazioniAzienda();
+        return infoAziendaService.ottieniInformazioniAzienda();
     }
 
     /**

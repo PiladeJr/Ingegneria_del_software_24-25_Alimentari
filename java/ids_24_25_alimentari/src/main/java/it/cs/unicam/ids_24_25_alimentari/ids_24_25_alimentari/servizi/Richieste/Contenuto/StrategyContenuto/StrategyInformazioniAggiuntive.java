@@ -3,16 +3,16 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.info.InfoAzienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.Tipologia;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.InformazioniAggiuntiveRepository;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.InfoAziendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StrategyInformazioniAggiuntive implements RichiestaContenutoStrategy {
     @Autowired
-    private final InformazioniAggiuntiveRepository informazioniRepository;
+    private final InfoAziendaRepository informazioniRepository;
 
-    public StrategyInformazioniAggiuntive(InformazioniAggiuntiveRepository informazioniRepository) {
+    public StrategyInformazioniAggiuntive(InfoAziendaRepository informazioniRepository) {
         this.informazioniRepository = informazioniRepository;
     }
 

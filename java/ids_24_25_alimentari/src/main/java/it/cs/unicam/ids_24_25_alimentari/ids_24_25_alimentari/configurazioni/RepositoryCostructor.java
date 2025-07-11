@@ -38,7 +38,7 @@ public class RepositoryCostructor {
     private RichiestaContenutoRepository richiestaContenutoRepository;
 
     @Autowired
-    private InformazioniAggiuntiveRepository informazioniAggiuntiveRepository;
+    private InfoAziendaRepository infoAziendaRepository;
 
     @Autowired
     private CollaborazioneRepository collaborazioneRepository;
@@ -60,7 +60,7 @@ public class RepositoryCostructor {
         impostaUtenti(utenteRepository);
         impostaIndirizzi(indirizzoRepository);
         impostaAziende(aziendaRepository);
-        impostaInfoAggiuntive(informazioniAggiuntiveRepository);
+        impostaInfoAggiuntive(infoAziendaRepository);
         impostaProdottiSingoli(prodottoSingoloRepository);
         impostaRichiesteCollaborazione(collaborazioneRepository);
         impostaRichieste(richiestaContenutoRepository);
@@ -152,7 +152,7 @@ public class RepositoryCostructor {
         isUtenteRepositorySet = false;
     }
 
-    public void pulisciInfoAggiuntive(InformazioniAggiuntiveRepository repo) {
+    public void pulisciInfoAggiuntive(InfoAziendaRepository repo) {
         repo.deleteAll();
         repo.flush();
         isInformazioniAggiuntiveRepositorySet = false;
@@ -288,7 +288,7 @@ public class RepositoryCostructor {
         isAziendaRepositorySet = true;
     }
 
-    public void impostaInfoAggiuntive(InformazioniAggiuntiveRepository repo) {
+    public void impostaInfoAggiuntive(InfoAziendaRepository repo) {
         try {
             pulisciInfoAggiuntive(repo);
 

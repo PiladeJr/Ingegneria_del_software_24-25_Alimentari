@@ -118,16 +118,15 @@ public class SecurityConfig {
                 auth
                                 .requestMatchers(HttpMethod.GET, "/api/azienda/{id}")
                                 .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE)
+                                .requestMatchers("/api/azienda/**")
+                                .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE)
                                 .requestMatchers("/api/azienda/roles/**")
                                 .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE,
                                                 SecurityConfig.ROLE_TRASFORMATORE)
                                 .requestMatchers(HttpMethod.DELETE, "/api/azienda/{id}")
                                 .hasAuthority(SecurityConfig.ROLE_GESTORE)
-                                .requestMatchers("/api/azienda/informazioni")
-                                .hasAnyAuthority(SecurityConfig.ROLE_PRODUTTORE, SecurityConfig.ROLE_TRASFORMATORE)
-                                .requestMatchers("/api/azienda/**")
-                                .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE);
-
+                                .requestMatchers(HttpMethod.GET, "/api/azienda/informazioni")
+                                .hasAnyAuthority(SecurityConfig.ROLE_PRODUTTORE, SecurityConfig.ROLE_TRASFORMATORE);
         }
 
         private void utenteAuth(

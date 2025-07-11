@@ -368,6 +368,7 @@ public class RichiesteCollaborazioneService extends RichiestaService {
                 + collaborazione.getRuolo()
                 + " è stata accettata con successo! Ecco le sue credenziali:\n"
                 + "Email: " + collaborazione.getEmail() + "\n" + "Password: " + password;
+        System.out.println("Messaggio di notifica: " + messaggio);
         notificaApprovazione(messaggio, collaborazione.getEmail(), "Collaborazione");
     }
 

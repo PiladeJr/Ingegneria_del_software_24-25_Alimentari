@@ -19,13 +19,13 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.*;
 import lombok.Getter;
 
 @Component
-@ComponentScan(basePackageClasses = { InformazioniAggiuntiveRepository.class, IndirizzoRepository.class,
+@ComponentScan(basePackageClasses = { InfoAziendaRepository.class, IndirizzoRepository.class,
         RichiestaContenutoRepository.class, CollaborazioneRepository.class, UtenteRepository.class,
         AziendaRepository.class })
 
 public class RepositoryProvider {
     @Getter
-    private final InformazioniAggiuntiveRepository informazioniAggiuntiveRepository;
+    private final InfoAziendaRepository infoAziendaRepository;
 
     @Getter
     private final IndirizzoRepository indirizzoRepository;
@@ -43,11 +43,11 @@ public class RepositoryProvider {
     private final AziendaRepository aziendaRepository;
 
     @Autowired
-    public RepositoryProvider(InformazioniAggiuntiveRepository informazioniAggiuntiveRepository,
+    public RepositoryProvider(InfoAziendaRepository infoAziendaRepository,
                               IndirizzoRepository indirizzoRepository, RichiestaContenutoRepository richiestaContenutoRepository,
                               CollaborazioneRepository collaborazioneRepository, UtenteRepository utenteRepository,
                               AziendaRepository aziendaRepository) {
-        this.informazioniAggiuntiveRepository = informazioniAggiuntiveRepository;
+        this.infoAziendaRepository = infoAziendaRepository;
         this.indirizzoRepository = indirizzoRepository;
         this.richiestaContenutoRepository = richiestaContenutoRepository;
         this.collaborazioneRepository = collaborazioneRepository;
@@ -82,8 +82,8 @@ public class RepositoryProvider {
             RICHIESTA_INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE;
 
     public void pulisciRichiesteInformazioniAggiuntive() {
-        informazioniAggiuntiveRepository.deleteAll();
-        informazioniAggiuntiveRepository.flush();
+        infoAziendaRepository.deleteAll();
+        infoAziendaRepository.flush();
         isRichiestaInformazioniAggiuntiveRepositorySet = false;
     }
 
