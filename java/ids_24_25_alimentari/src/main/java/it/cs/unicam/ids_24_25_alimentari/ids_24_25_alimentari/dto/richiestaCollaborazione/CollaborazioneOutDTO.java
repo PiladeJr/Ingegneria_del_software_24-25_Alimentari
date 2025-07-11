@@ -1,6 +1,5 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.indirizzo.IndirizzoDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaCollaborazione.RichiestaCollaborazione;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +9,6 @@ import java.io.File;
 @Getter
 @Setter
 public class CollaborazioneOutDTO {
-
     private Long id;
     private Boolean approvata;
     private String ruolo;
@@ -20,11 +18,6 @@ public class CollaborazioneOutDTO {
     private String telefono;
     private String email;
     private String iban;
-    private String denSociale;
-    private IndirizzoDTO sedeLegale;
-    private IndirizzoDTO sedeOperativa;
-    private String iva;
-    private File certificato;
     private File cartaIdentita;
     private File cv;
 
@@ -38,11 +31,6 @@ public class CollaborazioneOutDTO {
         this.telefono = collaborazione.getCollaborazione().getTelefono();
         this.email = collaborazione.getCollaborazione().getEmail();
         this.iban = collaborazione.getCollaborazione().getIban();
-        this.denSociale = collaborazione.getCollaborazione().getDenominazioneSociale();
-        this.sedeLegale = new IndirizzoDTO(collaborazione.getCollaborazione().getSedeLegale());
-        this.sedeOperativa = new IndirizzoDTO(collaborazione.getCollaborazione().getSedeOperativa());
-        this.iva = collaborazione.getCollaborazione().getIva();
-        this.certificato = collaborazione.getCollaborazione().getCertificato();
         this.cartaIdentita = collaborazione.getCollaborazione().getCartaIdentita();
         this.cv = collaborazione.getCollaborazione().getCv();
     }

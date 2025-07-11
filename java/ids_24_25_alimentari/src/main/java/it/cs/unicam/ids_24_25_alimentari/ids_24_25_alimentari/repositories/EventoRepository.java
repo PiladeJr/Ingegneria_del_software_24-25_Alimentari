@@ -1,15 +1,12 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.utente.IscrittoDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.Evento;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoFiera;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoVisita;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.Evento;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.EventoFiera;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.EventoVisita;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,37 +34,37 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
     /**
      * Restituisce tutti gli eventi visibili sulla piattaforma con stato PROGRAMMATO
      */
-    @Query("SELECT e FROM Evento e WHERE e.status = 'PROGRAMMATO'")
+    @Query("SELECT e FROM Evento e WHERE e.statusEvento = 'PROGRAMMATO'")
     List<Evento> findAllProgrammati();
 
     /**
      * Restituisce tutti gli eventi ordinati per data di inizio decrescente.
      */
-    @Query("SELECT e FROM Evento e WHERE e.status = 'PROGRAMMATO' ORDER BY e.inizio DESC")
+    @Query("SELECT e FROM Evento e WHERE e.statusEvento = 'PROGRAMMATO' ORDER BY e.inizio DESC")
     List<Evento> findAllEventiProgrammatiByInizio();
 
     /**
      * Restituisce tutti gli eventi di tipo visita visibili sulla piattaforma
      */
-    @Query("SELECT e FROM Evento e WHERE TYPE(e) = EventoVisita AND e.status = 'PROGRAMMATO'")
+    @Query("SELECT e FROM Evento e WHERE TYPE(e) = EventoVisita AND e.statusEvento = 'PROGRAMMATO'")
     List<EventoVisita> findAllVisitaProgrammati();
 
     /**
      * Restituisce tutti gli eventi di tipo fiera visibili sulla piattaforma
      */
-    @Query("SELECT e FROM Evento e WHERE TYPE(e) = EventoFiera AND e.status = 'PROGRAMMATO'")
+    @Query("SELECT e FROM Evento e WHERE TYPE(e) = EventoFiera AND e.statusEvento = 'PROGRAMMATO'")
     List<EventoFiera> findAllFieraProgrammati();
 
     /**
      * Restituisce tutti gli eventi di tipo visita visibili sulla piattaforma ordinati per data decrescente
      */
-    @Query("SELECT e FROM Evento e WHERE TYPE(e) = EventoVisita AND e.status = 'PROGRAMMATO' ORDER BY e.inizio DESC")
+    @Query("SELECT e FROM Evento e WHERE TYPE(e) = EventoVisita AND e.statusEvento = 'PROGRAMMATO' ORDER BY e.inizio DESC")
     List<EventoVisita> findAllVisitaProgrammatiByInizio();
 
     /**
      * Restituisce tutti gli eventi di tipo fiera visibili sulla piattaforma ordinati per data decrescente
      */
-    @Query("SELECT e FROM Evento e WHERE TYPE(e) = EventoFiera AND e.status = 'PROGRAMMATO' ORDER BY e.inizio DESC")
+    @Query("SELECT e FROM Evento e WHERE TYPE(e) = EventoFiera AND e.statusEvento = 'PROGRAMMATO' ORDER BY e.inizio DESC")
     List<EventoFiera> findAllFieraProgrammatiByInizio();
 
     /**
@@ -79,7 +76,7 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
     /**
      * Restituisce tutti gli eventi programmati il cui titolo contiene una stringa specifica, ignorando il case.
      */
-    @Query("SELECT e FROM Evento e WHERE LOWER(e.titolo) LIKE LOWER(CONCAT('%', :title, '%')) AND e.status = 'PROGRAMMATO'")
+    @Query("SELECT e FROM Evento e WHERE LOWER(e.titolo) LIKE LOWER(CONCAT('%', :title, '%')) AND e.statusEvento = 'PROGRAMMATO'")
     List<Evento> findByTitleContainingParameterAndStatus(String title);
 
     /**
@@ -94,7 +91,7 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
     @Query("SELECT e FROM Evento e WHERE TYPE(e) = EventoFiera AND e.creatore.id = :id")
     List<EventoFiera>findAllFieraByCreatore(long idCreatore);
 
-    @Query("SELECT e FROM Evento e  WHERE e.id = :id AND e.status = 'PROGRAMMATO'")
+    @Query("SELECT e FROM Evento e  WHERE e.id = :id AND e.statusEvento = 'PROGRAMMATO'")
     Optional<Evento> findByIdAndProgrammato(Long id);
 }
 

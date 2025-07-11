@@ -1,7 +1,7 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.info;
 
-import io.micrometer.common.lang.Nullable;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,15 +16,15 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class InformazioniAggiuntive extends Contenuto {
+public class InfoAzienda extends Contenuto {
 
-    @Column(name = "descrizione")
+    @Column(name = "descrizione", length = 400)
     private String descrizioneAzienda;
 
-    @Column(name = "produzione")
+    @Column(name = "produzione", length = 400)
     private String descrizioneProduzione;
 
-    @Column(name = "metodi")
+    @Column(name = "metodi", length = 400)
     private String descrizioneMetodi;
 
     @ElementCollection

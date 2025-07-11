@@ -1,4 +1,4 @@
-package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi;
+package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.Eventi.EventoBuilder;

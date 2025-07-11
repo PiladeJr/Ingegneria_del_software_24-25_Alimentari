@@ -1,8 +1,8 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.indirizzo.IndirizzoDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.Evento;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.StatusEvento;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.Evento;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.StatusEvento;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +26,7 @@ public class EventoEstesoDTO {
         this.id = evento.getId();
         this.titolo = evento.getTitolo();
         this.descrizione = evento.getDescrizione();
-        this.status = evento.getStatus();
+        this.status = evento.getStatusEvento();
         this.inizio = evento.getInizio();
         this.fine = evento.getFine();
         this.locandina = evento.getLocandina();

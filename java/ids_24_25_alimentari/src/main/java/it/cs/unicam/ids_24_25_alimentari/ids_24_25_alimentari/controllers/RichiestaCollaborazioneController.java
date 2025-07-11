@@ -2,7 +2,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.controllers;
 
 import javax.validation.Valid;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiesteCollaborazioneOutputDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiesteCollaborazioneOutDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaCollaborazione.RichiestaCollaborazione;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,9 +47,9 @@ public class RichiestaCollaborazioneController {
      *         {@code RichiestaCollaborazione}.
      */
     @GetMapping
-    public ResponseEntity<List<RichiesteCollaborazioneOutputDTO>> getAllRichieste(
+    public ResponseEntity<List<RichiesteCollaborazioneOutDTO>> getAllRichieste(
             @RequestParam(required = false) String ordine) {
-        List<RichiesteCollaborazioneOutputDTO> richieste = richiesteCollaborazioneService.getAllRichieste(ordine);
+        List<RichiesteCollaborazioneOutDTO> richieste = richiesteCollaborazioneService.getAllRichieste(ordine);
         return ResponseEntity.ok(richieste);
     }
 
@@ -78,7 +78,36 @@ public class RichiestaCollaborazioneController {
         }
     }
 
-     /**
+/**
+ * <h2>Elimina una richiesta di collaborazione virtualmente</h2>
+ * <br>
+ * Questo metodo consente di eliminare una richiesta di collaborazione specifica
+ * impostando il suo stato come "ELIMINATO" in modo virtuale, senza rimuoverla dal database.
+ * <br>
+ * Se la richiesta esiste, viene aggiornata e restituito un messaggio di conferma
+ * con stato HTTP 200 (OK).
+ * <br>
+ * Se la richiesta non viene trovata, restituisce uno stato HTTP 404 (NOT FOUND)
+ * con un messaggio di errore in formato JSON.
+ * <br>
+ * In caso di errore durante l'eliminazione, restituisce uno stato HTTP 500
+ * (INTERNAL SERVER ERROR).
+ *
+ * @param id L'ID della richiesta di collaborazione da eliminare virtualmente.
+ * @return {@code ResponseEntity} contenente un messaggio di conferma o di errore.
+ */
+@DeleteMapping("/{id}/elimina")
+public ResponseEntity<?> eliminaRichiestaVirtuale(@PathVariable Long id) {
+    try {
+        return richiesteCollaborazioneService.deleteRichiestaVirtuale(id);
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.singletonMap("error",
+                        "Errore nella cancellazione virtuale della richiesta: " + e.getMessage()));
+    }
+}
+
+    /**
      * <h2>Elimina una richiesta di collaborazione</h2>
      * <br>
      * Questo metodo permette di eliminare una richiesta di collaborazione
@@ -97,14 +126,14 @@ public class RichiestaCollaborazioneController {
      * @return {@code ResponseEntity} contenente un messaggio di conferma o di
      * errore.
      */
-     @DeleteMapping("/{id}/elimina")
-     public ResponseEntity<?> eliminaRichiesta(@PathVariable Long id) {
+     @DeleteMapping("/{id}/elimina-fisica")
+     public ResponseEntity<?> eliminaRichiestaFisica(@PathVariable Long id) {
          try {
-             return richiesteCollaborazioneService.eliminaRichiesta(id);
+             return richiesteCollaborazioneService.deleteRichiestaFisica(id);
          } catch (Exception e) {
-                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                 .body(Collections.singletonMap("error",
-                 "Errore nella cancellazione della richiesta: " + e.getMessage()));
+             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                     .body(Collections.singletonMap("error",
+                             "Errore nella cancellazione della richiesta: " + e.getMessage()));
          }
      }
 

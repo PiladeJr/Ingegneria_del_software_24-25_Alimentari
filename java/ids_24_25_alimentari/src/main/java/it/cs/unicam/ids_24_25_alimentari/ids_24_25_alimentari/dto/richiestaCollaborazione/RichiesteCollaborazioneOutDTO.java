@@ -6,16 +6,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RichiesteCollaborazioneOutputDTO {
+public class RichiesteCollaborazioneOutDTO {
 
     private Long id;
-    private Boolean approvata;
+    private String status;
     private String ruolo;
     private Long collaborazioneId;
 
-    public RichiesteCollaborazioneOutputDTO(RichiestaCollaborazione collaborazione) {
+    public RichiesteCollaborazioneOutDTO(RichiestaCollaborazione collaborazione) {
         this.id = collaborazione.getId();
-        this.approvata = collaborazione.getApprovato();
+        this.status = collaborazione.getStatus().toString();
         this.ruolo = collaborazione.getRuolo().name();
         this.collaborazioneId = collaborazione.getCollaborazione().getId();
     }

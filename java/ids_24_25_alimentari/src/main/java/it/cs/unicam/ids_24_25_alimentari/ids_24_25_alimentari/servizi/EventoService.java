@@ -6,7 +6,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi.FieraEs
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.eventi.VisitaEstesaDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.utente.IscrittoDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.*;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.*;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.EventoRepository;
@@ -143,7 +143,7 @@ public class EventoService {
     public EventoEstesoDTO getEventoProgrammatoById(Long id) {
         Evento evento = eventoRepository.findByIdAndProgrammato(id)
                 .orElseThrow(() -> new NoSuchElementException("Evento con ID " + id + " non trovato"));
-        if (evento.getStatus() != StatusEvento.PROGRAMMATO) {
+        if (evento.getStatusEvento() != StatusEvento.PROGRAMMATO) {
             throw new IllegalArgumentException("L'evento non è programmato");
         }
         return outputFormatEvento(evento);
@@ -751,7 +751,7 @@ public class EventoService {
                     .body("L'utente è già iscritto a questo evento");
         }
 
-        switch (evento.getStatus()) {
+        switch (evento.getStatusEvento()) {
             case CONCLUSO:
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("L'evento è già terminato");

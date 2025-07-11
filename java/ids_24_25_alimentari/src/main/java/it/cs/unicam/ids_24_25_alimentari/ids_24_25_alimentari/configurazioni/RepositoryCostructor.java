@@ -8,12 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.InformazioniAggiuntiveBuilder;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.InformazioniAggiuntive;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.InfoAziendaBuilder;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.info.InfoAzienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.ProdottoSingolo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoFiera;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.EventoVisita;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.eventi.StatusEvento;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.EventoFiera;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.EventoVisita;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.StatusEvento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
@@ -38,16 +38,13 @@ public class RepositoryCostructor {
     private RichiestaContenutoRepository richiestaContenutoRepository;
 
     @Autowired
-    private InformazioniAggiuntiveRepository informazioniAggiuntiveRepository;
+    private InfoAziendaRepository infoAziendaRepository;
 
     @Autowired
     private CollaborazioneRepository collaborazioneRepository;
 
     @Autowired
     private UtenteRepository utenteRepository;
-
-    @Autowired
-    private UtenteAziendaEsternaRepository utenteAziendaEsternaRepository;
 
     @Autowired
     private ProdottoSingoloRepository prodottoSingoloRepository;
@@ -63,11 +60,10 @@ public class RepositoryCostructor {
         impostaUtenti(utenteRepository);
         impostaIndirizzi(indirizzoRepository);
         impostaAziende(aziendaRepository);
-        impostaInfoAggiuntive(informazioniAggiuntiveRepository);
+        impostaInfoAggiuntive(infoAziendaRepository);
         impostaProdottiSingoli(prodottoSingoloRepository);
         impostaRichiesteCollaborazione(collaborazioneRepository);
         impostaRichieste(richiestaContenutoRepository);
-        impostaAziendeEsterne(utenteAziendaEsternaRepository);
         impostaEventi(eventoRepository);
     }
 
@@ -99,7 +95,7 @@ public class RepositoryCostructor {
             INDIRIZZO_FIERA_AUTUNNO,
             INDIRIZZO_FIERA_CONTADINA;
 
-    public InformazioniAggiuntive INFORMAZIONI_AGGIUNTIVE_PRODUTTORE,
+    public InfoAzienda INFORMAZIONI_AGGIUNTIVE_PRODUTTORE,
             INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE;
 
     public ProdottoSingolo PRODOTTO_LATTE,
@@ -116,7 +112,6 @@ public class RepositoryCostructor {
             RICHIESTA_ANIMATORE, RICHIESTA_CURATORE;
 
     public RichiestaContenutoRepository RICHIESTA_TIPO_INFORMAZIONI_AGGIUNTIVE;
-    public UtenteAziendaEsternaRepository UTENTE_TRASFORMATORE_PRODUTTORE;
 
     public void pulisciRichieste(RichiestaContenutoRepository richiestaContenutoRepository) {
         richiestaContenutoRepository.deleteAll();
@@ -139,16 +134,6 @@ public class RepositoryCostructor {
 
     }
 
-    public void pulisciAziendeEsterne(UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
-        utenteAziendaEsternaRepository.deleteAll();
-        utenteAziendaEsternaRepository.flush();
-        isUtenteAziendaEsternaRepositorySet = false;
-    }
-
-    public void impostaAziendeEsterne(UtenteAziendaEsternaRepository utenteAziendaEsternaRepository) {
-        pulisciAziendeEsterne(utenteAziendaEsternaRepository);
-    }
-
     public void pulisciIndirizzi(IndirizzoRepository indirizzoRepository) {
         indirizzoRepository.deleteAll();
         indirizzoRepository.flush();
@@ -167,7 +152,7 @@ public class RepositoryCostructor {
         isUtenteRepositorySet = false;
     }
 
-    public void pulisciInfoAggiuntive(InformazioniAggiuntiveRepository repo) {
+    public void pulisciInfoAggiuntive(InfoAziendaRepository repo) {
         repo.deleteAll();
         repo.flush();
         isInformazioniAggiuntiveRepositorySet = false;
@@ -303,7 +288,7 @@ public class RepositoryCostructor {
         isAziendaRepositorySet = true;
     }
 
-    public void impostaInfoAggiuntive(InformazioniAggiuntiveRepository repo) {
+    public void impostaInfoAggiuntive(InfoAziendaRepository repo) {
         try {
             pulisciInfoAggiuntive(repo);
 
@@ -311,7 +296,7 @@ public class RepositoryCostructor {
 
             File certificato = new File(getClass().getClassLoader().getResource("certificato.pdf").toURI());
 
-            InformazioniAggiuntiveBuilder builder = new InformazioniAggiuntiveBuilder();
+            InfoAziendaBuilder builder = new InfoAziendaBuilder();
 
             builder.costruisciDescrizione(
                     "La nostra azienda vi garantisce il miglior prodotto nostrano della nostra terra");
@@ -320,7 +305,7 @@ public class RepositoryCostructor {
             builder.aggiungiImmagine(immagine);
             builder.aggiungiCertificato(certificato);
             builder.costruisciAzienda(AZIENDA_PRODUTTORE);
-            INFORMAZIONI_AGGIUNTIVE_PRODUTTORE = builder.getInformazioniAggiuntive();
+            INFORMAZIONI_AGGIUNTIVE_PRODUTTORE = builder.build();
 
             builder.costruisciDescrizione("Dalle migliori materie prime per la qualita' che meritate");
             builder.costruisciProduzione("Tecniche avanzate e tecnologia industriale all'avanguardia");
@@ -328,7 +313,7 @@ public class RepositoryCostructor {
             builder.aggiungiImmagine(immagine);
             builder.aggiungiCertificato(certificato);
             builder.costruisciAzienda(AZIENDA_TRASFORMATORE);
-            INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE = builder.getInformazioniAggiuntive();
+            INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE = builder.build();
 
             repo.save(INFORMAZIONI_AGGIUNTIVE_PRODUTTORE);
             repo.save(INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE);
@@ -393,7 +378,7 @@ public class RepositoryCostructor {
             FIERA_CONTADINA = new EventoFiera();
             FIERA_CONTADINA.setTitolo("Fiera Contadina");
             FIERA_CONTADINA.setDescrizione("Fiera dedicata ai prodotti locali e biologici");
-            FIERA_CONTADINA.setStatus(StatusEvento.PROGRAMMATO);
+            FIERA_CONTADINA.setStatusEvento(StatusEvento.PROGRAMMATO);
             FIERA_CONTADINA.setInizio(LocalDateTime.of(2025, 4, 28, 10, 0));
             FIERA_CONTADINA.setFine(LocalDateTime.of(2025, 5, 1, 18, 0));
             FIERA_CONTADINA.setLocandina(immagine1);
@@ -405,7 +390,7 @@ public class RepositoryCostructor {
             FIERA_AUTUNNO = new EventoFiera();
             FIERA_AUTUNNO.setTitolo("Fiera di Autunno");
             FIERA_AUTUNNO.setDescrizione("Fiera dedicata ai prodotti autunnali e locali");
-            FIERA_AUTUNNO.setStatus(StatusEvento.PROGRAMMATO);
+            FIERA_AUTUNNO.setStatusEvento(StatusEvento.PROGRAMMATO);
             FIERA_AUTUNNO.setInizio(LocalDateTime.of(2025, 10, 9, 10, 0));
             FIERA_AUTUNNO.setFine(LocalDateTime.of(2025, 10, 9, 18, 0));
             FIERA_AUTUNNO.setLocandina(immagine2);
@@ -416,7 +401,7 @@ public class RepositoryCostructor {
             VISITA_PRODUTTORE = new EventoVisita();
             VISITA_PRODUTTORE.setTitolo("Visita Aziendale");
             VISITA_PRODUTTORE.setDescrizione("Visita guidata presso l'azienda agricola");
-            VISITA_PRODUTTORE.setStatus(StatusEvento.PROGRAMMATO);
+            VISITA_PRODUTTORE.setStatusEvento(StatusEvento.PROGRAMMATO);
             VISITA_PRODUTTORE.setInizio(LocalDateTime.of(2025, 6, 15, 10, 0));
             VISITA_PRODUTTORE.setFine(LocalDateTime.of(2025, 6, 15, 18, 0));
             VISITA_PRODUTTORE.setLocandina(immagine3);
@@ -428,7 +413,7 @@ public class RepositoryCostructor {
             VISITA_TRASFORMATORE = new EventoVisita();
             VISITA_TRASFORMATORE.setTitolo("Visita Aziendale Trasformatore");
             VISITA_TRASFORMATORE.setDescrizione("Visita guidata presso l'azienda di trasformazione");
-            VISITA_TRASFORMATORE.setStatus(StatusEvento.PROGRAMMATO);
+            VISITA_TRASFORMATORE.setStatusEvento(StatusEvento.PROGRAMMATO);
             VISITA_TRASFORMATORE.setInizio(LocalDateTime.of(2025, 7, 20, 10, 0));
             VISITA_TRASFORMATORE.setFine(LocalDateTime.of(2025, 7, 20, 18, 0));
             VISITA_TRASFORMATORE.setLocandina(immagine4);

@@ -1,5 +1,6 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi;
 
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.EnumComuni.Status;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaCollaborazione.Collaborazione;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaCollaborazione.CollaborazioneDirector;
@@ -8,6 +9,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.Colla
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -71,7 +73,8 @@ public class CollaborazioneService {
         CollaborazioneDirector director = new CollaborazioneDirector();
         Collaborazione collaborazione = director.creaAzienda(nome, cognome, telefono, email, ruolo, denSociale,
                 sedeLegale, sedeOperativa, iban, iva, certificato, cartaIdentita);
-        return collaborazioneRepository.save(collaborazione);
+        collaborazione.setStatus(Status.PENDING);
+        return salvaCollaborazione(collaborazione);
     }
 
     /**
@@ -102,7 +105,8 @@ public class CollaborazioneService {
         CollaborazioneDirector director = new CollaborazioneDirector();
         Collaborazione collaborazione = director.creaAnimatore(nome, cognome, telefono, email, ruolo, iban,
                 cartaIdentita);
-        return collaborazioneRepository.save(collaborazione);
+        collaborazione.setStatus(Status.PENDING);
+        return salvaCollaborazione(collaborazione);
     }
 
     /**
@@ -135,7 +139,8 @@ public class CollaborazioneService {
         CollaborazioneDirector director = new CollaborazioneDirector();
         Collaborazione collaborazione = director.creaCuratore(nome, cognome, telefono, email, ruolo, iban,
                 cartaIdentita, cv);
-        return collaborazioneRepository.save(collaborazione);
+        collaborazione.setStatus(Status.PENDING);
+        return salvaCollaborazione(collaborazione);
     }
 
     /**
@@ -148,9 +153,9 @@ public class CollaborazioneService {
      * @param collaborazione L'oggetto Collaborazione da salvare.
      * @throws IllegalArgumentException Se la collaborazione fornita è null.
      */
-    public void salvaCollaborazione(Collaborazione collaborazione) {
+    public Collaborazione salvaCollaborazione(Collaborazione collaborazione) {
         if (collaborazione != null) {
-            collaborazioneRepository.save(collaborazione);
+            return collaborazioneRepository.save(collaborazione);
         } else {
             throw new IllegalArgumentException("La collaborazione non può essere null");
         }
@@ -165,5 +170,15 @@ public class CollaborazioneService {
      */
     public void deleteCollaborazione(Long idCollaborazione) {
         collaborazioneRepository.deleteById(idCollaborazione);
+    }
+
+    public void impostaStatus(Collaborazione collaborazione, Status status){
+        collaborazione.setStatus(status);
+        salvaCollaborazione(collaborazione);
+    }
+
+    public  Collaborazione getCollabByIdAdmin(long idCollaborazione) {
+        return collaborazioneRepository.findByIdAdmin(idCollaborazione)
+                .orElseThrow(() -> new NoSuchElementException("Collaborazione non trovata con ID: " + idCollaborazione));
     }
 }

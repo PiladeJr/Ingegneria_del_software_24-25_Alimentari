@@ -8,20 +8,17 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.RichiestaContenutoRepository;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.EventoService;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.InfoAggiuntiveService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.InfoAziendaService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.ProdottoService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.StrategyContenuto.RichiestaContenutoStrategy;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.StrategyContenuto.RichiestaStrategyFactory;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.RichiestaInterface;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.RichiestaService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.EnumComuni.Status;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ImplementazioneServizioMail;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -37,18 +34,18 @@ import java.util.stream.Collectors;
 @Service
 public class RichiestaContenutoService extends RichiestaService {
     private final RichiestaContenutoRepository richiestaContenutoRepository;
-    private final InfoAggiuntiveService infoAggiuntiveService;
+    private final InfoAziendaService infoAziendaService;
     private final ProdottoService prodottoService;
     private final EventoService eventoService;
     private RichiestaStrategyFactory strategyFactory;
 
     public RichiestaContenutoService(RichiestaContenutoRepository richiestaContenutoRepository,
-            InfoAggiuntiveService infoAggiuntiveService, ProdottoService prodottoService, EventoService eventoService,
-            UtenteService utenteService, ImplementazioneServizioMail mailService,
-            RichiestaStrategyFactory strategyFactory) {
+                                     InfoAziendaService infoAziendaService, ProdottoService prodottoService, EventoService eventoService,
+                                     UtenteService utenteService, ImplementazioneServizioMail mailService,
+                                     RichiestaStrategyFactory strategyFactory) {
         super(mailService, utenteService);
         this.richiestaContenutoRepository = richiestaContenutoRepository;
-        this.infoAggiuntiveService = infoAggiuntiveService;
+        this.infoAziendaService = infoAziendaService;
         this.prodottoService = prodottoService;
         this.eventoService = eventoService;
 
@@ -134,12 +131,12 @@ public class RichiestaContenutoService extends RichiestaService {
                 return ResponseEntity.badRequest()
                         .body(Collections.singletonMap("message", "Inserire un messaggio di rifiuto"));
             }
-            notificaRifiutoRichiesta(dto.getMessaggioAggiuntivo(), emailUtente, richiesta.getTipoContenuto());
+            notificaRifiuto(dto.getMessaggioAggiuntivo(), emailUtente, richiesta.getTipoContenuto());
         } else {
             String messaggio = "\"La sua richiesta di inserimento di " + richiesta.getTipoContenuto() + " con ID "
                     + richiesta.getTargetId() +
                     "                + \" è stata accettata con successo!";
-            notificaAccettazioneRichiesta(messaggio, emailUtente, richiesta.getTipoContenuto());
+            notificaApprovazione(messaggio, emailUtente, richiesta.getTipoContenuto());
         }
         return ResponseEntity.ok().body(Collections.singletonMap("message",
                 dto.getStato() ? "Richiesta accettata con successo." : "Richiesta correttamente rifiutata."));
@@ -170,30 +167,33 @@ public class RichiestaContenutoService extends RichiestaService {
         }
     }
 
-    /**
-     * Crea una nuova richiesta di informazioni aggiuntive per un'azienda.
-     *
-     * @param descrizione Descrizione aggiuntiva dell'azienda.
-     * @param produzione  Informazioni sulla produzione dell'azienda.
-     * @param metodologie Metodologie di produzione utilizzate dall'azienda.
-     * @param immagini    File contenenti immagini relative alle informazioni
-     *                    aggiuntive.
-     * @param certificati File contenenti eventuali certificazioni dell'azienda.
-     * @param idAzienda   Identificativi dell'azienda coinvolta.
-     * @return La richiesta di informazioni aggiuntive creata e salvata nel
-     *         database.
-     */
-    public RichiestaContenuto nuovaRichiestaInformazioniAggiuntive(
+    public RichiestaContenuto nuovaRichiestaInformazioniTrasformatore(
             String descrizione,
             String produzione,
             String metodologie,
             File[] immagini,
             File[] certificati,
-            Long[] idAzienda) {
-        long id = this.infoAggiuntiveService
-                .nuovaInformazioneAggiuntiva(descrizione, produzione, metodologie, immagini, certificati, idAzienda)
+            List<Azienda> aziendeCollegate) {
+        long id = this.infoAziendaService
+                .nuoveInformazioniTrasformatore(descrizione, produzione, metodologie, immagini, certificati, aziendeCollegate)
                 .getId();
         RichiestaContenuto richiesta = this.nuovaRichiesta(id, Tipologia.INFO_AZIENDA, "info_azienda");
+        richiesta.setStatus(Status.PENDING);
+        this.notificaNuovaRichiesta(Ruolo.CURATORE);
+        return salvaRichiesta(richiesta);
+    }
+
+    public RichiestaContenuto nuovaRichiestaInformazioniProduttore(
+            String descrizione,
+            String produzione,
+            String metodologie,
+            File[] immagini,
+            File[] certificati) {
+        long id = this.infoAziendaService
+                .nuoveInformazioniProduttore(descrizione, produzione, metodologie, immagini, certificati)
+                .getId();
+        RichiestaContenuto richiesta = this.nuovaRichiesta(id, Tipologia.INFO_AZIENDA, "info_azienda");
+        richiesta.setStatus(Status.PENDING);
         this.notificaNuovaRichiesta(Ruolo.CURATORE);
         return salvaRichiesta(richiesta);
     }
@@ -223,6 +223,7 @@ public class RichiestaContenutoService extends RichiestaService {
         long id = this.prodottoService
                 .nuovoProdotto(nome, descrizione, idAzienda, immagini, prezzo, quantita, allergeni, tecniche).getId();
         RichiestaContenuto richiesta = this.nuovaRichiesta(id, Tipologia.PRODOTTO, "singolo");
+        richiesta.setStatus(Status.PENDING);
         this.notificaNuovaRichiesta(Ruolo.CURATORE);
         return salvaRichiesta(richiesta);
     }
@@ -243,6 +244,7 @@ public class RichiestaContenutoService extends RichiestaService {
             Set<Long> prodotti) {
         long id = this.prodottoService.nuovoPacchetto(nome, descrizione, prezzo, prodotti).getId();
         RichiestaContenuto richiesta = this.nuovaRichiesta(id, Tipologia.PRODOTTO, "Pacchetto");
+        richiesta.setStatus(Status.PENDING);
         this.notificaNuovaRichiesta(Ruolo.CURATORE);
         return salvaRichiesta(richiesta);
     }
@@ -261,6 +263,8 @@ public class RichiestaContenutoService extends RichiestaService {
 
         // Crea una nuova richiesta di tipo evento
         RichiestaContenuto richiesta = this.nuovaRichiesta(idEvento, Tipologia.EVENTO, "fiera");
+
+        richiesta.setStatus(Status.PENDING);
 
         // Notifica i curatori della nuova richiesta
         this.notificaNuovaRichiesta(Ruolo.CURATORE);
@@ -284,6 +288,8 @@ public class RichiestaContenutoService extends RichiestaService {
 
         // Crea una nuova richiesta di tipo evento
         RichiestaContenuto richiesta = this.nuovaRichiesta(idEvento, Tipologia.EVENTO, "visita");
+
+        richiesta.setStatus(Status.PENDING);
 
         // Notifica i curatori della nuova richiesta
         this.notificaNuovaRichiesta(Ruolo.CURATORE);

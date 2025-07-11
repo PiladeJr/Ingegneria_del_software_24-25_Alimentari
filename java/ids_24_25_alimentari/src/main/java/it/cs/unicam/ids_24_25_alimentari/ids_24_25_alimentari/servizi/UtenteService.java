@@ -225,4 +225,11 @@ public class UtenteService implements UserDetailsService {
     public void aggiungiIndirizzoFatturazione(Long idUtente, Indirizzo indirizzo) {
         aggiungiIndirizzo(idUtente, indirizzo, false);
     }
+
+    public void salvaUtente(Utente utente) {
+        if (utente == null) {
+            throw new IllegalArgumentException("Utente non può essere null");
+        }
+        utenteRepository.save(utente);
+    }
 }

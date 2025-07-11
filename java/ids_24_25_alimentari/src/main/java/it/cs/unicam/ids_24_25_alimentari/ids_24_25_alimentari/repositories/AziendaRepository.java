@@ -12,10 +12,12 @@ import java.util.Optional;
 
 @Repository
 public interface AziendaRepository extends JpaRepository<Azienda, Long> {
+    @Query ("SELECT a FROM Azienda a WHERE a.denominazioneSociale = ?1")
+    List<Azienda> findAllByDenominazioneSociale(String denominazione);
     @Query("SELECT a FROM Azienda a WHERE a.utente.ruolo = :ruolo")
-    List<Azienda> findAziendeByRuolo(Ruolo ruolo);
+    List<Azienda> findAllByRuolo(Ruolo ruolo);
     @Query("SELECT a FROM Azienda a WHERE a.utente.ruolo = :ruolo AND a.id = :idAzienda")
     Azienda findAziendaByIdAndRuolo(long idAzienda, Ruolo ruolo);
-    @Query("SELECT a FROM Azienda a WHERE a.utente = :idUtente")
+    @Query("SELECT a FROM Azienda a WHERE a.utente.id = :idUtente")
     Optional<Azienda> findAziendaByUtenteId(long idUtente);
 }
