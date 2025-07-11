@@ -51,39 +51,69 @@ public class InfoAziendaService {
      */
     public ResponseEntity<?> ottieniInformazioniAzienda(){
 
-            Optional<Utente> utente = utenteService.getUtenteById(utenteService.getIdUtenteAutenticato());
-                if (utente.isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("error: ", "Utente non autenticato"));
-                }
-            Optional<Azienda> azienda = aziendaService.getAziendaByUtente(utente.get().getId());
-                if (azienda.isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error: ", "Azienda non trovata per l'utente autenticato"));
-                }
-            Optional<InfoAzienda> info = infoAziendaRepository.findByAzienda(azienda.get().getId());
+        Optional<Utente> utente = utenteService.getUtenteById(utenteService.getIdUtenteAutenticato());
+        if (utente.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("error: ", "Utente non autenticato"));
+        }
+        Optional<Azienda> azienda = aziendaService.getAziendaByUtente(utente.get().getId());
+        if (azienda.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error: ", "Azienda non trovata per l'utente autenticato"));
+        }
 
-            if (utente.get().getRuolo().equals(Ruolo.PRODUTTORE)) {
-                if (info.isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.OK).body(" Nessuna informazione presente per il produttore");
-                }
+        Optional<InfoAzienda> info = infoAziendaRepository.findByAzienda(azienda.get().getId());
+        if (info.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error: ", "Informazioni aggiuntive non trovate per l'azienda di ruolo " + utente.get().getRuolo() +" con idAzienda: " + azienda.get().getId()));
+        }
+
+        switch (utente.get().getRuolo()){
+            case PRODUTTORE -> {
                 return ResponseEntity.ok(info.map(InfoProduttoreDTO::new));
             }
-
-            if (utente.get().getRuolo().equals(Ruolo.TRASFORMATORE)) {
-                if (info.isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.OK).body(" Nessuna informazione presente per il trasformatore");
-                }
+            case TRASFORMATORE -> {
                 return ResponseEntity.ok(info.map(infoAzienda -> new InfoTrasformatoreDTO(infoAzienda, utente.get().getAziendeCollegate())));
             }
-            else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("error: ", "Ruolo non autorizzato per ottenere le informazioni aggiuntive"));
-
+            default -> {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("error: ", "Ruolo non autorizzato per ottenere le informazioni aggiuntive"));
+            }
+        }
     }
 
+/**
+     * <h2>Ottieni le informazioni aggiuntive approvate per un ID specifico</h2>
+     * <br/>
+     * <p>Metodo responsabile dell'ottenimento delle informazioni aggiuntive approvate per un ID specifico.</p>
+     * <p>Se le informazioni sono approvate, vengono restituite in base al ruolo dell'utente associato.</p>
+     * <p>In caso di errore, viene restituito un messaggio di errore con lo stato HTTP appropriato.</p>
+     *
+     * @param id <i>ID</i> delle informazioni aggiuntive da ottenere.
+     * @return {@link ResponseEntity} contenente le informazioni aggiuntive approvate o un messaggio di errore.
+     */
     public ResponseEntity<?> getInformazioniAggiuntive(long id){
         try {
-            return ResponseEntity.ok(infoAziendaRepository.findByIdAndApprovato(id));
+            InfoAzienda info = getInfoById(id);
+            if (info != null) {
+                switch (info.getAzienda().getUtente().getRuolo()) {
+                    case PRODUTTORE -> {
+                        return ResponseEntity.ok(new InfoProduttoreDTO(info));
+                    }
+                    case TRASFORMATORE -> {
+                        return ResponseEntity.ok(new InfoTrasformatoreDTO(info, info.getAzienda().getUtente().getAziendeCollegate()));
+                    }
+                    default -> {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("error: ", "Ruolo non autorizzato per ottenere le informazioni aggiuntive"));
+                    }
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error: ", "Informazioni aggiuntive non approvate o non trovate"));
+            }
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error: ",e));
         }
+    }
+
+    public InfoAzienda getInfoById(long id){
+        return infoAziendaRepository.findByIdAndApprovato(id)
+                .orElseThrow(() -> new NoSuchElementException("Informazioni aggiuntive non trovate con ID: " + id));
     }
 
     /**
@@ -123,9 +153,13 @@ public class InfoAziendaService {
 
     ){
         long idUtente = utenteService.getIdUtenteAutenticato();
-        InfoAziendaDirector director = new InfoAziendaDirector();
         Optional<Azienda> azienda = aziendaService.getAziendaByUtente(idUtente);
+
         if (azienda.isPresent()){
+            if (azienda.get().getInfoAzienda()!= null){
+                throw new IllegalArgumentException("Sono già presenti informazioni aggiuntive per l'azienda associata all'utente autenticato. Effettuare una richiesta di modifica per cambiare le informazioni.");
+            }
+            InfoAziendaDirector director = new InfoAziendaDirector();
             InfoAzienda info = director.costruisciInfo(
                     descrizione,
                     produzione,

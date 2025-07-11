@@ -19,6 +19,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.EnumComuni.Status;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ImplementazioneServizioMail;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -162,7 +163,7 @@ public class RichiestaContenutoService extends RichiestaService {
      * @throws IllegalArgumentException se la tipologia della richiesta non è
      *                                  supportata.
      */
-    public Contenuto visualizzaContenutoByRichiesta(long idRichiesta) {
+    public ResponseEntity<?> visualizzaContenutoByRichiesta(long idRichiesta) {
         RichiestaContenuto richiesta = richiestaContenutoRepository.findById(idRichiesta)
                 .orElseThrow(() -> new RuntimeException("Richiesta non trovata"));
 
@@ -170,7 +171,7 @@ public class RichiestaContenutoService extends RichiestaService {
         if (strategy != null) {
             return strategy.visualizzaContenutoByRichiesta(richiesta);
         } else {
-            throw new IllegalArgumentException("Tipologia non supportata: " + richiesta.getTipologia());
+            return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body("Tipologia non supportata: " + richiesta.getTipologia());
         }
     }
 

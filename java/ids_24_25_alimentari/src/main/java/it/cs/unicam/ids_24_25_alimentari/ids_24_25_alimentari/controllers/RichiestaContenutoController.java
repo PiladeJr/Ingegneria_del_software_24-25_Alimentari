@@ -7,13 +7,9 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.info
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.infoAzienda.RichiestaInfoTrasformatoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.prodotti.RichiestaPacchettoDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.prodotti.RichiestaProdottoDTO;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.RichiestaContenutoService;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multipartConverter.ConvertitoreMultipartFileToFile;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+
 
 import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multipartConverter.ConvertitoreMultipartFileToFile.convertMultipartFileArrayToFileArray;
 
@@ -35,8 +31,6 @@ import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multi
 @Controller
 @RequestMapping("/api/richieste-contenuto")
 public class RichiestaContenutoController {
-
-    @Autowired
     private final RichiestaContenutoService richiestaContenutoService;
 
     public RichiestaContenutoController(RichiestaContenutoService richiestaContenutoService) {
@@ -52,13 +46,7 @@ public class RichiestaContenutoController {
     @GetMapping("/visualizza/{id}")
     public ResponseEntity<?> getRichiestaById(@PathVariable Long id) {
         try {
-
-            Contenuto richiesta = richiestaContenutoService.visualizzaContenutoByRichiesta(id);
-            return richiesta!=null ? ResponseEntity.ok(richiesta)
-                    : ResponseEntity.status(404)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body("{\"error\": \"Richiesta non trovata\"}");
-
+            return richiestaContenutoService.visualizzaContenutoByRichiesta(id);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Errore interno del server: " + e.getMessage());
         }

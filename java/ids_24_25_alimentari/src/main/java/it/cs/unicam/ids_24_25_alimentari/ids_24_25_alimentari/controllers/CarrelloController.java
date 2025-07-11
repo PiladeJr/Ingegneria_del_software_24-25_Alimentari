@@ -4,7 +4,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.carrello.CreaC
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.contenutoCarrello.ContenutoCarrelloDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.carrello.Carrello;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.CarrelloService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +22,6 @@ public class CarrelloController {
     /**
      * Service per la logica di business dei carrelli.
      */
-    @Autowired
     private CarrelloService carrelloService;
 
     /**

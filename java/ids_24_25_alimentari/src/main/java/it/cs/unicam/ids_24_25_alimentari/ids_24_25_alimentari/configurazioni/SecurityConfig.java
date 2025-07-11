@@ -118,8 +118,8 @@ public class SecurityConfig {
                 auth
                                 .requestMatchers(HttpMethod.GET, "/api/azienda/{id}")
                                 .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE)
-                                .requestMatchers("/api/azienda/**")
-                                .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE)
+//                                .requestMatchers("/api/azienda/**")
+//                                .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE)
                                 .requestMatchers("/api/azienda/roles/**")
                                 .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE,
                                                 SecurityConfig.ROLE_TRASFORMATORE)
