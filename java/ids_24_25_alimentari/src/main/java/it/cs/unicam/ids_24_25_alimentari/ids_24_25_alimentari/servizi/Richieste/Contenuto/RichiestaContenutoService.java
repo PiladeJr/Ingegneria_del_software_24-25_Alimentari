@@ -66,13 +66,20 @@ public class RichiestaContenutoService extends RichiestaService {
      *
      * @return Una lista di tutte le richieste.
      */
-    public List<RichiestaContenuto> getAllRichiesteContenuto(String sortBy) {
-        List<RichiestaContenuto> richieste = new ArrayList<>(richiestaContenutoRepository.getAllRichiesteContenuto());
+    public List<RichiestaContenuto> getAllRichiesteContenuto(String sortBy, String order) {
+        List<RichiestaContenuto> richieste = new ArrayList<>(richiestaContenutoRepository.findAllRichieste());
         Comparator<RichiestaContenuto> comparator = switch (sortBy.toLowerCase()) {
             case "tipologia" -> Comparator.comparing(RichiestaContenuto::getTipologia);
-            case "stato" -> Comparator.comparing(RichiestaContenuto::getApprovato);
+            case "pending" -> Comparator.comparing(richiesta -> richiesta.getStatus() == Status.PENDING);
+            case "approvate" -> Comparator.comparing(richiesta -> richiesta.getStatus() == Status.APPROVATO);
+            case "rifiutate" -> Comparator.comparing(richiesta -> richiesta.getStatus() == Status.RIFIUTATO);
             default -> Comparator.comparingLong(RichiestaContenuto::getId);
         };
+
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+
         return richieste.stream()
                 .sorted(comparator)
                 .collect(Collectors.toList());

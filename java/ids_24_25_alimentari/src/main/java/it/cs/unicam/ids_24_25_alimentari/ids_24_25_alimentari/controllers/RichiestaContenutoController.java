@@ -7,6 +7,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.info
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.infoAzienda.RichiestaInfoTrasformatoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.prodotti.RichiestaPacchettoDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.prodotti.RichiestaProdottoDTO;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.RichiestaContenutoService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
@@ -37,16 +38,9 @@ public class RichiestaContenutoController {
 
     @Autowired
     private final RichiestaContenutoService richiestaContenutoService;
-    @Autowired
-    private final ServizioEmail servizioEmail;
-    @Autowired
-    private final UtenteService utenteService;
 
-    public RichiestaContenutoController(RichiestaContenutoService richiestaContenutoService, ServizioEmail servizioEmail,
-                                        UtenteService utenteService) {
+    public RichiestaContenutoController(RichiestaContenutoService richiestaContenutoService) {
         this.richiestaContenutoService = richiestaContenutoService;
-        this.servizioEmail = servizioEmail;
-        this.utenteService = utenteService;
     }
 
     /**
@@ -59,8 +53,8 @@ public class RichiestaContenutoController {
     public ResponseEntity<?> getRichiestaById(@PathVariable Long id) {
         try {
 
-            Optional<RichiestaContenuto> richiesta = richiestaContenutoService.getRichiestaById(id);
-            return richiesta.isPresent() ? ResponseEntity.ok(richiesta.get())
+            Contenuto richiesta = richiestaContenutoService.visualizzaContenutoByRichiesta(id);
+            return richiesta!=null ? ResponseEntity.ok(richiesta)
                     : ResponseEntity.status(404)
                             .contentType(MediaType.APPLICATION_JSON)
                             .body("{\"error\": \"Richiesta non trovata\"}");
@@ -76,8 +70,11 @@ public class RichiestaContenutoController {
      * @return Una lista di richieste di contenuto.
      */
     @GetMapping("/visualizza/all")
-    public ResponseEntity<List<RichiestaContenuto>> getAllRichiesteContenuto(@RequestParam (required = false) String ordine) {
-        List<RichiestaContenuto> richiesteContenuto = this.richiestaContenutoService.getAllRichiesteContenuto(ordine);
+    public ResponseEntity<List<RichiestaContenuto>> getAllRichiesteContenuto(
+            @RequestParam (required = false) String sortBy,
+            @RequestParam (required = false) String order
+    ) {
+        List<RichiestaContenuto> richiesteContenuto = this.richiestaContenutoService.getAllRichiesteContenuto(sortBy, order);
         return ResponseEntity.ok(richiesteContenuto);
     }
 
