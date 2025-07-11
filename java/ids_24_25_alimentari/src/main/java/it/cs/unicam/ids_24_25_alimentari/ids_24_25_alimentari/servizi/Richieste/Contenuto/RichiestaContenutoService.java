@@ -4,7 +4,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.Valu
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.Richieste.RichiestaContenutoBuilder;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
@@ -38,7 +37,7 @@ public class RichiestaContenutoService extends RichiestaService {
     private final InfoAziendaService infoAziendaService;
     private final ProdottoService prodottoService;
     private final EventoService eventoService;
-    private RichiestaStrategyFactory strategyFactory;
+    private final RichiestaStrategyFactory strategyFactory;
 
     public RichiestaContenutoService(RichiestaContenutoRepository richiestaContenutoRepository,
                                      InfoAziendaService infoAziendaService, ProdottoService prodottoService, EventoService eventoService,
@@ -49,7 +48,7 @@ public class RichiestaContenutoService extends RichiestaService {
         this.infoAziendaService = infoAziendaService;
         this.prodottoService = prodottoService;
         this.eventoService = eventoService;
-
+        this.strategyFactory = strategyFactory;
     }
 
     /**
@@ -132,15 +131,16 @@ public class RichiestaContenutoService extends RichiestaService {
      * @return Una risposta HTTP che indica il risultato dell'elaborazione della richiesta.
      */
     public ResponseEntity<?> elaborazioneRichiesta(RichiestaContenuto richiesta, ValutaRichiestaDTO dto) {
-        processaRichiesta(richiesta, dto.getStato());
         String emailUtente = (utenteService.getUtenteById(richiesta.getIdMittente())).get().getEmail();
         if (!dto.getStato()) {
-            if (dto.getMessaggioAggiuntivo() == null) {
+            if (dto.getMessaggio() == null) {
                 return ResponseEntity.badRequest()
                         .body(Collections.singletonMap("message", "Inserire un messaggio di rifiuto"));
             }
-            notificaRifiuto(dto.getMessaggioAggiuntivo(), emailUtente, richiesta.getTipoContenuto());
+            processaRichiesta(richiesta, false);
+            notificaRifiuto(dto.getMessaggio(), emailUtente, richiesta.getTipoContenuto());
         } else {
+            processaRichiesta(richiesta, true);
             String messaggio = "\"La sua richiesta di inserimento di " + richiesta.getTipoContenuto() + " con ID "
                     + richiesta.getTargetId() +
                     "                + \" è stata accettata con successo!";

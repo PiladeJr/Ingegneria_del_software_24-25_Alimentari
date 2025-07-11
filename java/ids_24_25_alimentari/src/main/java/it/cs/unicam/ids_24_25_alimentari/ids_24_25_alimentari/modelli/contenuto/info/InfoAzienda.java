@@ -38,7 +38,7 @@ public class InfoAzienda extends Contenuto {
     private List<File> certificati;
 
     @OneToOne
-    @JoinColumn(name = "azienda_id", nullable = false)
+    @JoinColumn(name = "azienda_id")
     private Azienda azienda;
 
 }

@@ -1,12 +1,10 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi;
 
-
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.infoAzienda.InfoProduttoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.infoAzienda.InfoTrasformatoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.info.InfoAzienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.info.InfoAziendaDirector;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.InfoAziendaRepository;
 
@@ -112,7 +110,7 @@ public class InfoAziendaService {
     }
 
     public InfoAzienda getInfoById(long id){
-        return infoAziendaRepository.findByIdAndApprovato(id)
+        return infoAziendaRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Informazioni aggiuntive non trovate con ID: " + id));
     }
 

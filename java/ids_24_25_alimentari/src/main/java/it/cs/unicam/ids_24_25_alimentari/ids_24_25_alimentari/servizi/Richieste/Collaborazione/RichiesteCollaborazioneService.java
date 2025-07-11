@@ -412,11 +412,11 @@ public class RichiesteCollaborazioneService extends RichiestaService {
             if (dto.getStato()) {
                 accettaRichiesta(richiesta);
             } else {
-                if (dto.getMessaggioAggiuntivo() == null) {
+                if (dto.getMessaggio() == null) {
                     return ResponseEntity.badRequest()
                             .body(Collections.singletonMap("message", "Inserire un messaggio di rifiuto"));
                 }
-                rifiutaRichiesta(richiesta, dto.getMessaggioAggiuntivo());
+                rifiutaRichiesta(richiesta, dto.getMessaggio());
             }
             return ResponseEntity.ok().body(Collections.singletonMap("message",
                     dto.getStato() ? "Richiesta accettata con successo." : "Richiesta correttamente rifiutata."));

@@ -11,9 +11,9 @@ import java.util.Optional;
 
 @Repository
 public interface RichiestaContenutoRepository extends JpaRepository<RichiestaContenuto, Long> {
-    @Query("SELECT r FROM RichiestaContenuto r WHERE r.status != 'ELIMINATA'")
+    @Query("SELECT r FROM RichiestaContenuto r WHERE r.status != 'ELIMINATO'")
     List<RichiestaContenuto> findAllRichieste();
-    @Query("SELECT r FROM RichiestaContenuto r WHERE r.id = ?1 AND r.status != 'ELIMINATA'")
+    @Query("SELECT r FROM RichiestaContenuto r WHERE r.id = ?1 AND r.status != 'ELIMINATO'")
     Optional<RichiestaContenuto> findById(Long id);
 
 }

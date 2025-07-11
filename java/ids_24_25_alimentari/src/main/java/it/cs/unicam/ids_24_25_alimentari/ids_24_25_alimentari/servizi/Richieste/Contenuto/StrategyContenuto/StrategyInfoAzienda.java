@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class StrategyInformazioniAggiuntive implements RichiestaContenutoStrategy {
+public class StrategyInfoAzienda implements RichiestaContenutoStrategy {
 
     private final InfoAziendaService infoAziendaService;
     private final UtenteService utenteService;
     private final RichiestaContenutoRepository richiestaContenutoRepository;
 
-    public StrategyInformazioniAggiuntive(InfoAziendaService infoAziendaService, UtenteService utenteService, RichiestaContenutoRepository richiestaContenutoRepository) {
+    public StrategyInfoAzienda(InfoAziendaService infoAziendaService, UtenteService utenteService, RichiestaContenutoRepository richiestaContenutoRepository) {
         this.infoAziendaService = infoAziendaService;
         this.utenteService = utenteService;
         this.richiestaContenutoRepository = richiestaContenutoRepository;

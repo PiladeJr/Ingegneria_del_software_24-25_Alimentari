@@ -8,6 +8,6 @@ import lombok.Setter;
 public class ValutaRichiestaDTO {
 
     private Boolean stato;
-    private String messaggioAggiuntivo;
+    private String messaggio;
 
 }
