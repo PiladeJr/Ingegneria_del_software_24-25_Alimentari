@@ -76,7 +76,7 @@ public class InfoAziendaService {
         }
     }
 
-/**
+    /**
      * <h2>Ottieni le informazioni aggiuntive approvate per un ID specifico</h2>
      * <br/>
      * <p>Metodo responsabile dell'ottenimento delle informazioni aggiuntive approvate per un ID specifico.</p>
@@ -125,6 +125,60 @@ public class InfoAziendaService {
      */
     public InfoAzienda salvaInformazioniAggiuntive(InfoAzienda info) {
         return infoAziendaRepository.save(info);
+    }
+
+    /**
+     * <h2>Cancella le informazioni aggiuntive di un'azienda</h2>
+     * <br/>
+     * <p>Metodo responsabile della cancellazione delle informazioni aggiuntive associate all'azienda dell'utente autenticato.</p>
+     * <p>Se l'azienda associata all'utente autenticato non viene trovata, viene lanciata un'eccezione.</p>
+     * <p>Le informazioni aggiuntive vengono marcate come "ELIMINATO" e dissociate dall'azienda.</p>
+     *
+     * @throws NoSuchElementException Se l'azienda o le informazioni aggiuntive non vengono trovate.
+     */
+    public void cancellaInfoAzienda(){
+        long idUtente = utenteService.getIdUtenteAutenticato();
+        Optional<Azienda> azienda = aziendaService.getAziendaByUtente(idUtente);
+        if (azienda.isPresent()) {
+            InfoAzienda info = infoAziendaRepository.findByAzienda(azienda.get().getId())
+                    .orElseThrow(() -> new NoSuchElementException("Informazioni aggiuntive non trovate per l'azienda con ID: " + azienda.get().getId()));
+            info.setAzienda(null);
+            info.setStatus(Status.ELIMINATO);
+            salvaInformazioniAggiuntive(info);
+            aziendaService.saveAzienda(azienda.get());
+        } else {
+            throw new NoSuchElementException("Nessuna azienda trovata per l'utente con ID: " + idUtente);
+        }
+    }
+
+    /**
+     * <h2>Elimina virtualmente le informazioni aggiuntive</h2>
+     * <br/>
+     * <p>Metodo, utilizzato dal gestore della piattaforma.</p>
+     * <p>Responsabile dell'eliminazione virtuale delle informazioni aggiuntive.</p>
+     * <p>Le informazioni vengono dissociate dall'azienda e marcate come "ELIMINATO".</p>
+     *
+     * @param id <i>ID</i> delle informazioni aggiuntive da eliminare.
+     * @throws NoSuchElementException Se le informazioni aggiuntive con l'ID fornito non vengono trovate.
+     */
+    public void deleteInfoAziendaVirtuale(long id) {
+        InfoAzienda info = infoAziendaRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Informazioni aggiuntive non trovate con ID: " + id));
+
+        if (info.getStatus() != Status.ELIMINATO) {
+            info.setAzienda(null);
+            info.setStatus(Status.ELIMINATO);
+            salvaInformazioniAggiuntive(info);
+        }
+        else throw new IllegalStateException("Le informazioni aggiuntive con ID: " + id + " sono già state eliminate.");
+    }
+
+    public void deleteInfoAziendaFisico(long id) {
+        InfoAzienda info = infoAziendaRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Informazioni aggiuntive non trovate con ID: " + id));
+        info.setAzienda(null);
+        info = salvaInformazioniAggiuntive(info);
+        infoAziendaRepository.delete(info);
     }
 
     /**
@@ -196,15 +250,36 @@ public class InfoAziendaService {
             File[] immagini,
             File[] certificati,
             List<Azienda> aziendeCollegate
-    ){
-        InfoAzienda info = nuoveInformazioniProduttore( descrizione, produzione, metodologie, immagini, certificati);
+    ) {
+        InfoAzienda info = nuoveInformazioniProduttore(descrizione, produzione, metodologie, immagini, certificati);
+
         long idUtente = utenteService.getIdUtenteAutenticato();
+
         if (aziendeCollegate != null && !aziendeCollegate.isEmpty()) {
+            for (Azienda azienda : aziendeCollegate) {
+                if (azienda.getId() < 1) {
+                    // Validate denominazioneSociale and indirizzo
+                    if (azienda.getDenominazioneSociale() == null || azienda.getDenominazioneSociale().isEmpty()) {
+                        throw new IllegalArgumentException("Denominazione sociale obbligatoria per aziende esterne.");
+                    }
+                    if (azienda.getSedeLegale() == null || azienda.getSedeLegale().getCitta() == null || azienda.getSedeLegale().getCitta().isEmpty()) {
+                        throw new IllegalArgumentException("Indirizzo obbligatorio per aziende esterne.");
+                    }
+                    // Save the new Azienda
+                    aziendaService.saveAzienda(azienda);
+                } else {
+                    // Retrieve existing Azienda
+                    Optional<Azienda> existingAzienda = aziendaService.getAziendaById(azienda.getId());
+                    if (existingAzienda.isEmpty()) {
+                        throw new IllegalArgumentException("Azienda non trovata con ID: " + azienda.getId());
+                    }
+                }
+            }
             aziendaService.collegaAziendeUtente(idUtente, aziendeCollegate);
-        }
-        else {
+        } else {
             aziendaService.collegaAziendeUtente(idUtente, Collections.emptyList());
         }
+
         return info;
     }
 

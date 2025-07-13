@@ -12,24 +12,7 @@ import java.util.Optional;
 
 @Getter
 @Setter
-public class RichiestaInfoTrasformatoreDTO {
-    @NotNull(message = "Descrizione obbligatoria")
-    private String descrizione;
-    @NotNull(message = "Produzione obbligatoria")
-    private String produzione;
-    @NotNull(message = "Metodologie obbligatorie")
-    private String metodologie;
-    @NotNull(message = "Immagini obbligatorie")
-    private MultipartFile[] immagini;
-    @NotNull(message = "Certificati obbligatori")
-    private MultipartFile[] certificati;
-    private Optional<List<Azienda>> aziendeCollegate = Optional.empty();
+public class RichiestaInfoTrasformatoreDTO extends RichiestaInfoProduttoreDTO{
 
-    public List<Azienda>  getAziendeCollegate() {
-        return aziendeCollegate.orElse(new ArrayList<>());
-    }
-
-    public void setAziendeCollegate(List<Azienda>  aziendeCollegate) {
-        this.aziendeCollegate = Optional.ofNullable(aziendeCollegate);
-    }
+    private List<Azienda> aziendeCollegate = new ArrayList<>();
 }

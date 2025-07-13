@@ -283,7 +283,7 @@ public ResponseEntity<?> eliminaRichiestaVirtuale(@PathVariable Long id) {
      *           o se manca il messaggio in caso di rifiuto.
      *         - HTTP 404 (NOT FOUND) se la richiesta non esiste.
      */
-    @PatchMapping("/{id}/stato")
+    @PatchMapping("/{id}/valuta")
     public ResponseEntity<?> elaboraRichiesta(@RequestBody ValutaRichiestaDTO dto, @PathVariable Long id) {
         try {
             return richiesteCollaborazioneService.elaboraRichiesta(dto, id);

@@ -62,10 +62,8 @@ public class SecurityConfig {
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .exceptionHandling(exception -> exception
-                                                .authenticationEntryPoint((request, response, authException) -> {
-                                                        sendErrorResponse(response, HttpServletResponse.SC_FORBIDDEN,
-                                                                        "Accesso negato: autenticazione richiesta");
-                                                }))
+                                                .authenticationEntryPoint((request, response, authException) -> sendErrorResponse(response, HttpServletResponse.SC_FORBIDDEN,
+                                                                "Accesso negato: autenticazione richiesta")))
                                 .authorizeHttpRequests(this::configureAuthorization)
                                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                                 .headers(headers -> headers
@@ -96,7 +94,7 @@ public class SecurityConfig {
         private void collaborazioniAuth(
                         AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
                 auth
-                                .requestMatchers(HttpMethod.PATCH, "/api/richieste-collaborazione/{id}/stato")
+                                .requestMatchers(HttpMethod.PATCH, "/api/richieste-collaborazione/{id}/valuta")
                                 .hasAuthority(SecurityConfig.ROLE_GESTORE)
                                 .requestMatchers("/api/richieste-collaborazione/**")
                                 .hasAuthority(SecurityConfig.ROLE_GESTORE);
@@ -116,19 +114,22 @@ public class SecurityConfig {
         private void aziendaAuth(
                         AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
                 auth
-                                .requestMatchers(HttpMethod.GET, "/api/azienda/informazioni")
-                                .hasAnyAuthority(SecurityConfig.ROLE_PRODUTTORE, SecurityConfig.ROLE_TRASFORMATORE)
+                        .requestMatchers(HttpMethod.GET, "/api/azienda/me/informazioni")
+                        .hasAnyAuthority(SecurityConfig.ROLE_PRODUTTORE, SecurityConfig.ROLE_TRASFORMATORE)
 
-                                .requestMatchers(HttpMethod.GET, "/api/azienda/roles/**")
-                                .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE, SecurityConfig.ROLE_TRASFORMATORE)
+                        .requestMatchers(HttpMethod.GET, "/api/azienda/roles/**")
+                        .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE, SecurityConfig.ROLE_TRASFORMATORE)
 
-                                .requestMatchers(HttpMethod.GET, "/api/azienda/{id}")
-                                .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE)
-                                .requestMatchers(HttpMethod.DELETE, "/api/azienda/{id}")
-                                .hasAuthority(SecurityConfig.ROLE_GESTORE)
-
-                                .requestMatchers("/api/azienda/**")
-                                .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE);
+                        .requestMatchers(HttpMethod.GET, "/api/azienda/{id}")
+                        .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE)
+                        .requestMatchers(HttpMethod.DELETE, "/api/azienda/{id}")
+                        .hasAuthority(SecurityConfig.ROLE_GESTORE)
+                        .requestMatchers(HttpMethod.DELETE, "/api/azienda/me/informazioni")
+                        .hasAnyAuthority(SecurityConfig.ROLE_PRODUTTORE, SecurityConfig.ROLE_TRASFORMATORE)
+                        .requestMatchers(HttpMethod.DELETE, "/api/aziende/info/{id}")
+                        .hasAuthority(SecurityConfig.ROLE_GESTORE)
+                        .requestMatchers("/api/azienda/**")
+                        .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE);
         }
 
         private void utenteAuth(
