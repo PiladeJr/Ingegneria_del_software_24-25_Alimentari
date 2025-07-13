@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface InfoAziendaRepository extends JpaRepository<InfoAzienda, Long> {
     @Query("SELECT i FROM InfoAzienda i WHERE i.id =?1 AND i.status = 'APPROVATO'")
     Optional<InfoAzienda> findByIdAndApprovato(Long id);
-    @Query("SELECT i FROM InfoAzienda i WHERE i.azienda =?1 AND i.status = 'APPROVATO'")
+    @Query("SELECT i FROM InfoAzienda i WHERE i.azienda.id =?1 AND i.status = 'APPROVATO'")
     Optional<InfoAzienda> findByAzienda(Long id);
 }
