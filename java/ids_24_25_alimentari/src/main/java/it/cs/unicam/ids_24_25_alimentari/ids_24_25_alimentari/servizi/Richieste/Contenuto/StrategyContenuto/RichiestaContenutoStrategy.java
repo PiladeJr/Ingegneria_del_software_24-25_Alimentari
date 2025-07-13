@@ -3,6 +3,7 @@ package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.Tipologia;
+import org.springframework.http.ResponseEntity;
 
 public interface RichiestaContenutoStrategy {
 
@@ -20,7 +21,7 @@ public interface RichiestaContenutoStrategy {
      *
      * @return Contenuto associato alla richiesta
      */
-    Contenuto visualizzaContenutoByRichiesta(RichiestaContenuto richiesta);
+    ResponseEntity<?> visualizzaContenutoByRichiesta(RichiestaContenuto richiesta);
 
     /**
      * Restituisce la tipologia della richiesta.

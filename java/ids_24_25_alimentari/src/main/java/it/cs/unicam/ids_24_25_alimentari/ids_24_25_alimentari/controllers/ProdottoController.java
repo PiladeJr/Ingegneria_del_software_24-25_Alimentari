@@ -4,7 +4,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.ProdottoSingolo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.prodotto.TipoProdotto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.ProdottoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +16,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/prodotto")
 public class ProdottoController {
-
-    @Autowired
     private final ProdottoService prodottoService;
 
     public ProdottoController(ProdottoService prodottoService) {

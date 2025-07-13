@@ -6,7 +6,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruo
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.AziendaService;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.InfoAziendaService;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Contenuto.RichiestaContenutoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,14 +23,12 @@ import java.util.Optional;
 public class AziendaController {
 
     private final AziendaService aziendaService;
-    private final RichiestaContenutoService richiestaContenutoService;
     private final InfoAziendaService infoAziendaService;
 
 
 
-    public AziendaController(AziendaService aziendaService, RichiestaContenutoService richiestaContenutoService, InfoAziendaService infoAziendaService) {
+    public AziendaController(AziendaService aziendaService, InfoAziendaService infoAziendaService) {
         this.aziendaService = aziendaService;
-        this.richiestaContenutoService = richiestaContenutoService;
         this.infoAziendaService = infoAziendaService;
     }
 
@@ -58,7 +55,7 @@ public class AziendaController {
     public ResponseEntity<?> getAziendaById(@PathVariable Long id) {
         try {
             return aziendaService.getAziendaById(id)
-                    .map(azienda -> ResponseEntity.<Object>ok(azienda))
+                    .map(ResponseEntity::<Object>ok)
                     .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
                             .body(Collections.singletonMap("error", "Azienda non trovata")));
         } catch (Exception e) {

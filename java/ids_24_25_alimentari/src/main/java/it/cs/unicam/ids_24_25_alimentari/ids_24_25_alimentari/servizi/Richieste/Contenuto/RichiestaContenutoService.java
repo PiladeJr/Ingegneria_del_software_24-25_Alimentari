@@ -4,7 +4,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.Valu
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.azienda.Azienda;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.builders.Richieste.RichiestaContenutoBuilder;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.Contenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.RichiestaContenuto;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaContenuto.Tipologia;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Ruolo;
@@ -19,6 +18,7 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.UtenteService;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.EnumComuni.Status;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ImplementazioneServizioMail;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +37,7 @@ public class RichiestaContenutoService extends RichiestaService {
     private final InfoAziendaService infoAziendaService;
     private final ProdottoService prodottoService;
     private final EventoService eventoService;
-    private RichiestaStrategyFactory strategyFactory;
+    private final RichiestaStrategyFactory strategyFactory;
 
     public RichiestaContenutoService(RichiestaContenutoRepository richiestaContenutoRepository,
                                      InfoAziendaService infoAziendaService, ProdottoService prodottoService, EventoService eventoService,
@@ -48,7 +48,7 @@ public class RichiestaContenutoService extends RichiestaService {
         this.infoAziendaService = infoAziendaService;
         this.prodottoService = prodottoService;
         this.eventoService = eventoService;
-
+        this.strategyFactory = strategyFactory;
     }
 
     /**
@@ -66,13 +66,20 @@ public class RichiestaContenutoService extends RichiestaService {
      *
      * @return Una lista di tutte le richieste.
      */
-    public List<RichiestaContenuto> getAllRichiesteContenuto(String sortBy) {
-        List<RichiestaContenuto> richieste = new ArrayList<>(richiestaContenutoRepository.getAllRichiesteContenuto());
+    public List<RichiestaContenuto> getAllRichiesteContenuto(String sortBy, String order) {
+        List<RichiestaContenuto> richieste = new ArrayList<>(richiestaContenutoRepository.findAllRichieste());
         Comparator<RichiestaContenuto> comparator = switch (sortBy.toLowerCase()) {
             case "tipologia" -> Comparator.comparing(RichiestaContenuto::getTipologia);
-            case "stato" -> Comparator.comparing(RichiestaContenuto::getApprovato);
+            case "pending" -> Comparator.comparing(richiesta -> richiesta.getStatus() == Status.PENDING);
+            case "approvate" -> Comparator.comparing(richiesta -> richiesta.getStatus() == Status.APPROVATO);
+            case "rifiutate" -> Comparator.comparing(richiesta -> richiesta.getStatus() == Status.RIFIUTATO);
             default -> Comparator.comparingLong(RichiestaContenuto::getId);
         };
+
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+
         return richieste.stream()
                 .sorted(comparator)
                 .collect(Collectors.toList());
@@ -124,15 +131,16 @@ public class RichiestaContenutoService extends RichiestaService {
      * @return Una risposta HTTP che indica il risultato dell'elaborazione della richiesta.
      */
     public ResponseEntity<?> elaborazioneRichiesta(RichiestaContenuto richiesta, ValutaRichiestaDTO dto) {
-        processaRichiesta(richiesta, dto.getStato());
         String emailUtente = (utenteService.getUtenteById(richiesta.getIdMittente())).get().getEmail();
         if (!dto.getStato()) {
-            if (dto.getMessaggioAggiuntivo() == null) {
+            if (dto.getMessaggio() == null) {
                 return ResponseEntity.badRequest()
                         .body(Collections.singletonMap("message", "Inserire un messaggio di rifiuto"));
             }
-            notificaRifiuto(dto.getMessaggioAggiuntivo(), emailUtente, richiesta.getTipoContenuto());
+            processaRichiesta(richiesta, false);
+            notificaRifiuto(dto.getMessaggio(), emailUtente, richiesta.getTipoContenuto());
         } else {
+            processaRichiesta(richiesta, true);
             String messaggio = "\"La sua richiesta di inserimento di " + richiesta.getTipoContenuto() + " con ID "
                     + richiesta.getTargetId() +
                     "                + \" è stata accettata con successo!";
@@ -155,7 +163,7 @@ public class RichiestaContenutoService extends RichiestaService {
      * @throws IllegalArgumentException se la tipologia della richiesta non è
      *                                  supportata.
      */
-    public Contenuto visualizzaContenutoByRichiesta(long idRichiesta) {
+    public ResponseEntity<?> visualizzaContenutoByRichiesta(long idRichiesta) {
         RichiestaContenuto richiesta = richiestaContenutoRepository.findById(idRichiesta)
                 .orElseThrow(() -> new RuntimeException("Richiesta non trovata"));
 
@@ -163,7 +171,7 @@ public class RichiestaContenutoService extends RichiestaService {
         if (strategy != null) {
             return strategy.visualizzaContenutoByRichiesta(richiesta);
         } else {
-            throw new IllegalArgumentException("Tipologia non supportata: " + richiesta.getTipologia());
+            return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body("Tipologia non supportata: " + richiesta.getTipologia());
         }
     }
 

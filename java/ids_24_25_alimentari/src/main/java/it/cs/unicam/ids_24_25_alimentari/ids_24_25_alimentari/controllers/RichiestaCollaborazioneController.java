@@ -4,7 +4,6 @@ import javax.validation.Valid;
 
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiesteCollaborazioneOutDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.richieste.richiestaCollaborazione.RichiestaCollaborazione;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,6 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaColla
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiestaCollaborazioneCuratoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richiestaCollaborazione.RichiestaCollaborazioneAnimatoreDTO;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.servizi.Richieste.Collaborazione.RichiesteCollaborazioneService;
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.smtp.ServizioEmail;
 import java.io.File;
 
 import java.util.List;
@@ -26,15 +24,12 @@ import static it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.multi
 @RestController
 @RequestMapping("/api/richieste-collaborazione")
 public class RichiestaCollaborazioneController {
-    @Autowired
     private final RichiesteCollaborazioneService richiesteCollaborazioneService;
-    @Autowired
-    private final ServizioEmail servizioEmail;
 
-    public RichiestaCollaborazioneController(RichiesteCollaborazioneService richiesteCollaborazioneService,
-            ServizioEmail servizioEmail) {
+
+
+    public RichiestaCollaborazioneController(RichiesteCollaborazioneService richiesteCollaborazioneService){
         this.richiesteCollaborazioneService = richiesteCollaborazioneService;
-        this.servizioEmail = servizioEmail;
     }
 
     /**

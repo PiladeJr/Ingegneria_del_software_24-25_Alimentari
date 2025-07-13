@@ -124,7 +124,6 @@ public class SecurityConfig {
 
                                 .requestMatchers(HttpMethod.GET, "/api/azienda/{id}")
                                 .hasAnyAuthority(SecurityConfig.ROLE_GESTORE, SecurityConfig.ROLE_CURATORE)
-
                                 .requestMatchers(HttpMethod.DELETE, "/api/azienda/{id}")
                                 .hasAuthority(SecurityConfig.ROLE_GESTORE)
 

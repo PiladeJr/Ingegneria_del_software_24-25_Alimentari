@@ -77,7 +77,7 @@ public class UtenteController {
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
             Optional<Utente> utente = utenteService.getUtenteById(id);
-            if (utente == null) {
+            if (utente.isEmpty()) {
                 Map<String, String> response = new HashMap<>();
                 response.put("message", "Utente non trovato.");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
