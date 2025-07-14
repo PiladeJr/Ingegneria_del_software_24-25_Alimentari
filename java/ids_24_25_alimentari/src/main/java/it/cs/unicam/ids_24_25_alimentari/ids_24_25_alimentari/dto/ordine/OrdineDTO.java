@@ -15,7 +15,7 @@ public class OrdineDTO {
             Long idCarrello, MetodiPagamentoTransazione metodoPagamento) {
 
         this.idCarrello = idCarrello;
-        this.metodoPagamento = metodoPagamento; // Default value, can be changed later
+        this.metodoPagamento = metodoPagamento;
     }
 
     public Long getIdCarrello() {
