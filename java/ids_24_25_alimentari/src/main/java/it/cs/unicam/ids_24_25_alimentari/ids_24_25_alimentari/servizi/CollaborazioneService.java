@@ -70,6 +70,16 @@ public class CollaborazioneService {
             String iva,
             File certificato,
             File cartaIdentita) {
+
+        if (sedeOperativa == null) {
+            sedeOperativa = new Indirizzo(
+                    sedeLegale.getVia(),
+                    sedeLegale.getNumeroCivico(),
+                    sedeLegale.getCitta(),
+                    sedeLegale.getProvincia(),
+                    sedeLegale.getCap());
+        }
+
         CollaborazioneDirector director = new CollaborazioneDirector();
         Collaborazione collaborazione = director.creaAzienda(nome, cognome, telefono, email, ruolo, denSociale,
                 sedeLegale, sedeOperativa, iban, iva, certificato, cartaIdentita);

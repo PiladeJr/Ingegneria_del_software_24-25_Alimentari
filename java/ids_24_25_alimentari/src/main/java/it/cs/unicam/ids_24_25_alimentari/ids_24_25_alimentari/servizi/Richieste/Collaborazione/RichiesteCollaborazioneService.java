@@ -250,15 +250,6 @@ public class RichiesteCollaborazioneService extends RichiestaService {
             File certificato,
             File cartaIdentita) {
 
-        if (sedeOperativa == null) {
-            sedeOperativa = new Indirizzo(
-                    sedeLegale.getVia(),
-                    sedeLegale.getNumeroCivico(),
-                    sedeLegale.getCitta(),
-                    sedeLegale.getProvincia(),
-                    sedeLegale.getCap());
-        }
-
         Collaborazione collab = collaborazioneService.creaNuovaAzienda(
                 nome,
                 cognome,

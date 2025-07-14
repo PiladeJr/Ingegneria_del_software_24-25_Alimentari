@@ -290,12 +290,32 @@ public class RichiestaContenutoService extends RichiestaService {
             Indirizzo indirizzo,
             Azienda aziendaRiferimento) {
         // Crea l'evento utilizzando EventoService
-        Long idEvento;
-        idEvento = eventoService.creaVisita(titolo, descrizione, inizio, fine, locandina, indirizzo,
+        Long idEvento =  eventoService.creaVisita(titolo, descrizione, inizio, fine, locandina, indirizzo,
                 aziendaRiferimento);
 
         // Crea una nuova richiesta di tipo evento
         RichiestaContenuto richiesta = this.nuovaRichiesta(idEvento, Tipologia.EVENTO, "visita");
+
+        richiesta.setStatus(Status.PENDING);
+
+        // Notifica i curatori della nuova richiesta
+        this.notificaNuovaRichiesta(Ruolo.CURATORE);
+
+        // Salva e restituisce la richiesta
+        return salvaRichiesta(richiesta);
+    }
+
+    public RichiestaContenuto nuovaRichiestaVisitaAzienda(
+            String titolo,
+            String descrizione,
+            LocalDateTime inizio,
+            LocalDateTime fine,
+            File locandina) {
+        // Crea l'evento utilizzando il metodo `creaVisitaAzienda` di EventoService
+        Long idEvento = eventoService.creaVisitaAzienda(titolo, descrizione, inizio, fine, locandina);
+
+        // Crea una nuova richiesta di tipo evento
+        RichiestaContenuto richiesta = this.nuovaRichiesta(idEvento, Tipologia.EVENTO, "visita_azienda");
 
         richiesta.setStatus(Status.PENDING);
 

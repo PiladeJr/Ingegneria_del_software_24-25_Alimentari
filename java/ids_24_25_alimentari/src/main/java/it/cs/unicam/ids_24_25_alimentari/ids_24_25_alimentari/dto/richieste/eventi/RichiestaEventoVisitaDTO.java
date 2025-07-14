@@ -9,5 +9,4 @@ import java.util.List;
 @Setter
 public class RichiestaEventoVisitaDTO extends RichiestaEventoDTO {
     private Azienda aziendaRiferimento;
-    private List<Utente> iscritti;
 }

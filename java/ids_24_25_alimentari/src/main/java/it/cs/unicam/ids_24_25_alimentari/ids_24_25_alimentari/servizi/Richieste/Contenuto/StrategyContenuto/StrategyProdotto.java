@@ -37,7 +37,7 @@ public class StrategyProdotto implements RichiestaContenutoStrategy {
     public void processaRichiesta(RichiestaContenuto richiesta, Boolean status) {
         Prodotto prodotto = getProdottoByRichiesta(richiesta);
         if (prodotto != null){
-            if (prodotto.getStatus() != Status.PENDING){
+            if (prodotto.getStatus() == Status.PENDING){
                 if (status) {
                     prodotto.setStatus(Status.APPROVATO);
                     richiesta.setStatus(Status.APPROVATO);

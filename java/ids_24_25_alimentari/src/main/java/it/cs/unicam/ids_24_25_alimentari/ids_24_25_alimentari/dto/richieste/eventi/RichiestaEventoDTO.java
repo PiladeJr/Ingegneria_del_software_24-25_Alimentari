@@ -1,6 +1,5 @@
 package it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.dto.richieste.eventi;
 
-import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.eventi.StatusEvento;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.indirizzo.Indirizzo;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.utente.Utente;
 import lombok.Getter;
@@ -14,10 +13,9 @@ import java.time.LocalDateTime;
 public abstract class RichiestaEventoDTO {
     private String titolo;
     private String descrizione;
-    private StatusEvento status;
     private LocalDateTime inizio;
     private LocalDateTime fine;
     private MultipartFile locandina;
     private Indirizzo indirizzo;
-    private Utente creatore;
+
 }

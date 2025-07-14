@@ -12,6 +12,18 @@ public class ImplementazioneServizioMail implements ServizioEmail{
     @Autowired private JavaMailSender javaMailSender;
     @Value("$MAIL_USERNAME") private String sender;
 
+
+    /**
+     * <h2>Invia una mail</h2>
+     * <br>
+     * Questo metodo consente di inviare una mail a un destinatario specifico.
+     * Utilizza il servizio JavaMailSender per inviare il messaggio.
+     *
+     * @param emailDestinatario L'indirizzo email del destinatario.
+     * @param messaggio         Il contenuto del messaggio da inviare.
+     * @param oggetto           L'oggetto della mail.
+     * @return {@code String} Messaggio di conferma o errore.
+     */
     @Override
     public String inviaMail(String emailDestinatario, String messaggio, String oggetto) {
 

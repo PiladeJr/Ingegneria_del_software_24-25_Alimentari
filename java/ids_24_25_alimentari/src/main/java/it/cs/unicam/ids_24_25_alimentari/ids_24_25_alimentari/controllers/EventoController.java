@@ -454,6 +454,8 @@ public class EventoController {
         return eventoService.getIscrittiEvento(idVisita);
     }
 
+
+
     /**
      * <h2>Iscrive un utente a un evento di tipo visita</h2>
      * <br>
@@ -470,6 +472,65 @@ public class EventoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    //------------------------------------------------CANCELLAZIONE E ELIMINAZIONE--------------------------------------------
+    /**
+     * <h2>Cancella un evento creato dall'utente autenticato</h2>
+     * <br>
+     * Questo endpoint consente di cancellare virtualmente un evento creato dall'animatore autenticato.
+     * La cancellazione virtuale non elimina fisicamente l'evento dal database, ma lo rende non visibile
+     * agli utenti. Se l'evento non viene trovato o non appartiene all'animatore autenticato, restituisce
+     * un errore.
+     *
+     * @param idEvento L'ID dell'evento da cancellare virtualmente.
+     * @return {@code ResponseEntity<String>} Messaggio di conferma o errore.
+     */
+    @DeleteMapping("/miei/{idEvento}")
+    public ResponseEntity<String> cancellaEvento(@PathVariable Long idEvento) {
+        try {
+            eventoService.cancellaEvento(idEvento);
+            return ResponseEntity.status(HttpStatus.OK).body("Evento cancellato virtualmente con successo.");
+        } catch (NoSuchElementException | IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    /**
+     * <h2>Elimina virtualmente un evento</h2>
+     * <br>
+     * Questo endpoint consente di eliminare virtualmente un evento specifico utilizzando il suo ID.
+     * Se l'evento non viene trovato, restituisce un errore 404.
+     *
+     * @param idEvento L'ID dell'evento da eliminare virtualmente.
+     * @return {@code ResponseEntity<String>} Messaggio di conferma o errore.
+     */
+    @PutMapping("/{idEvento}/elimina-virtuale")
+    public ResponseEntity<String> eliminaEventoVirtuale(@PathVariable Long idEvento) {
+        try {
+            eventoService.eliminaEventoVirtuale(idEvento);
+            return ResponseEntity.status(HttpStatus.OK).body("Evento eliminato virtualmente con successo.");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    /**
+     * <h2>Elimina fisicamente un evento</h2>
+     * <br>
+     * Questo endpoint consente di eliminare fisicamente un evento specifico utilizzando il suo ID.
+     * Se l'evento non viene trovato o non può essere eliminato, restituisce un errore.
+     *
+     * @param idEvento L'ID dell'evento da eliminare fisicamente.
+     * @return {@code ResponseEntity<String>} Messaggio di conferma o errore.
+     */
+    @DeleteMapping("/{idEvento}/elimina-fisico")
+    public ResponseEntity<String> eliminaEventoFisico(@PathVariable Long idEvento) {
+        try {
+            eventoService.eliminaEventoFisico(idEvento);
+            return ResponseEntity.status(HttpStatus.OK).body("Evento eliminato fisicamente con successo.");
+        } catch (NoSuchElementException | IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }
