@@ -16,49 +16,49 @@
 
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-## 📜 Project Description
+## 📜 Descrizione del Progetto
 
-This group project, as part of the Unicam Software Engineering exam, teaches us how to approach the development of every software-related artifact following an Iterative Development Model (the Unified Process). The focus is not only on the development of the codebase, but also and above all on the analysis process.
+Questo progetto di gruppo, nell'ambito dell'esame di Ingegneria del Software di Unicam, ci insegna come affrontare lo sviluppo di ogni artefatto software seguendo un Modello di Sviluppo Iterativo (il Processo Unificato). Il focus non è solo sullo sviluppo del codice, ma anche e soprattutto sul processo di analisi.
 
-The project focuses on managing a comprehensive marketplace dedicated to selling typical food products, processed goods, and experiential packages linked to local traditions.<br>
+Il progetto si concentra sulla gestione di un marketplace completo dedicato alla vendita di prodotti alimentari tipici, prodotti trasformati e pacchetti esperienziali legati alle tradizioni locali.<br>
 
-It involves various actors, including producers, transformers, distributors, event planners, moderators, customer service, and admins, each with specific roles.
+Coinvolge vari attori, inclusi produttori, trasformatori, distributori, organizzatori di eventi, moderatori, assistenza clienti e amministratori, ognuno con ruoli specifici.
 
-### ✨ Key Features:
+### ✨ Caratteristiche Principali:
 
-- **🛍️ Product Management**: Create, edit, and manage individual products and product packages
+- **🛍️ Gestione Prodotti**: Crea, modifica e gestisci prodotti individuali e pacchetti di prodotti
 
-- **✅ Content Validation**: Moderator review and approval system for products and events
+- **✅ Validazione Contenuti**: Sistema di revisione e approvazione da parte dei moderatori per prodotti ed eventi
 
-- **🛒 Shopping Cart**: Advanced cart management with multiple products and quantities
+- **🛒 Carrello della Spesa**: Gestione avanzata del carrello con prodotti multipli e quantità
 
-- **📦 Order Management**: Complete order lifecycle from creation to delivery
+- **📦 Gestione Ordini**: Ciclo di vita completo degli ordini dalla creazione alla consegna
 
-- **💳 Payment Integration**: PayPal integration for secure transactions
+- **💳 Integrazione Pagamenti**: Integrazione PayPal per transazioni sicure
 
-- **👨‍⚖️ User & Business Management**: Multi-role user system with company associations
+- **👨‍⚖️ Gestione Utenti e Aziende**: Sistema multi-ruolo con associazioni aziendali
 
-- **🎉 Event Management**: Organize fairs, tours, and tastings to promote local products
+- **🎉 Gestione Eventi**: Organizza fiere, visite e degustazioni per promuovere prodotti locali
 
-- **🔐 Security**: JWT-based authentication and role-based authorization
+- **🔐 Sicurezza**: Autenticazione basata su JWT e autorizzazione basata sui ruoli
 
-- **📧 Email Services**: Automated email notifications for various system events
+- **📧 Servizi Email**: Notifiche email automatiche per vari eventi di sistema
 
 ---
 
-## ⚙️ Setup & Installation
+## ⚙️ Configurazione e Installazione
 
-### 📌 Prerequisites
+### 📌 Prerequisiti
 
-Make sure you have the following installed:
+Assicurati di avere installato:
 
-- **☕ JDK 21 or higher**
+- **☕ JDK 21 o superiore**
 
 - **🐘 Gradle 8.x**
 
-### 🚀 Getting Started
+### 🚀 Primi Passi
 
-### 📥 Clone the Repository
+### 📥 Clona il Repository
 
 ```sh
 
@@ -68,13 +68,13 @@ $  cd  Ingegneria_del_software_24-25_Alimentari/java/ids_24_25_alimentari
 
 ```
 
-### 🛠️ Configure the Database
+### 🛠️ Configura il Database
 
-The application uses H2 in-memory database by default. Configuration is in `src/main/resources/application.properties`:
+L'applicazione utilizza il database H2 in-memory di default. La configurazione si trova in `src/main/resources/application.properties`:
 
 ```properties
 
-# H2 Database (in-memory for development)
+# Database H2 (in-memory per sviluppo)
 
 spring.datasource.url=jdbc:h2:mem:testdb
 
@@ -86,13 +86,13 @@ spring.datasource.password=password
 
 
 
-# Enable H2 Console (accessible at /h2-console)
+# Abilita Console H2 (accessibile da /h2-console)
 
 spring.h2.console.enabled=true
 
 
 
-# Hibernate settings
+# Impostazioni Hibernate
 
 spring.jpa.hibernate.ddl-auto=update
 
@@ -100,9 +100,9 @@ spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 
 ```
 
-### 🔧 Configure PayPal Integration
+### 🔧 Configura l'Integrazione PayPal
 
-Create a `dev.properties` file in the root directory with your PayPal credentials:
+Crea un file `dev.properties` nella directory root con le tue credenziali PayPal:
 
 ```properties
 
@@ -114,81 +114,81 @@ PAYPAL_MODE=sandbox
 
 ```
 
-### 🏗️ Build and Run the Project
+### 🏗️ Compila ed Esegui il Progetto
 
-Using Gradle wrapper:
+Usando Gradle wrapper:
 
 ```sh
 
-# Build the project
+# Compila il progetto
 
 $  ./gradlew  build
 
 
 
-# Run the application
+# Esegui l'applicazione
 
 $  ./gradlew  bootRun
 
 ```
 
-### 🌍 Accessing the Application
+### 🌍 Accesso all'Applicazione
 
-Once started, the application will be available at:
-
-```
-
-Application: http://localhost:8080
-
-H2 Console: http://localhost:8080/h2-console
+Una volta avviata, l'applicazione sarà disponibile a:
 
 ```
 
-## 📚 API Documentation
+Applicazione: http://localhost:8080
 
-The application provides RESTful APIs for various functionalities:
+Console H2: http://localhost:8080/h2-console
 
-### 🛍️ Product APIs
+```
 
-- `GET /api/prodotto/visualizza/all` - Get all products (with sorting)
+## 📚 Documentazione API
 
-- `GET /api/prodotto/visualizza/id-azienda/{id}` - Get products by company
+L'applicazione fornisce API RESTful per varie funzionalità:
 
-- `DELETE /api/prodotto/rimuovi-dallo-shop/{id}` - Remove product from shop
+### 🛍️ API Prodotti
 
-### 🛒 Cart APIs
+- `GET /api/prodotto/visualizza/all` - Ottieni tutti i prodotti (con ordinamento)
 
-- `POST /api/carrello` - Create cart
+- `GET /api/prodotto/visualizza/id-azienda/{id}` - Ottieni prodotti per azienda
 
-- `PUT /api/carrello/{id}/aggiungi` - Add items to cart
+- `DELETE /api/prodotto/rimuovi-dallo-shop/{id}` - Rimuovi prodotto dal negozio
 
-- `GET /api/carrello/utente/{userId}` - Get cart by user
+### 🛒 API Carrello
 
-### 📦 Order APIs
+- `POST /api/carrello` - Crea carrello
 
-- `GET /api/ordini` - Get all orders
+- `PUT /api/carrello/{id}/aggiungi` - Aggiungi articoli al carrello
 
-- `POST /api/ordini` - Create new order
+- `GET /api/carrello/utente/{userId}` - Ottieni carrello per utente
 
-- `GET /api/ordini/{id}/stato` - Get order status with transaction details
+### 📦 API Ordini
 
-### 💳 PayPal APIs
+- `GET /api/ordini` - Ottieni tutti gli ordini
 
-- `POST /api/paypal/create-payment` - Create PayPal payment
+- `POST /api/ordini` - Crea nuovo ordine
 
-- `GET /api/paypal/success` - Handle successful payment
+- `GET /api/ordini/{id}/stato` - Ottieni stato ordine con dettagli transazione
 
-- `GET /api/paypal/cancel` - Handle cancelled payment
+### 💳 API PayPal
 
-### 👥 User APIs
+- `POST /api/paypal/create-payment` - Crea pagamento PayPal
 
-- `POST /api/utenti/register` - User registration
+- `GET /api/paypal/success` - Gestisci pagamento riuscito
 
-- `POST /api/utenti/login` - User authentication
+- `GET /api/paypal/cancel` - Gestisci pagamento annullato
 
-## 🏗️ Architecture
+### 👥 API Utenti
 
-### 📁 Project Structure
+- `POST /api/utenti/register` - Registrazione utente
+
+- `POST /api/utenti/login` - Autenticazione utente
+
+## 🏗️ Architettura
+
+### 📁 Struttura del Progetto
 
 ```
 
@@ -198,93 +198,93 @@ src/
 
 │ ├── java/it/cs/unicam/ids_24_25_alimentari/
 
-│ │ ├── controllers/ # REST Controllers
+│ │ ├── controllers/ # Controller REST
 
-│ │ ├── modelli/ # Entity Models
+│ │ ├── modelli/ # Modelli Entità
 
-│ │ │ ├── azienda/ # Company entities
+│ │ │ ├── azienda/ # Entità azienda
 
-│ │ │ ├── carrello/ # Cart entities
+│ │ │ ├── carrello/ # Entità carrello
 
-│ │ │ ├── contenuto/ # Content entities (products, events)
+│ │ │ ├── contenuto/ # Entità contenuto (prodotti, eventi)
 
-│ │ │ ├── ordine/ # Order entities
+│ │ │ ├── ordine/ # Entità ordine
 
-│ │ │ ├── utente/ # User entities
+│ │ │ ├── utente/ # Entità utente
 
-│ │ │ └── transazione/ # Transaction entities
+│ │ │ └── transazione/ # Entità transazione
 
-│ │ ├── servizi/ # Business Logic Services
+│ │ ├── servizi/ # Servizi Logica di Business
 
-│ │ ├── repositories/ # JPA Repositories
+│ │ ├── repositories/ # Repository JPA
 
-│ │ ├── dto/ # Data Transfer Objects
+│ │ ├── dto/ # Oggetti di Trasferimento Dati
 
-│ │ └── config/ # Configuration classes
+│ │ └── config/ # Classi di Configurazione
 
 │ └── resources/
 
 │ ├── application.properties
 
-│ └── static/ # Static resources (images, etc.)
+│ └── static/ # Risorse statiche (immagini, ecc.)
 
-└── test/ # Unit and Integration Tests
+└── test/ # Test di Unità e Integrazione
 
 ```
 
-### 🔧 Technologies Used
+### 🔧 Tecnologie Utilizzate
 
-- **Spring Boot 3.5.0** - Main framework
+- **Spring Boot 3.5.0** - Framework principale
 
-- **Spring Data JPA** - Data persistence
+- **Spring Data JPA** - Persistenza dati
 
-- **Spring Security** - Authentication and authorization
+- **Spring Security** - Autenticazione e autorizzazione
 
-- **Spring Web** - RESTful web services
+- **Spring Web** - Servizi web RESTful
 
-- **Spring Mail** - Email services
+- **Spring Mail** - Servizi email
 
-- **H2 Database** - In-memory database for development
+- **H2 Database** - Database in-memory per sviluppo
 
-- **JWT** - JSON Web Tokens for authentication
+- **JWT** - JSON Web Tokens per autenticazione
 
-- **PayPal SDK** - Payment processing
+- **PayPal SDK** - Elaborazione pagamenti
 
-- **Lombok** - Boilerplate code reduction
+- **Lombok** - Riduzione codice boilerplate
 
-- **Hibernate Validator** - Data validation
+- **Hibernate Validator** - Validazione dati
 
-## 🗃️ Database Schema
+## 🗃️ Schema Database
 
-### Key Entities:
+### Entità Principali:
 
-- **👤 Utente (User)**: Multi-role user system (Cliente, Produttore, Moderatore, etc.)
+- **👤 Utente (User)**: Sistema utenti multi-ruolo (Cliente, Produttore, Moderatore, ecc.)
 
-- **🏢 Azienda (Company)**: Business entities with products and collaborations
+- **🏢 Azienda (Company)**: Entità aziendali con prodotti e collaborazioni
 
-- **🛍️ Prodotto (Product)**: Individual products and packages
+- **🛍️ Prodotto (Product)**: Prodotti individuali e pacchetti
 
-- **🛒 Carrello (Cart)**: Shopping cart with multiple items
+- **🛒 Carrello (Cart)**: Carrello della spesa con articoli multipli
 
-- **📦 Ordine (Order)**: Order management with status tracking
+- **📦 Ordine (Order)**: Gestione ordini con tracciamento stato
 
-- **💳 Transazione (Transaction)**: Payment transaction records
+- **💳 Transazione (Transaction)**: Record transazioni di pagamento
 
-- **🎉 Evento (Event)**: Fairs and visits for product promotion
+- **🎉 Evento (Event)**: Fiere e visite per promozione prodotti
 
-## 🔐 Security Features
+## 🔐 Funzionalità di Sicurezza
 
-- **JWT Authentication**: Secure token-based authentication
+- **Autenticazione JWT**: Autenticazione sicura basata su token
 
-- **Role-based Authorization**: Different access levels for different user types
+- **Autorizzazione basata sui Ruoli**: Diversi livelli di accesso per diversi tipi di utenti
 
-- **Password Encryption**: BCrypt password hashing
+- **Crittografia Password**: Hashing password BCrypt
 
-- **Request Validation**: Input validation with Bean Validation
+- **Validazione Richieste**: Validazione input con Bean Validation
 
-## 💻 Development
+## 💻 Sviluppo
 
-### 🧪 Running Tests
+### 🧪 Esecuzione Test
 
 ```sh
 
@@ -292,23 +292,23 @@ $  ./gradlew  test
 
 ```
 
-### 📊 Code Quality
+### 📊 Qualità del Codice
 
-The project follows Java best practices and includes:
+Il progetto segue le best practices Java e include:
 
-- Service layer architecture
+- Architettura a livelli di servizio
 
-- Repository pattern with JPA
+- Pattern Repository con JPA
 
-- DTO pattern for API communication
+- Pattern DTO per comunicazione API
 
-- Builder pattern for complex object creation
+- Pattern Builder per creazione oggetti complessi
 
-- Strategy pattern for content validation
+- Pattern Strategy per validazione contenuti
 
 ---
 
-## 👥 Team Members
+## 👥 Membri del Team
 
 - **Federico Mengascini**
 
@@ -316,6 +316,6 @@ The project follows Java best practices and includes:
 
 - **Davide Di Lorenzo**
 
-## 📜 License
+## 📜 Licenza
 
-This project is licensed under the MIT License.
+Questo progetto è concesso in licenza sotto la Licenza MIT.
