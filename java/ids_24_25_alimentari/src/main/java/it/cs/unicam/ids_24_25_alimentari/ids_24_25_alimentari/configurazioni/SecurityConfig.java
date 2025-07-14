@@ -168,7 +168,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/prodotto/visualizza/**")
                 .permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/prodotto/delete/**")
-                .hasAnyAuthority(SecurityConfig.ROLE_CURATORE);
+                .hasAnyAuthority(SecurityConfig.ROLE_CURATORE)
+                .requestMatchers(HttpMethod.DELETE, "/api/prodotto/rimuovi-dallo-shop/{id}")
+                .hasAnyAuthority(SecurityConfig.ROLE_PRODUTTORE, SecurityConfig.ROLE_TRASFORMATORE, SecurityConfig.ROLE_DISTRIBUTORE)
+                .requestMatchers(HttpMethod.DELETE, "/api/prodotto/rimuovi-pacchetto-dallo-shop/{id}")
+                .hasAnyAuthority(SecurityConfig.ROLE_PRODUTTORE, SecurityConfig.ROLE_TRASFORMATORE, SecurityConfig.ROLE_DISTRIBUTORE);
+
     }
 
     private void richiestaContenutoAuth(

@@ -353,10 +353,16 @@ public class RepositoryCostructor {
                             immaginiProdotto2, 15, "latticini",
                             "Latte selezionato e senza conservanti, con tecniche sostenibili")));
 
-            PRODOTTO_LATTE = repo.save(prodSing.get(0));
-            PRODOTTO_BURRO = repo.save(prodSing.get(1));
-            PRODOTTO_FORMAGGIO = repo.save(prodSing.get(2));
+            PRODOTTO_LATTE = prodSing.get(0);
+            PRODOTTO_LATTE.setStatus(Status.APPROVATO);
+            PRODOTTO_BURRO = prodSing.get(1);
+            PRODOTTO_BURRO.setStatus(Status.APPROVATO);
+            PRODOTTO_FORMAGGIO = prodSing.get(2);
+            PRODOTTO_FORMAGGIO.setStatus(Status.APPROVATO);
 
+            repo.save(PRODOTTO_LATTE);
+            repo.save(PRODOTTO_BURRO);
+            repo.save(PRODOTTO_FORMAGGIO);
             isProdottoSingoloRepositorySet = true;
 
         } catch (URISyntaxException e) {

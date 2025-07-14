@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -30,10 +31,10 @@ public class ProdottoController {
      * @return Il prodotto richiesto.
      * @throws IllegalArgumentException Se il tipo di prodotto non è valido.
      */
-    @GetMapping("/visualizza")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getProdottoByID(
             @RequestParam String tipo,
-            @RequestParam Long id
+            @PathVariable Long id
     ) {
         try {
             TipoProdotto tipoProdotto = TipoProdotto.valueOf(tipo.toUpperCase());
@@ -47,6 +48,39 @@ public class ProdottoController {
         }
     }
 
+    @DeleteMapping("/rimuovi-dallo-shop/{id}")
+    public ResponseEntity<?> rimuoviProdottoDalloShop(@PathVariable long id) {
+        try {
+            prodottoService.rimuoviProdottoDalloShop(id);
+            return ResponseEntity.ok(Collections.singletonMap("message", "Prodotto rimosso dallo shop con successo"));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("error", e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Errore interno del server: " + e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/rimuovi-pacchetto-dallo-shop/{id}")
+    public ResponseEntity<?> rimuoviPacchettoDalloShop(@PathVariable long id) {
+        try {
+            prodottoService.rimuoviPacchettoDalloShop(id);
+            return ResponseEntity.ok(Collections.singletonMap("message", "Pacchetto rimosso dallo shop con successo"));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("error", e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Errore interno del server: " + e.getMessage()));
+        }
+    }
 
     /**
      * Restituisce tutti i prodotti singoli associati ad una specifica azienda.

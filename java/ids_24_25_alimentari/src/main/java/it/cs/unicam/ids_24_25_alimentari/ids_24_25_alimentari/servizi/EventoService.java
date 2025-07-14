@@ -783,6 +783,7 @@ public class EventoService {
         Evento evento = eventoDirector.creaFieraCompleta(
                 titolo, descrizione, inizio, fine, locandina, indirizzo, creatore, aziende);
         evento.setStatus(Status.PENDING);
+        evento.setVersione(1);
         return salvaEvento(evento).getId();
     }
 
@@ -839,6 +840,7 @@ public class EventoService {
         Evento evento = eventoDirector.creaVisitaCompleta(
                 titolo, descrizione, inizio, fine, locandina, indirizzo, creatore, aziendaRiferimento);
         evento.setStatus(Status.PENDING);
+        evento.setVersione(1);
         return salvaEvento(evento).getId();
     }
 
