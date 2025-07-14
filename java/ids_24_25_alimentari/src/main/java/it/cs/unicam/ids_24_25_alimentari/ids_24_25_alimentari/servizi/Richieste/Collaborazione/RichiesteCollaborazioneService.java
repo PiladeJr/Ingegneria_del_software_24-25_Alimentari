@@ -403,7 +403,7 @@ public class RichiesteCollaborazioneService extends RichiestaService {
             if (dto.getStato()) {
                 accettaRichiesta(richiesta);
             } else {
-                if (dto.getMessaggio() == null) {
+                if (dto.getMessaggio().isEmpty()) {
                     return ResponseEntity.badRequest()
                             .body(Collections.singletonMap("message", "Inserire un messaggio di rifiuto"));
                 }
@@ -414,6 +414,7 @@ public class RichiesteCollaborazioneService extends RichiestaService {
         }
         return ResponseEntity.status(404).body(Collections.singletonMap("error", "Richiesta non trovata"));
     }
+
     private ResponseEntity<?> accettaRichiesta(RichiestaCollaborazione richiesta) {
         try{
             Optional<Collaborazione> collab = collaborazioneService
