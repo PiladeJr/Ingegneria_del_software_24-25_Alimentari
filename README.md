@@ -22,13 +22,13 @@ Questo progetto di gruppo, nell'ambito dell'esame di Ingegneria del Software di 
 
 Il progetto si concentra sulla gestione di un marketplace completo dedicato alla vendita di prodotti alimentari tipici, prodotti trasformati e pacchetti esperienziali legati alle tradizioni locali.<br>
 
-Coinvolge vari attori, inclusi produttori, trasformatori, distributori, organizzatori di eventi, moderatori, assistenza clienti e amministratori, ognuno con ruoli specifici.
+Coinvolge vari attori, inclusi produttori, trasformatori, distributori, animatori, curatori, gestori ognuno con ruoli specifici.
 
 ### ✨ Caratteristiche Principali:
 
 - **🛍️ Gestione Prodotti**: Crea, modifica e gestisci prodotti individuali e pacchetti di prodotti
 
-- **✅ Validazione Contenuti**: Sistema di revisione e approvazione da parte dei moderatori per prodotti ed eventi
+- **✅ Validazione Contenuti**: Sistema di revisione e approvazione da parte dei curatori per prodotti, informazioni aggiuntive ed eventi
 
 - **🛒 Carrello della Spesa**: Gestione avanzata del carrello con prodotti multipli e quantità
 
@@ -39,6 +39,8 @@ Coinvolge vari attori, inclusi produttori, trasformatori, distributori, organizz
 - **👨‍⚖️ Gestione Utenti e Aziende**: Sistema multi-ruolo con associazioni aziendali
 
 - **🎉 Gestione Eventi**: Organizza fiere, visite e degustazioni per promuovere prodotti locali
+
+- **📄​ Gestione Informazioni**: Crea, modifica e gestisci informazioni personalizzate
 
 - **🔐 Sicurezza**: Autenticazione basata su JWT e autorizzazione basata sui ruoli
 
@@ -105,12 +107,10 @@ spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 Crea un file `dev.properties` nella directory root con le tue credenziali PayPal:
 
 ```properties
-
-PAYPAL_CLIENT_ID=your_paypal_client_id
-
-PAYPAL_CLIENT_SECRET=your_paypal_client_secret
-
-PAYPAL_MODE=sandbox
+paypal.client-id=${PAYPAL_CLIENT_ID:your-paypal-client-id}
+paypal.client-secret=${PAYPAL_CLIENT_SECRET:your-paypal-secret}
+spring.mail.username=${MAIL_USERNAME:your@email.com}
+spring.mail.password=${MAIL_PASSWORD:your-email-password}
 
 ```
 
