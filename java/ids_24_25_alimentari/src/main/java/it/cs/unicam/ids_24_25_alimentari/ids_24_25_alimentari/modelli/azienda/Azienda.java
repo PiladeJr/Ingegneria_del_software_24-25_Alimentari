@@ -37,21 +37,22 @@ public class Azienda {
     private Indirizzo sedeLegale;
 
     @ManyToOne
-    @JoinColumn(name = "indirizzoSedeOperativa_id", nullable = false)
+    @JoinColumn(name = "indirizzoSedeOperativa_id")
     private Indirizzo sedeOperativa;
 
-    @Column(name = "iva", nullable = false)
+    @Column(name = "iva")
+    @Nullable
     private String iva;
 
     @Column(name = "certificato")
     private File certificato;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @Column(name = "prodotto", nullable = true)
+    @Column(name = "prodotto")
     private List<ProdottoSingolo> prodotti;
 
     @OneToOne
-    @JoinColumn(name = "utente_id", nullable = false)
+    @JoinColumn(name = "utente_id")
     private Utente utente;
 
     @OneToOne(mappedBy = "azienda", cascade = CascadeType.ALL, orphanRemoval = true)

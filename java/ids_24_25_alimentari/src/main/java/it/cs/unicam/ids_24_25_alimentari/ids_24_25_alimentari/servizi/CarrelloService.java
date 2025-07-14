@@ -9,14 +9,12 @@ import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.modelli.contenuto.
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.CarrelloRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.ContenutoCarrelloRepository;
 import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.repositories.UtenteRepository;
+import it.cs.unicam.ids_24_25_alimentari.ids_24_25_alimentari.utils.EnumComuni.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class CarrelloService {
@@ -35,7 +33,10 @@ public class CarrelloService {
     }
 
     public Optional<Carrello> getCarrelloById(Long id) {
-        return carrelloRepository.findById(id);
+        Optional<Carrello> carrello = carrelloRepository.findById(id);
+        if (carrello.isPresent()) {
+            return Optional.of(verificaEsistenzaProdotti(carrello.get()));
+        } else throw new NoSuchElementException("Carrello non trovato con id: " + id);
     }
 
     public Carrello creaCarrello(CreaCarrelloDTO dto) {
@@ -64,6 +65,7 @@ public class CarrelloService {
     public Carrello aggiungiContenutoAlCarrello(Long carrelloId, ContenutoCarrelloDTO contenutoCarrelloDTO) {
         Carrello carrello = carrelloRepository.findById(carrelloId)
                 .orElseThrow(() -> new RuntimeException("Carrello non trovato"));
+        carrello = verificaEsistenzaProdotti(carrello);
 
         // Ottieni il prodotto dall'id
 
@@ -82,11 +84,32 @@ public class CarrelloService {
     public Carrello rimuoviContenutoDalCarrello(Long carrelloId, Long contenutoCarrelloId) {
         Carrello carrello = carrelloRepository.findById(carrelloId)
                 .orElseThrow(() -> new RuntimeException("Carrello non trovato"));
+        carrello = verificaEsistenzaProdotti(carrello);
         ContenutoCarrello contenutoCarrello = contenutoCarrelloRepository.findById(contenutoCarrelloId)
                 .orElseThrow(() -> new RuntimeException("Contenuto carrello non trovato"));
 
         carrello.getContenutoCarrello().remove(contenutoCarrello);
         contenutoCarrelloRepository.delete(contenutoCarrello);
+        return carrelloRepository.save(carrello);
+    }
+
+    private Carrello verificaEsistenzaProdotti(Carrello carrello) {
+        Set<ContenutoCarrello> contenutiDaRimuovere = new HashSet<>();
+
+        for (ContenutoCarrello contenuto : carrello.getContenutoCarrello()) {
+            Prodotto prodotto = prodottoService.getProdottoByIdWithoutType(contenuto.getProdotto().getId())
+                    .orElse(null);
+
+            if (prodotto == null || prodotto.getStatus() == Status.ELIMINATO) {
+                contenutiDaRimuovere.add(contenuto);
+            }
+        }
+
+        for (ContenutoCarrello contenutoDaRimuovere : contenutiDaRimuovere) {
+            carrello.getContenutoCarrello().remove(contenutoDaRimuovere);
+            contenutoCarrelloRepository.delete(contenutoDaRimuovere);
+        }
+
         return carrelloRepository.save(carrello);
     }
 }

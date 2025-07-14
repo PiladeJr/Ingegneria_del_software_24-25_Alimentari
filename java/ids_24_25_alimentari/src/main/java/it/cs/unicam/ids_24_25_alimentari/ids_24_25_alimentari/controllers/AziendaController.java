@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
@@ -107,9 +108,31 @@ public class AziendaController {
      *   <li><code>404 Not Found</code>: Se le informazioni non sono trovate.</li>
      * </ul>
      */
-    @GetMapping("/informazioni")
+    @GetMapping("/me/informazioni")
     public ResponseEntity<?> getInformazioniAzienda() {
         return infoAziendaService.ottieniInformazioniAzienda();
+    }
+
+    /**
+     * <h2>Cancella le informazioni aggiuntive di un'azienda</h2>
+     * <br/>
+     * <p>Endpoint per la cancellazione delle informazioni aggiuntive associate all'azienda dell'utente autenticato.</p>
+     * <p>Le informazioni aggiuntive vengono marcate come "ELIMINATO" e dissociate dall'azienda.</p>
+     *
+     * @return ResponseEntity con un messaggio di successo o errore.
+     */
+    @DeleteMapping("/me/informazioni")
+    public ResponseEntity<?> cancellaInfoAzienda() {
+        try {
+            infoAziendaService.cancellaInfoAzienda();
+            return ResponseEntity.ok(Collections.singletonMap("message", "Informazioni aggiuntive cancellate correttamente."));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Errore interno del server: " + e.getMessage()));
+        }
     }
 
     /**

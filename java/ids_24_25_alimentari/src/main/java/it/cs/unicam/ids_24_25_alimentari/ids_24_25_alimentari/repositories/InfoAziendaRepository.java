@@ -14,4 +14,9 @@ public interface InfoAziendaRepository extends JpaRepository<InfoAzienda, Long> 
     Optional<InfoAzienda> findByIdAndApprovato(Long id);
     @Query("SELECT i FROM InfoAzienda i WHERE i.azienda.id =?1 AND i.status = 'APPROVATO'")
     Optional<InfoAzienda> findByAzienda(Long id);
+    @Override
+    @Query("SELECT i FROM InfoAzienda i WHERE i.id = ?1 AND i.status != 'ELIMINATO'")
+    Optional<InfoAzienda> findById(Long id);
+    @Query("SELECT i FROM InfoAzienda i WHERE i.id = ?1")
+    Optional<InfoAzienda> findByIdAdmin(Long id);
 }

@@ -13,11 +13,6 @@ public abstract class Contenuto {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    //TODO DA RIMPIAZZARE CON STATUS
-    @Setter
-    @Column(name = "approvato")
-    private Boolean approvato;
-
     @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

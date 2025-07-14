@@ -52,7 +52,7 @@ public class RichiestaContenutoService extends RichiestaService {
     }
 
     /**
-     * Salva una richiesta nel database.
+     * <h2>Salva una richiesta nel database</h2>
      *
      * @param richiesta La richiesta da salvare.
      * @return La richiesta creata e salvata nel database.
@@ -62,9 +62,12 @@ public class RichiestaContenutoService extends RichiestaService {
     }
 
     /**
-     * Recupera tutte le richieste presenti nel database.
+     * <h2>Recupera tutte le richieste presenti nel database</h2>
+     * <p>Questo metodo restituisce una lista di tutte le richieste presenti nel database.</p>
      *
-     * @return Una lista di tutte le richieste.
+     * @param sortBy Il criterio di ordinamento (es. "tipologia", "pending", "approvate", "rifiutate").
+     * @param order  L'ordine di ordinamento ("asc" per crescente, "desc" per decrescente).
+     * @return Una lista di tutte le richieste ordinate secondo i parametri forniti.
      */
     public List<RichiestaContenuto> getAllRichiesteContenuto(String sortBy, String order) {
         List<RichiestaContenuto> richieste = new ArrayList<>(richiestaContenutoRepository.findAllRichieste());
@@ -86,11 +89,11 @@ public class RichiestaContenutoService extends RichiestaService {
     }
 
     /**
-     * Recupera una richiesta specifica in base al suo ID.
+     * <h2>Recupera una richiesta specifica in base al suo ID</h2>
+     * <p>Questo metodo consente di recuperare una richiesta specifica dal database utilizzando il suo ID.</p>
      *
      * @param id L'ID della richiesta da recuperare.
-     * @return Un {@link Optional} contenente la richiesta se trovata, altrimenti
-     *         vuoto.
+     * @return Un {@link Optional} contenente la richiesta se trovata, altrimenti vuoto.
      */
     public Optional<RichiestaContenuto> getRichiestaById(Long id) {
         return this.richiestaContenutoRepository.findById(id);
@@ -175,6 +178,22 @@ public class RichiestaContenutoService extends RichiestaService {
         }
     }
 
+    /**
+     * <h2>Crea una nuova richiesta di informazioni per un trasformatore</h2>
+     * <p>
+     * Questo metodo consente di creare una nuova richiesta di informazioni
+     * relative a un trasformatore, includendo descrizione, produzione,
+     * metodologie, immagini, certificati e aziende collegate.
+     * </p>
+     *
+     * @param descrizione      La descrizione delle informazioni del trasformatore.
+     * @param produzione       La produzione del trasformatore.
+     * @param metodologie      Le metodologie utilizzate dal trasformatore.
+     * @param immagini         File contenenti immagini relative al trasformatore.
+     * @param certificati      File contenenti certificati relativi al trasformatore.
+     * @param aziendeCollegate Lista di aziende collegate al trasformatore.
+     * @return La richiesta di contenuto creata e salvata nel database.
+     */
     public RichiestaContenuto nuovaRichiestaInformazioniTrasformatore(
             String descrizione,
             String produzione,
@@ -191,6 +210,21 @@ public class RichiestaContenutoService extends RichiestaService {
         return salvaRichiesta(richiesta);
     }
 
+    /**
+     * <h2>Crea una nuova richiesta di informazioni per un produttore</h2>
+     * <p>
+     * Questo metodo consente di creare una nuova richiesta di informazioni
+     * relative a un produttore, includendo descrizione, produzione,
+     * metodologie, immagini e certificati.
+     * </p>
+     *
+     * @param descrizione La descrizione delle informazioni del produttore.
+     * @param produzione La produzione del produttore.
+     * @param metodologie Le metodologie utilizzate dal produttore.
+     * @param immagini File contenenti immagini relative al produttore.
+     * @param certificati File contenenti certificati relativi al produttore.
+     * @return La richiesta di contenuto creata e salvata nel database.
+     */
     public RichiestaContenuto nuovaRichiestaInformazioniProduttore(
             String descrizione,
             String produzione,
@@ -207,17 +241,22 @@ public class RichiestaContenutoService extends RichiestaService {
     }
 
     /**
-     * Crea una nuova richiesta per un nuovo prodotto per un'azienda
+     * <h2>Crea una nuova richiesta per un nuovo prodotto per un'azienda</h2>
+     * <p>
+     * Questo metodo consente di creare una nuova richiesta per un prodotto
+     * associato a un'azienda specifica. Include informazioni come nome, descrizione,
+     * immagini, prezzo, quantità, allergeni e tecniche di realizzazione.
+     * </p>
      *
-     * @param nome        Nome del prodotto
-     * @param descrizione Descrizione del prodotto
-     * @param idAzienda   Identificativo dell'azienda produttrice
-     * @param immagini    File contenenti immagini relative al prodotto
-     * @param prezzo      Prezzo del prodotto
-     * @param quantita    Quantita del prodotto
-     * @param allergeni   Allergeni relativi al prodotto
-     * @param tecniche    Tecniche adottate per la realizzazione del prodotto
-     * @return la richiesta di prodotto creata e salvata nel database
+     * @param nome        Nome del prodotto.
+     * @param descrizione Descrizione del prodotto.
+     * @param idAzienda   Identificativo dell'azienda produttrice.
+     * @param immagini    File contenenti immagini relative al prodotto.
+     * @param prezzo      Prezzo del prodotto.
+     * @param quantita    Quantità del prodotto.
+     * @param allergeni   Allergeni relativi al prodotto.
+     * @param tecniche    Tecniche adottate per la realizzazione del prodotto.
+     * @return La richiesta di prodotto creata e salvata nel database.
      */
     public RichiestaContenuto nuovaRichiestaProdotto(
             String nome,
@@ -237,13 +276,17 @@ public class RichiestaContenutoService extends RichiestaService {
     }
 
     /**
-     * Crea richiesta per un pacchetto di prodotti
+     * <h2>Crea richiesta per un pacchetto di prodotti</h2>
+     * <p>
+     * Questo metodo consente di creare una nuova richiesta per un pacchetto di prodotti.
+     * Include informazioni come nome, descrizione, prezzo e i prodotti contenuti nel pacchetto.
+     * </p>
      *
-     * @param nome        Nome del pacchetto
-     * @param descrizione Descrizione del pacchetto
-     * @param prezzo      Prezzo del pacchetto
-     * @param prodotti    Prodotti contenuti nel pacchetto
-     * @return la richiesta di pacchetto creata e salvata nel database
+     * @param nome        Nome del pacchetto.
+     * @param descrizione Descrizione del pacchetto.
+     * @param prezzo      Prezzo del pacchetto.
+     * @param prodotti    Prodotti contenuti nel pacchetto.
+     * @return La richiesta di pacchetto creata e salvata nel database.
      */
     public RichiestaContenuto nuovaRichiestaPacchetto(
             String nome,
@@ -257,6 +300,22 @@ public class RichiestaContenutoService extends RichiestaService {
         return salvaRichiesta(richiesta);
     }
 
+    /**
+     * <h2>Crea una nuova richiesta di tipo fiera</h2>
+     * <p>
+     * Questo metodo consente di creare una nuova richiesta per un evento di tipo fiera.
+     * Include informazioni come titolo, descrizione, data di inizio e fine, locandina, indirizzo e aziende partecipanti.
+     * </p>
+     *
+     * @param titolo        Il titolo della fiera.
+     * @param descrizione   La descrizione della fiera.
+     * @param inizio        La data e ora di inizio della fiera.
+     * @param fine          La data e ora di fine della fiera.
+     * @param locandina     File contenente la locandina della fiera.
+     * @param indirizzo     L'indirizzo in cui si svolgerà la fiera.
+     * @param aziende       La lista delle aziende partecipanti alla fiera.
+     * @return La richiesta di contenuto creata e salvata nel database.
+     */
     public RichiestaContenuto nuovaRichiestaFiera(
             String titolo,
             String descrizione,
@@ -281,6 +340,22 @@ public class RichiestaContenutoService extends RichiestaService {
         return salvaRichiesta(richiesta);
     }
 
+    /**
+     * <h2>Crea una nuova richiesta di tipo visita</h2>
+     * <p>
+     * Questo metodo consente di creare una nuova richiesta per un evento di tipo visita.
+     * Include informazioni come titolo, descrizione, data di inizio e fine, locandina, indirizzo e azienda di riferimento.
+     * </p>
+     *
+     * @param titolo            Il titolo della visita.
+     * @param descrizione       La descrizione della visita.
+     * @param inizio            La data e ora di inizio della visita.
+     * @param fine              La data e ora di fine della visita.
+     * @param locandina         File contenente la locandina della visita.
+     * @param indirizzo         L'indirizzo in cui si svolgerà la visita.
+     * @param aziendaRiferimento L'azienda di riferimento per la visita.
+     * @return La richiesta di contenuto creata e salvata nel database.
+     */
     public RichiestaContenuto nuovaRichiestaVisita(
             String titolo,
             String descrizione,
@@ -290,12 +365,46 @@ public class RichiestaContenutoService extends RichiestaService {
             Indirizzo indirizzo,
             Azienda aziendaRiferimento) {
         // Crea l'evento utilizzando EventoService
-        Long idEvento;
-        idEvento = eventoService.creaVisita(titolo, descrizione, inizio, fine, locandina, indirizzo,
+        Long idEvento = eventoService.creaVisita(titolo, descrizione, inizio, fine, locandina, indirizzo,
                 aziendaRiferimento);
 
         // Crea una nuova richiesta di tipo evento
         RichiestaContenuto richiesta = this.nuovaRichiesta(idEvento, Tipologia.EVENTO, "visita");
+
+        richiesta.setStatus(Status.PENDING);
+
+        // Notifica i curatori della nuova richiesta
+        this.notificaNuovaRichiesta(Ruolo.CURATORE);
+
+        // Salva e restituisce la richiesta
+        return salvaRichiesta(richiesta);
+    }
+
+    /**
+     * <h2>Crea una nuova richiesta di tipo visita aziendale</h2>
+     * <p>
+     * Questo metodo consente di creare una nuova richiesta per un evento di tipo visita aziendale.
+     * Include informazioni come titolo, descrizione, data di inizio e fine, e locandina.
+     * </p>
+     *
+     * @param titolo      Il titolo della visita aziendale.
+     * @param descrizione La descrizione della visita aziendale.
+     * @param inizio      La data e ora di inizio della visita aziendale.
+     * @param fine        La data e ora di fine della visita aziendale.
+     * @param locandina   File contenente la locandina della visita aziendale.
+     * @return La richiesta di contenuto creata e salvata nel database.
+     */
+    public RichiestaContenuto nuovaRichiestaVisitaAzienda(
+            String titolo,
+            String descrizione,
+            LocalDateTime inizio,
+            LocalDateTime fine,
+            File locandina) {
+        // Crea l'evento utilizzando il metodo `creaVisitaAzienda` di EventoService
+        Long idEvento = eventoService.creaVisitaAzienda(titolo, descrizione, inizio, fine, locandina);
+
+        // Crea una nuova richiesta di tipo evento
+        RichiestaContenuto richiesta = this.nuovaRichiesta(idEvento, Tipologia.EVENTO, "visita_azienda");
 
         richiesta.setStatus(Status.PENDING);
 

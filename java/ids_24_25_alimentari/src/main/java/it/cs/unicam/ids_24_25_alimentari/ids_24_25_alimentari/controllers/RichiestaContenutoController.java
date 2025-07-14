@@ -83,7 +83,7 @@ public class RichiestaContenutoController {
      * @return Una <code>ResponseEntity</code> contenente la richiesta creata o un messaggio di errore.
      */
     @PostMapping(value = "/informazioni/produttore/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createInformazioniProduttore(
+    public ResponseEntity<?> nuovaRichiestaInfoProduttore(
             @ModelAttribute RichiestaInfoProduttoreDTO dto) {
 
         File[] immaginiFiles;
@@ -137,7 +137,7 @@ public class RichiestaContenutoController {
      * @return Una <code>ResponseEntity</code> contenente la richiesta creata o un messaggio di errore.
      */
     @PostMapping(value = "/informazioni/trasformatore/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createInformazioniTrasformatore(
+    public ResponseEntity<?> nuovaRichiestaInfoTrasformatore(
             @ModelAttribute RichiestaInfoTrasformatoreDTO dto) {
 
         File[] immaginiFiles;
@@ -309,6 +309,43 @@ public class RichiestaContenutoController {
                     locandina,
                     dto.getIndirizzo(),
                     dto.getAziendaRiferimento());
+
+            return ResponseEntity.ok(richiestaEvento);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error",
+                            "Errore nella creazione della richiesta " + e.getMessage()));
+        }
+    }
+
+    /**
+     * <h2>Crea una nuova richiesta per un evento di tipo visita aziendale.</h2>
+     *
+     * <p>
+     * Questo metodo accetta un DTO contenente i dettagli dell'evento e crea una
+     * nuova richiesta utilizzando il servizio RichiestaContenutoService. Se si verifica un errore
+     * durante la conversione del file locandina, restituisce un errore interno del server.
+     * </p>
+     *
+     * @param dto Il DTO contenente i dettagli dell'evento visita aziendale.
+     *            Deve includere titolo, descrizione, data di inizio e fine, e locandina.
+     * @return Una ResponseEntity contenente la richiesta creata o un messaggio di errore.
+     *         <ul>
+     *         <li><b>200 OK:</b> Se la richiesta è stata creata con successo.</li>
+     *         <li><b>500 Internal Server Error:</b> Se si verifica un errore durante la creazione della richiesta.</li>
+     *         </ul>
+     */
+    @PostMapping("/visita-azienda/new")
+    public ResponseEntity<?> nuovaRichiestaVisitaAzienda(@ModelAttribute @Valid RichiestaEventoVisitaDTO dto) {
+        try {
+            File locandina = ConvertitoreMultipartFileToFile.convertiMultipartFileToFile(dto.getLocandina());
+
+            RichiestaContenuto richiestaEvento = richiestaContenutoService.nuovaRichiestaVisitaAzienda(
+                    dto.getTitolo(),
+                    dto.getDescrizione(),
+                    dto.getInizio(),
+                    dto.getFine(),
+                    locandina);
 
             return ResponseEntity.ok(richiestaEvento);
         } catch (IOException e) {

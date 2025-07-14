@@ -321,7 +321,7 @@ public class RepositoryCostructor {
             repo.save(INFORMAZIONI_AGGIUNTIVE_PRODUTTORE);
             repo.save(INFORMAZIONI_AGGIUNTIVE_TRASFORMATORE);
 //TODO sistemare utente-azienda-esterna
-           // aziendaService.collegaAzienda(AZIENDA_TRASFORMATORE.getUtente().getId(), AZIENDA_PRODUTTORE.getId());
+            // aziendaService.collegaAzienda(AZIENDA_TRASFORMATORE.getUtente().getId(), AZIENDA_PRODUTTORE.getId());
 
             isInformazioniAggiuntiveRepositorySet = true;
 
@@ -353,10 +353,16 @@ public class RepositoryCostructor {
                             immaginiProdotto2, 15, "latticini",
                             "Latte selezionato e senza conservanti, con tecniche sostenibili")));
 
-            PRODOTTO_LATTE = repo.save(prodSing.get(0));
-            PRODOTTO_BURRO = repo.save(prodSing.get(1));
-            PRODOTTO_FORMAGGIO = repo.save(prodSing.get(2));
+            PRODOTTO_LATTE = prodSing.get(0);
+            PRODOTTO_LATTE.setStatus(Status.APPROVATO);
+            PRODOTTO_BURRO = prodSing.get(1);
+            PRODOTTO_BURRO.setStatus(Status.APPROVATO);
+            PRODOTTO_FORMAGGIO = prodSing.get(2);
+            PRODOTTO_FORMAGGIO.setStatus(Status.APPROVATO);
 
+            repo.save(PRODOTTO_LATTE);
+            repo.save(PRODOTTO_BURRO);
+            repo.save(PRODOTTO_FORMAGGIO);
             isProdottoSingoloRepositorySet = true;
 
         } catch (URISyntaxException e) {
@@ -389,6 +395,7 @@ public class RepositoryCostructor {
             FIERA_CONTADINA.setCreatore(ANIMATORE);
             FIERA_CONTADINA
                     .setAziendePresenti(new ArrayList<>(Arrays.asList(AZIENDA_PRODUTTORE, AZIENDA_TRASFORMATORE)));
+            FIERA_CONTADINA.setStatus(Status.APPROVATO);
 
             FIERA_AUTUNNO = new EventoFiera();
             FIERA_AUTUNNO.setTitolo("Fiera di Autunno");
@@ -400,6 +407,7 @@ public class RepositoryCostructor {
             FIERA_AUTUNNO.setIndirizzo(INDIRIZZO_FIERA_AUTUNNO);
             FIERA_AUTUNNO.setCreatore(ANIMATORE);
             FIERA_AUTUNNO.setAziendePresenti(new ArrayList<>(Arrays.asList(AZIENDA_PRODUTTORE, AZIENDA_TRASFORMATORE)));
+            FIERA_AUTUNNO.setStatus(Status.APPROVATO);
 
             VISITA_PRODUTTORE = new EventoVisita();
             VISITA_PRODUTTORE.setTitolo("Visita Aziendale");
@@ -412,6 +420,7 @@ public class RepositoryCostructor {
             VISITA_PRODUTTORE.setAziendaRiferimento(aziendaProduttore);
             VISITA_PRODUTTORE.setCreatore(ANIMATORE);
             VISITA_PRODUTTORE.setIscritti(new ArrayList<>());
+            VISITA_PRODUTTORE.setStatus(Status.APPROVATO);
 
             VISITA_TRASFORMATORE = new EventoVisita();
             VISITA_TRASFORMATORE.setTitolo("Visita Aziendale Trasformatore");
@@ -424,6 +433,7 @@ public class RepositoryCostructor {
             VISITA_TRASFORMATORE.setAziendaRiferimento(aziendaTrasformatore);
             VISITA_TRASFORMATORE.setCreatore(ANIMATORE);
             VISITA_TRASFORMATORE.setIscritti(new ArrayList<>());
+            VISITA_TRASFORMATORE.setStatus(Status.APPROVATO);
 
             repo.save(FIERA_CONTADINA);
             repo.save(FIERA_AUTUNNO);

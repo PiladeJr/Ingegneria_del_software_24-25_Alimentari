@@ -33,9 +33,9 @@ public class StrategyEvento implements RichiestaContenutoStrategy {
 
     @Override
     public void processaRichiesta(RichiestaContenuto richiesta, Boolean status) {
-        Evento evento = eventoRepository.findById(richiesta.getTargetId())
+        Evento evento = eventoRepository.findByIdNonAutorizzato(richiesta.getTargetId())
                 .orElseThrow(() -> new IllegalArgumentException("Evento non trovato con ID: " + richiesta.getTargetId()));
-        if (evento.getStatus() != Status.PENDING) {
+        if (evento.getStatus() == Status.PENDING) {
             if (status) {
                 evento.setStatus(Status.APPROVATO);
                 richiesta.setStatus(Status.APPROVATO);

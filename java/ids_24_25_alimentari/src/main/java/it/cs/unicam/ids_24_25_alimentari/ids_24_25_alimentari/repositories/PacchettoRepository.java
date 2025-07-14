@@ -12,4 +12,7 @@ import java.util.Optional;
 public interface PacchettoRepository extends JpaRepository<Pacchetto, Long> {
     @Query("SELECT p FROM Pacchetto p WHERE p.nome = ?1")
     List<Optional<Prodotto>> getProdottoByNome(String nome);
+
+    @Query("SELECT p FROM Pacchetto p JOIN p.prodotti prod WHERE prod.id = ?1 AND p.status = 'APPROVATO' AND prod.status = 'APPROVATO'")
+    List<Pacchetto> findPacchettiByProdottoId(Long prodottoId);
 }
