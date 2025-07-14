@@ -23,7 +23,7 @@ public class Carrello {
     @Column(name = "data_creazione", nullable = false)
     private LocalDateTime data_creazione;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "utente_id", nullable = false)
     private Utente utente;
 

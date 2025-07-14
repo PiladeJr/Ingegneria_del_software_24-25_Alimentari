@@ -47,6 +47,22 @@ public class CarrelloController {
     }
 
     /**
+     * Restituisce il carrello associato a un utente dato il suo id.
+     * 
+     * @param userId identificativo dell'utente
+     * @return il carrello dell'utente
+     */
+    @GetMapping("/utente/{userId}")
+    public ResponseEntity<Carrello> getCarrelloByUserId(@PathVariable Long userId) {
+        try {
+            Carrello carrello = carrelloService.getCarrelloByUserId(userId);
+            return ResponseEntity.ok(carrello);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
      * Crea un nuovo carrello.
      * 
      * @param carrello dati per la creazione del carrello

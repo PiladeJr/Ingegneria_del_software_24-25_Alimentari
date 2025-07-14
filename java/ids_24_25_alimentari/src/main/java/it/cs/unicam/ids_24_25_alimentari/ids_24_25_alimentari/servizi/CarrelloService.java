@@ -36,7 +36,16 @@ public class CarrelloService {
         Optional<Carrello> carrello = carrelloRepository.findById(id);
         if (carrello.isPresent()) {
             return Optional.of(verificaEsistenzaProdotti(carrello.get()));
-        } else throw new NoSuchElementException("Carrello non trovato con id: " + id);
+        } else
+            throw new NoSuchElementException("Carrello non trovato con id: " + id);
+    }
+
+    public Carrello getCarrelloByUserId(Long userId) {
+        List<Carrello> carrelli = carrelloRepository.findByUtenteId(userId);
+        if (carrelli.isEmpty()) {
+            throw new NoSuchElementException("Nessun carrello trovato per l'utente con id: " + userId);
+        }
+        return verificaEsistenzaProdotti(carrelli.get(0));
     }
 
     public Carrello creaCarrello(CreaCarrelloDTO dto) {
